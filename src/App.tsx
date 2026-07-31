@@ -1,0 +1,58 @@
+import React from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { AppLayout } from './components/AppLayout';
+import {
+  ProtectedRoute,
+  PublicOnlyRoute,
+} from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
+import { CasesProvider } from './context/CasesContext';
+import { LocaleProvider } from './i18n/LocaleContext';
+import { ThemeProvider } from './theme/ThemeContext';
+import { AddCasePage } from './pages/AddCasePage';
+import { CalendarPage } from './pages/CalendarPage';
+import { CaseDetailPage } from './pages/CaseDetailPage';
+import { CaseHistoryPage } from './pages/CaseHistoryPage';
+import { DashboardPage } from './pages/DashboardPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
+import { SearchPage } from './pages/SearchPage';
+import { VerifyOtpPage } from './pages/VerifyOtpPage';
+
+function App() {
+  return (
+    <ThemeProvider>
+      <LocaleProvider>
+        <AuthProvider>
+        <CasesProvider>
+          <Routes>
+            <Route element={<PublicOnlyRoute />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/verify-otp" element={<VerifyOtpPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute />}>
+              <Route element={<AppLayout />}>
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/cases/new" element={<AddCasePage />} />
+                <Route path="/cases/:id/history" element={<CaseHistoryPage />} />
+                <Route path="/cases/:id/detail" element={<CaseDetailPage />} />
+                <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/search" element={<SearchPage />} />
+              </Route>
+            </Route>
+
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+          </CasesProvider>
+        </AuthProvider>
+      </LocaleProvider>
+    </ThemeProvider>
+  );
+}
+
+export default App;

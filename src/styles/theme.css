@@ -1,0 +1,96 @@
+/**
+ * THEME FILE — single source of truth for all colors, fonts and radii.
+ *
+ * Every component reads only from these tokens (via Tailwind classes like
+ * bg-background, text-primary, border-border...). To tweak a theme, change
+ * the values here. To add a new theme, copy a block, rename the class
+ * (e.g. .theme-sepia) and set it on <html> — no component changes needed.
+ *
+ * Values are HSL channels ("H S% L%") consumed as hsl(var(--token)).
+ */
+
+:root {
+  /* ---------- Light theme ---------- */
+  --background: 40 27% 96%;          /* warm paper */
+  --foreground: 212 51% 12%;         /* deep navy ink */
+
+  --card: 0 0% 100%;
+  --card-foreground: 212 51% 12%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 212 51% 12%;
+
+  --primary: 34 45% 50%;             /* legal gold */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 207 30% 93%;          /* mist */
+  --secondary-foreground: 212 51% 12%;
+
+  --muted: 210 25% 94%;
+  --muted-foreground: 212 22% 37%;   /* slate */
+
+  --accent: 39 56% 89%;              /* soft gold wash */
+  --accent-foreground: 36 51% 37%;   /* deep gold */
+
+  --destructive: 0 56% 39%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 152 39% 30%;
+  --success-foreground: 0 0% 100%;
+
+  --border: 213 26% 87%;
+  --input: 213 26% 87%;
+  --ring: 34 45% 50%;
+
+  /* Sidebar (navy panel in both themes) */
+  --sidebar: 212 51% 12%;
+  --sidebar-foreground: 40 33% 93%;
+  --sidebar-muted: 213 20% 65%;
+  --sidebar-accent: 34 45% 50%;
+
+  --radius: 0.875rem;
+
+  /* Fonts */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+  --font-urdu: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
+}
+
+.dark {
+  /* ---------- Dark theme ---------- */
+  --background: 215 42% 8%;
+  --foreground: 40 30% 92%;
+
+  --card: 214 38% 12%;
+  --card-foreground: 40 30% 92%;
+
+  --popover: 214 38% 11%;
+  --popover-foreground: 40 30% 92%;
+
+  --primary: 34 52% 55%;
+  --primary-foreground: 215 42% 10%;
+
+  --secondary: 213 30% 18%;
+  --secondary-foreground: 40 30% 92%;
+
+  --muted: 213 30% 17%;
+  --muted-foreground: 213 16% 66%;
+
+  --accent: 34 32% 20%;
+  --accent-foreground: 34 55% 68%;
+
+  --destructive: 0 55% 48%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 152 35% 42%;
+  --success-foreground: 0 0% 100%;
+
+  --border: 213 26% 22%;
+  --input: 213 26% 22%;
+  --ring: 34 52% 55%;
+
+  --sidebar: 216 48% 6%;
+  --sidebar-foreground: 40 30% 92%;
+  --sidebar-muted: 213 16% 60%;
+  --sidebar-accent: 34 52% 55%;
+}

@@ -1,0 +1,59 @@
+@import './theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background font-body text-foreground antialiased;
+    min-height: 100vh;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  /* Urdu locale: Nastaliq needs extra line height everywhere */
+  html[data-locale='ur'] body {
+    @apply font-urdu leading-loose;
+  }
+
+  html[data-locale='ur'] h1,
+  html[data-locale='ur'] h2,
+  html[data-locale='ur'] h3 {
+    @apply font-urdu;
+  }
+}
+
+@layer components {
+  /* Urdu-capable text/inputs regardless of UI language */
+  .urdu-text,
+  .urdu-input {
+    @apply font-urdu leading-loose;
+  }
+}
+
+/* Print: show only the document sheet (case detail page) */
+@media print {
+  aside,
+  .no-print {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  main > div {
+    padding: 0 !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+}
