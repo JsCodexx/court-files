@@ -10,43 +10,43 @@
  */
 
 :root {
-  /* ---------- Light theme ---------- */
-  --background: 40 27% 96%;          /* warm paper */
-  --foreground: 212 51% 12%;         /* deep navy ink */
+  /* ---------- Light theme (Pakistan-gov green) ---------- */
+  --background: 140 25% 97%;         /* faint green-tinted paper */
+  --foreground: 155 45% 10%;         /* deep green-black ink */
 
   --card: 0 0% 100%;
-  --card-foreground: 212 51% 12%;
+  --card-foreground: 155 45% 10%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 212 51% 12%;
+  --popover-foreground: 155 45% 10%;
 
-  --primary: 34 45% 50%;             /* legal gold */
+  --primary: 148 72% 21%;            /* Pakistan flag green */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 207 30% 93%;          /* mist */
-  --secondary-foreground: 212 51% 12%;
+  --secondary: 145 28% 92%;          /* pale green mist */
+  --secondary-foreground: 155 45% 10%;
 
-  --muted: 210 25% 94%;
-  --muted-foreground: 212 22% 37%;   /* slate */
+  --muted: 142 22% 94%;
+  --muted-foreground: 152 20% 34%;   /* muted green-slate */
 
-  --accent: 39 56% 89%;              /* soft gold wash */
-  --accent-foreground: 36 51% 37%;   /* deep gold */
+  --accent: 142 42% 90%;             /* soft green wash */
+  --accent-foreground: 150 65% 20%;  /* deep green */
 
   --destructive: 0 56% 39%;
   --destructive-foreground: 0 0% 100%;
 
-  --success: 152 39% 30%;
+  --success: 148 60% 28%;
   --success-foreground: 0 0% 100%;
 
-  --border: 213 26% 87%;
-  --input: 213 26% 87%;
-  --ring: 34 45% 50%;
+  --border: 145 22% 85%;
+  --input: 145 22% 85%;
+  --ring: 148 72% 21%;
 
-  /* Sidebar (navy panel in both themes) */
-  --sidebar: 212 51% 12%;
-  --sidebar-foreground: 40 33% 93%;
-  --sidebar-muted: 213 20% 65%;
-  --sidebar-accent: 34 45% 50%;
+  /* Sidebar (dark green panel in both themes) */
+  --sidebar: 152 55% 12%;
+  --sidebar-foreground: 140 30% 94%;
+  --sidebar-muted: 145 15% 65%;
+  --sidebar-accent: 142 48% 52%;
 
   --radius: 0.875rem;
 
@@ -57,40 +57,40 @@
 }
 
 .dark {
-  /* ---------- Dark theme ---------- */
-  --background: 215 42% 8%;
-  --foreground: 40 30% 92%;
+  /* ---------- Dark theme (Pakistan-gov green) ---------- */
+  --background: 160 32% 7%;
+  --foreground: 140 25% 92%;
 
-  --card: 214 38% 12%;
-  --card-foreground: 40 30% 92%;
+  --card: 158 28% 11%;
+  --card-foreground: 140 25% 92%;
 
-  --popover: 214 38% 11%;
-  --popover-foreground: 40 30% 92%;
+  --popover: 158 28% 10%;
+  --popover-foreground: 140 25% 92%;
 
-  --primary: 34 52% 55%;
-  --primary-foreground: 215 42% 10%;
+  --primary: 145 52% 46%;
+  --primary-foreground: 160 32% 8%;
 
-  --secondary: 213 30% 18%;
-  --secondary-foreground: 40 30% 92%;
+  --secondary: 155 24% 16%;
+  --secondary-foreground: 140 25% 92%;
 
-  --muted: 213 30% 17%;
-  --muted-foreground: 213 16% 66%;
+  --muted: 155 24% 15%;
+  --muted-foreground: 145 14% 66%;
 
-  --accent: 34 32% 20%;
-  --accent-foreground: 34 55% 68%;
+  --accent: 150 32% 18%;
+  --accent-foreground: 140 50% 70%;
 
   --destructive: 0 55% 48%;
   --destructive-foreground: 0 0% 100%;
 
-  --success: 152 35% 42%;
-  --success-foreground: 0 0% 100%;
+  --success: 148 45% 44%;
+  --success-foreground: 160 32% 8%;
 
-  --border: 213 26% 22%;
-  --input: 213 26% 22%;
-  --ring: 34 52% 55%;
+  --border: 152 22% 20%;
+  --input: 152 22% 20%;
+  --ring: 145 52% 46%;
 
-  --sidebar: 216 48% 6%;
-  --sidebar-foreground: 40 30% 92%;
-  --sidebar-muted: 213 16% 60%;
-  --sidebar-accent: 34 52% 55%;
+  --sidebar: 162 38% 5%;
+  --sidebar-foreground: 140 25% 92%;
+  --sidebar-muted: 145 14% 60%;
+  --sidebar-accent: 145 52% 46%;
 }
