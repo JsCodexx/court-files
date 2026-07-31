@@ -12,7 +12,8 @@ Frontend platform for advocates to register court cases, schedule hearings, trac
 - Search by name, case ID, or ID card
 - Hearing history when updating next dates
 
-Data is stored in browser `localStorage` (frontend only).
+Data is stored on the Court Files API (Express + Supabase); the API base URL
+comes from the `REACT_APP_API_URL` environment variable.
 
 ## Scripts
 
@@ -21,3 +22,17 @@ npm start
 npm test
 npm run build
 ```
+
+## Deploy to Vercel
+
+`vercel.json` sets the Create React App preset and rewrites all routes to
+`index.html` so React Router deep links work.
+
+1. Import this repo as a new Vercel project (framework is auto-detected).
+2. Set the environment variable in **Project → Settings → Environment Variables**:
+
+| Variable | Value |
+|----------|-------|
+| `REACT_APP_API_URL` | deployed API URL **including `/api`**, e.g. `https://your-backend.vercel.app/api` |
+
+3. Deploy. Also add this frontend URL to the backend's `CORS_ORIGIN`.
