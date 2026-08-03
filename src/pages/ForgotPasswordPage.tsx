@@ -15,6 +15,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
+import { useLoader } from '../context/LoaderContext';
 import { ApiError, apiFetch } from '../utils/api';
 import { isValidPakPhone, maskPhone } from '../utils/validation';
 
@@ -22,6 +23,7 @@ type Step = 'phone' | 'reset';
 
 export function ForgotPasswordPage() {
   const { t } = useLocale();
+  const { withLoader } = useLoader();
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>('phone');
   const [phone, setPhone] = useState('');
@@ -44,9 +46,11 @@ export function ForgotPasswordPage() {
     }
     setSubmitting(true);
     try {
-      const res = await apiFetch<{ ok: true; otp: string }>(
-        '/auth/forgot-password',
-        { method: 'POST', body: { phone } }
+      const res = await withLoader(() =>
+        apiFetch<{ ok: true; otp: string }>('/auth/forgot-password', {
+          method: 'POST',
+          body: { phone },
+        })
       );
       setInfo(t('forgot.demoInfo', { otp: res.otp }));
       setStep('reset');
@@ -66,10 +70,12 @@ export function ForgotPasswordPage() {
     }
     setSubmitting(true);
     try {
-      await apiFetch<{ ok: true }>('/auth/reset-password', {
-        method: 'POST',
-        body: { phone, otp: otp.trim(), newPassword },
-      });
+      await withLoader(() =>
+        apiFetch<{ ok: true }>('/auth/reset-password', {
+          method: 'POST',
+          body: { phone, otp: otp.trim(), newPassword },
+        })
+      );
       navigate('/login', { state: { resetDone: true } });
     } catch (err) {
       setError(errorText(err));
@@ -79,14 +85,14 @@ export function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+    <div className="page-shell">
       <Card className="w-full max-w-md animate-rise-in">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="text-3xl">{t('forgot.title')}</CardTitle>
+          <CardTitle className="page-title">{t('forgot.title')}</CardTitle>
           <CardDescription>{t('forgot.lede')}</CardDescription>
         </CardHeader>
         <CardContent>

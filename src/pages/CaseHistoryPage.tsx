@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, Pencil, Plus, Trash2 } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { HearingModal } from '../components/HearingModal';
+import { CaseStatusBadge } from '../components/CaseStatusBadge';
 import { Alert } from '../components/ui/alert';
-import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import {
@@ -35,7 +35,7 @@ import { useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { CourtCase, HearingRecord } from '../types';
-import { formatDisplayDate } from '../utils/dates';
+import { formatDisplayDate, isSunday } from '../utils/dates';
 
 const PAGE_SIZES = [10, 25, 50];
 
@@ -133,6 +133,10 @@ export function CaseHistoryPage() {
     e.preventDefault();
     if (!courtCase || !edit) return;
     setError('');
+    if (isSunday(edit.date)) {
+      setError(t('validation.sunday'));
+      return;
+    }
     setSaving(true);
     try {
       const fresh = await updateHearing(courtCase.id, edit.hearing.id, {
@@ -200,23 +204,13 @@ export function CaseHistoryPage() {
 
   return (
     <div className="animate-rise-in space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="font-display text-3xl font-semibold">
-              {t('history.title')}
-            </h1>
-            <Badge
-              variant={courtCase.status === 'decided' ? 'success' : 'secondary'}
-            >
-              {t(
-                courtCase.status === 'decided'
-                  ? 'status.decided'
-                  : 'status.pending'
-              )}
-            </Badge>
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <h1 className="page-title">{t('history.title')}</h1>
+            <CaseStatusBadge status={courtCase.status} alwaysShow />
           </div>
-          <p className="urdu-text text-sm text-muted-foreground">
+          <p className="urdu-text mt-1 text-sm text-muted-foreground">
             <span dir="ltr" className="font-semibold">
               {courtCase.caseId}
             </span>
@@ -226,14 +220,20 @@ export function CaseHistoryPage() {
             {t(`category.${courtCase.category}` as TranslationKey)}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="secondary" asChild>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="secondary" size="sm" asChild>
             <Link to="/dashboard">
               <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
               {t('history.back')}
             </Link>
           </Button>
-          <Button onClick={() => setAdding(true)}>
+          <Button variant="outline" size="sm" asChild>
+            <Link to={`/cases/${courtCase.id}/edit`}>
+              <Pencil className="h-4 w-4" />
+              {t('addCase.edit')}
+            </Link>
+          </Button>
+          <Button size="sm" onClick={() => setAdding(true)}>
             <Plus className="h-4 w-4" />
             {t('history.addHearing')}
           </Button>
@@ -452,11 +452,17 @@ export function CaseHistoryPage() {
                   <Input
                     type="date"
                     value={edit.date}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value && isSunday(value)) {
+                        setError(t('validation.sunday'));
+                        return;
+                      }
+                      setError('');
                       setEdit((prev) =>
-                        prev ? { ...prev, date: e.target.value } : prev
-                      )
-                    }
+                        prev ? { ...prev, date: value } : prev
+                      );
+                    }}
                     required
                     dir="ltr"
                   />

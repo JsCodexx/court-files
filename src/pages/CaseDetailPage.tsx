@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, History, Printer } from 'lucide-react';
+import { ArrowLeft, History, Pencil, Printer } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
+import { CaseStatusBadge } from '../components/CaseStatusBadge';
 import { Alert } from '../components/ui/alert';
-import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
@@ -42,6 +42,10 @@ export function CaseDetailPage() {
 
   const monthLabel = (index: number, short?: boolean) =>
     t((short ? `monthShort.${index}` : `month.${index}`) as TranslationKey);
+
+  const handlePrint = () => {
+    window.print();
+  };
 
   if (notFound) {
     return (
@@ -85,21 +89,27 @@ export function CaseDetailPage() {
   return (
     <div className="animate-rise-in space-y-4">
       {/* Toolbar (hidden when printing) */}
-      <div className="no-print flex flex-wrap items-center justify-between gap-2">
-        <Button asChild variant="secondary" size="sm">
+      <div className="no-print flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <Button asChild variant="secondary" size="sm" className="w-fit">
           <Link to="/dashboard">
             <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
             {t('history.back')}
           </Link>
         </Button>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link to={`/cases/${courtCase.id}/edit`}>
+              <Pencil className="h-4 w-4" />
+              {t('addCase.edit')}
+            </Link>
+          </Button>
           <Button asChild variant="outline" size="sm">
             <Link to={`/cases/${courtCase.id}/history`}>
               <History className="h-4 w-4" />
               {t('detail.editHistory')}
             </Link>
           </Button>
-          <Button size="sm" onClick={() => window.print()}>
+          <Button size="sm" onClick={handlePrint}>
             <Printer className="h-4 w-4" />
             {t('detail.print')}
           </Button>
@@ -107,7 +117,10 @@ export function CaseDetailPage() {
       </div>
 
       {/* The document sheet */}
-      <div className="print-sheet mx-auto w-full max-w-4xl rounded-sm border-2 border-foreground/30 bg-card p-6 shadow-sm md:p-10 print:border-0 print:p-0 print:shadow-none">
+      <div
+        id="case-print-sheet"
+        className="print-sheet mx-auto w-full max-w-4xl rounded-sm border-2 border-foreground/30 bg-card p-4 shadow-sm sm:p-6 md:p-10 print:border-0 print:p-0 print:shadow-none"
+      >
         {/* Centered header, like the printed cause list */}
         <div className="space-y-1 border-b-4 border-double border-foreground/40 pb-4 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">
@@ -119,6 +132,13 @@ export function CaseDetailPage() {
               <>
                 {' — '}
                 {t('hover.court')} <span dir="ltr">{courtCase.courtNumber}</span>
+              </>
+            ) : null}
+            {courtCase.city ? (
+              <>
+                {' — '}
+                {t('hover.city')}:{' '}
+                <span className="urdu-text">{courtCase.city}</span>
               </>
             ) : null}
           </p>
@@ -134,15 +154,7 @@ export function CaseDetailPage() {
             <p className="urdu-text text-lg font-bold">
               {courtCase.party1.name} {t('common.vs')} {courtCase.party2.name}
             </p>
-            <Badge
-              variant={courtCase.status === 'decided' ? 'success' : 'secondary'}
-            >
-              {t(
-                courtCase.status === 'decided'
-                  ? 'status.decided'
-                  : 'status.pending'
-              )}
-            </Badge>
+            <CaseStatusBadge status={courtCase.status} alwaysShow />
           </div>
         </div>
 
@@ -155,6 +167,17 @@ export function CaseDetailPage() {
                 {courtCase.caseId}
               </span>
             )}
+            {detailRow(
+              t('hover.status'),
+              <CaseStatusBadge status={courtCase.status} alwaysShow />
+            )}
+            {courtCase.statusRemarks
+              ? detailRow(
+                  t('hearing.statusRemarks'),
+                  courtCase.statusRemarks,
+                  true
+                )
+              : null}
             {detailRow(
               t('hover.titleLabel'),
               `${courtCase.party1.name} ${t('common.vs')} ${courtCase.party2.name}`,
@@ -221,16 +244,16 @@ export function CaseDetailPage() {
         <h2 className="urdu-text mt-8 mb-2 text-center font-display text-lg font-bold">
           {t('hover.recent')}
         </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] border-collapse">
+        <div className="overflow-x-auto print:overflow-visible">
+          <table className="w-full min-w-[640px] border-collapse print:min-w-0 print:table-fixed">
             <thead>
               <tr>
-                <th className={`${cellHead} w-12`}>{t('table.serial')}</th>
-                <th className={cellHead}>{t('hover.date')}</th>
-                <th className={cellHead}>{t('history.stage')}</th>
-                <th className={cellHead}>{t('history.adjournment')}</th>
-                <th className={cellHead}>{t('history.shortOrder')}</th>
-                <th className={cellHead}>{t('history.remarks')}</th>
+                <th className={`${cellHead} w-12 print:w-[8%]`}>{t('table.serial')}</th>
+                <th className={`${cellHead} print:w-[14%]`}>{t('hover.date')}</th>
+                <th className={`${cellHead} print:w-[20%]`}>{t('history.stage')}</th>
+                <th className={`${cellHead} print:w-[20%]`}>{t('history.adjournment')}</th>
+                <th className={`${cellHead} print:w-[19%]`}>{t('history.shortOrder')}</th>
+                <th className={`${cellHead} print:w-[19%]`}>{t('history.remarks')}</th>
               </tr>
             </thead>
             <tbody>
@@ -247,19 +270,22 @@ export function CaseDetailPage() {
                 courtCase.hearings.map((h, index) => (
                   <tr key={h.id}>
                     <td className={`${cell} text-center`}>{index + 1}</td>
-                    <td dir="ltr" className={`${cell} whitespace-nowrap font-medium`}>
+                    <td
+                      dir="ltr"
+                      className={`${cell} whitespace-nowrap font-medium print:whitespace-normal`}
+                    >
                       {formatDisplayDate(h.date, monthLabel)}
                     </td>
-                    <td className={`${cell} urdu-text`}>
+                    <td className={`${cell} urdu-text break-words`}>
                       {h.proceeding || dash}
                     </td>
-                    <td className={`${cell} urdu-text`}>
+                    <td className={`${cell} urdu-text break-words`}>
                       {h.adjournmentReason || t('history.nil')}
                     </td>
-                    <td className={`${cell} urdu-text`}>
+                    <td className={`${cell} urdu-text break-words`}>
                       {h.shortOrder || t('history.nil')}
                     </td>
-                    <td className={`${cell} urdu-text`}>
+                    <td className={`${cell} urdu-text break-words`}>
                       {h.remarks || dash}
                     </td>
                   </tr>

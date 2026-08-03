@@ -1,8 +1,13 @@
-export type CourtCategory = 'Civil Courts' | 'Session Courts' | 'High Courts';
+export type CourtCategory =
+  | 'Civil Courts'
+  | 'Session Courts'
+  | 'High Courts'
+  | 'Supreme Courts'
+  | 'Others';
 
 export type AdvocateFor = 'Party 1' | 'Party 2';
 
-export type CaseStatus = 'pending' | 'decided';
+export type CaseStatus = 'pending' | 'decided' | 'party_left';
 
 export interface User {
   id: string;
@@ -45,6 +50,7 @@ export interface CourtCase {
     phone: string;
   };
   courtNumber?: string;
+  city: string;
   judgeName: string;
   advocateFor: AdvocateFor;
   opponentCounsel: string;
@@ -52,6 +58,8 @@ export interface CourtCase {
   proceeding: string;
   remarks: string;
   status: CaseStatus;
+  /** Reason for decided (required) or party left (optional). */
+  statusRemarks: string;
   client: ClientInfo;
   hearings: HearingRecord[];
   createdAt: string;

@@ -18,17 +18,18 @@ import {
   formatMonthYear,
   isSameDay,
   isSameMonth,
+  isSunday,
+  nextWorkingDayISO,
   startOfMonth,
   startOfWeek,
   toISODate,
-  todayISO,
 } from '../utils/dates';
 
 export function CalendarPage() {
   const { fetchByDate, fetchHearingDates, version } = useCases();
   const { t } = useLocale();
   const [cursor, setCursor] = useState<Date>(() => startOfMonth(new Date()));
-  const [selectedDate, setSelectedDate] = useState(() => todayISO());
+  const [selectedDate, setSelectedDate] = useState(() => nextWorkingDayISO());
   const [selectedCase, setSelectedCase] = useState<CourtCase | null>(null);
   const [hearingDates, setHearingDates] = useState<Set<string>>(new Set());
   const [dayCases, setDayCases] = useState<CourtCase[]>([]);
@@ -87,15 +88,13 @@ export function CalendarPage() {
   return (
     <div className="animate-rise-in space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-semibold">
-          {t('calendar.title')}
-        </h1>
-        <p className="text-sm text-muted-foreground">{t('calendar.lede')}</p>
+        <h1 className="page-title">{t('calendar.title')}</h1>
+        <p className="page-lede">{t('calendar.lede')}</p>
       </div>
 
       <Card>
-        <CardContent className="pt-6">
-          <div className="mb-4 flex items-center justify-between gap-2">
+        <CardContent className="pt-4 sm:pt-6">
+          <div className="mb-3 flex items-center justify-between gap-2 sm:mb-4">
             <Button
               type="button"
               variant="secondary"
@@ -103,9 +102,9 @@ export function CalendarPage() {
               onClick={() => setCursor((d: Date) => addMonths(d, -1))}
             >
               <ChevronLeft className="h-4 w-4 rtl:rotate-180" />
-              {t('calendar.prev')}
+              <span className="hidden sm:inline">{t('calendar.prev')}</span>
             </Button>
-            <h2 className="font-display text-xl font-semibold" dir="ltr">
+            <h2 className="font-display text-base font-semibold sm:text-xl" dir="ltr">
               {formatMonthYear(cursor, monthLabel)}
             </h2>
             <Button
@@ -114,36 +113,49 @@ export function CalendarPage() {
               size="sm"
               onClick={() => setCursor((d: Date) => addMonths(d, 1))}
             >
-              {t('calendar.next')}
+              <span className="hidden sm:inline">{t('calendar.next')}</span>
               <ChevronRight className="h-4 w-4 rtl:rotate-180" />
             </Button>
           </div>
 
-          <div className="grid grid-cols-7 gap-1.5">
+          <div className="grid grid-cols-7 gap-0.5 sm:gap-1.5">
             {weekdays.map((d) => (
               <div
                 key={d}
-                className="pb-1 text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                className="pb-1 text-center text-[10px] font-semibold uppercase tracking-wide text-muted-foreground sm:text-xs"
               >
                 {d}
               </div>
             ))}
             {days.map((day: Date) => {
               const iso = toISODate(day);
-              const hasHearing = hearingDates.has(iso);
+              const sunday = isSunday(day);
+              const hasHearing = !sunday && hearingDates.has(iso);
               const selected = selectedDate === iso;
               const today = isSameDay(day, new Date());
               return (
                 <button
                   key={iso}
                   type="button"
-                  onClick={() => setSelectedDate(iso)}
+                  disabled={sunday}
+                  aria-disabled={sunday}
+                  title={sunday ? t('calendar.sundayClosed') : undefined}
+                  onClick={() => {
+                    if (!sunday) setSelectedDate(iso);
+                  }}
                   className={cn(
-                    'relative flex aspect-square flex-col items-center justify-center rounded-md border text-sm transition-colors hover:border-primary/60',
+                    'relative flex aspect-square min-h-[2.25rem] flex-col items-center justify-center rounded-md border text-xs transition-colors sm:min-h-0 sm:text-sm',
+                    sunday
+                      ? 'cursor-not-allowed border-dashed bg-muted/40 text-muted-foreground/40 opacity-60'
+                      : 'hover:border-primary/60',
                     !isSameMonth(day, cursor) &&
+                      !sunday &&
                       'text-muted-foreground/50',
-                    today && 'border-primary/60 font-semibold text-primary',
+                    today &&
+                      !sunday &&
+                      'border-primary/60 font-semibold text-primary',
                     selected &&
+                      !sunday &&
                       'border-primary bg-primary text-primary-foreground hover:border-primary'
                   )}
                 >
@@ -151,7 +163,7 @@ export function CalendarPage() {
                   {hasHearing ? (
                     <span
                       className={cn(
-                        'absolute bottom-1.5 h-1.5 w-1.5 rounded-full bg-primary',
+                        'absolute bottom-1 h-1 w-1 rounded-full bg-primary sm:bottom-1.5 sm:h-1.5 sm:w-1.5',
                         selected && 'bg-primary-foreground'
                       )}
                     />
@@ -164,7 +176,7 @@ export function CalendarPage() {
       </Card>
 
       <div className="space-y-3">
-        <h2 className="font-display text-xl font-semibold">
+        <h2 className="font-display text-lg font-semibold sm:text-xl">
           {t('calendar.casesOn', { date: formattedSelected })}
         </h2>
         <CaseTable

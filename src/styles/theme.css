@@ -50,10 +50,10 @@
 
   --radius: 0.875rem;
 
-  /* Fonts */
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
-  --font-urdu: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
+  /* Fonts — Fraunces (display) + Figtree (body) + Noto Naskh (Urdu) */
+  --font-display: 'Fraunces', 'Georgia', serif;
+  --font-body: 'Figtree', 'Segoe UI', sans-serif;
+  --font-urdu: 'Noto Naskh Arabic', 'Noto Nastaliq Urdu', 'Segoe UI', serif;
 }
 
 .dark {

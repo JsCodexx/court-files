@@ -56,10 +56,10 @@ export function SearchPage() {
   return (
     <div className="animate-rise-in space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-semibold">
+        <h1 className="page-title">
           {t('search.title')}
         </h1>
-        <p className="text-sm text-muted-foreground">{t('search.lede')}</p>
+        <p className="page-lede">{t('search.lede')}</p>
       </div>
 
       <Card>

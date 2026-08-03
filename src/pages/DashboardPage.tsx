@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { CaseTable } from '../components/CaseTable';
 import { HearingModal } from '../components/HearingModal';
 import { Button } from '../components/ui/button';
-import { Card } from '../components/ui/card';
 import { COURT_CATEGORIES } from '../constants';
 import { useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
@@ -12,103 +11,79 @@ import { TranslationKey } from '../i18n/translations';
 import { cn } from '../lib/utils';
 import { CourtCase, CourtCategory } from '../types';
 
-type ViewMode =
-  | { kind: 'all' }
-  | { kind: 'today' }
-  | { kind: 'tomorrow' }
-  | { kind: 'category'; category: CourtCategory };
+type DayScope = 'today' | 'tomorrow' | 'all';
 
 export function DashboardPage() {
-  const { cases, fetchToday, fetchTomorrow, fetchByCategory, version } =
-    useCases();
+  const { cases, fetchToday, fetchTomorrow, version } = useCases();
   const { t } = useLocale();
-  const [view, setView] = useState<ViewMode>({ kind: 'all' });
+  const [category, setCategory] = useState<CourtCategory>(COURT_CATEGORIES[0]);
+  const [scope, setScope] = useState<DayScope>('today');
   const [selected, setSelected] = useState<CourtCase | null>(null);
-  const [counts, setCounts] = useState({ today: 0, tomorrow: 0 });
-  const [listed, setListed] = useState<CourtCase[]>([]);
+  const [todayCases, setTodayCases] = useState<CourtCase[]>([]);
+  const [tomorrowCases, setTomorrowCases] = useState<CourtCase[]>([]);
 
-  // Stat counts from server endpoints
   useEffect(() => {
     let alive = true;
     Promise.all([fetchToday(), fetchTomorrow()])
       .then(([today, tomorrow]) => {
-        if (alive) {
-          setCounts({ today: today.length, tomorrow: tomorrow.length });
-        }
+        if (!alive) return;
+        setTodayCases(today);
+        setTomorrowCases(tomorrow);
       })
       .catch(() => {
-        /* counts stay stale on error */
+        /* keep previous lists on error */
       });
     return () => {
       alive = false;
     };
   }, [fetchToday, fetchTomorrow, version]);
 
-  // Listed cases for the active view
-  useEffect(() => {
-    if (view.kind === 'all') {
-      setListed(cases);
-      return;
-    }
-    let alive = true;
-    const load =
-      view.kind === 'today'
-        ? fetchToday()
-        : view.kind === 'tomorrow'
-          ? fetchTomorrow()
-          : fetchByCategory(view.category);
-    load
-      .then((list) => {
-        if (alive) setListed(list);
-      })
-      .catch(() => {
-        /* keep previous list on error */
-      });
-    return () => {
-      alive = false;
+  const byCategory = useMemo(() => {
+    const inCat = (list: CourtCase[]) =>
+      list.filter((c) => c.category === category);
+    return {
+      today: inCat(todayCases),
+      tomorrow: inCat(tomorrowCases),
+      all: inCat(cases),
     };
-  }, [view, cases, fetchToday, fetchTomorrow, fetchByCategory, version]);
+  }, [category, todayCases, tomorrowCases, cases]);
 
-  const title =
-    view.kind === 'today'
+  const listed = byCategory[scope];
+  const categoryLabel = t(`category.${category}` as TranslationKey);
+  const scopeLabel =
+    scope === 'today'
       ? t('dashboard.today')
-      : view.kind === 'tomorrow'
+      : scope === 'tomorrow'
         ? t('dashboard.tomorrow')
-        : view.kind === 'category'
-          ? t(`category.${view.category}` as TranslationKey)
-          : t('dashboard.all');
+        : t('dashboard.all');
+  const title = `${categoryLabel} — ${scopeLabel}`;
 
-  const stats: { key: ViewMode['kind']; label: string; value: number; mode: ViewMode }[] = [
+  const scopes: { key: DayScope; label: string; value: number }[] = [
     {
       key: 'today',
       label: t('dashboard.today'),
-      value: counts.today,
-      mode: { kind: 'today' },
+      value: byCategory.today.length,
     },
     {
       key: 'tomorrow',
       label: t('dashboard.tomorrow'),
-      value: counts.tomorrow,
-      mode: { kind: 'tomorrow' },
+      value: byCategory.tomorrow.length,
     },
     {
       key: 'all',
       label: t('dashboard.all'),
-      value: cases.length,
-      mode: { kind: 'all' },
+      value: byCategory.all.length,
     },
   ];
 
   return (
-    <div className="animate-rise-in space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-display text-3xl font-semibold">
-            {t('dashboard.title')}
-          </h1>
-          <p className="text-sm text-muted-foreground">{t('dashboard.lede')}</p>
+    <div className="animate-rise-in space-y-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <h1 className="page-title">{t('dashboard.title')}</h1>
+          <p className="page-lede">{t('dashboard.lede')}</p>
         </div>
-        <Button asChild>
+        <Button asChild size="sm" className="shrink-0">
           <Link to="/cases/new">
             <Plus className="h-4 w-4" />
             {t('dashboard.addCase')}
@@ -116,50 +91,107 @@ export function DashboardPage() {
         </Button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        {stats.map((stat) => (
-          <Card
-            key={stat.key}
-            role="button"
-            tabIndex={0}
-            onClick={() => setView(stat.mode)}
-            onKeyDown={(e) => e.key === 'Enter' && setView(stat.mode)}
-            className={cn(
-              'cursor-pointer p-5 transition-colors hover:border-primary/60',
-              view.kind === stat.key && 'border-primary ring-1 ring-primary'
-            )}
+      {/* Slim filter bar: court type + hearing scope */}
+      <div className="rounded-lg border bg-card/95 px-2.5 py-2.5 shadow-sm backdrop-blur-[2px] sm:px-4 sm:py-3">
+        <div className="flex flex-col gap-3">
+          {/* Court types — scrollable tabs on small screens */}
+          <div
+            role="tablist"
+            aria-label={t('dashboard.courtType')}
+            className="-mx-0.5 flex gap-0.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {stat.label}
-            </p>
-            <p className="mt-1 font-display text-4xl font-semibold text-primary">
-              {stat.value}
-            </p>
-          </Card>
-        ))}
-      </div>
+            {COURT_CATEGORIES.map((cat) => {
+              const active = category === cat;
+              const total = cases.filter((c) => c.category === cat).length;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setCategory(cat)}
+                  className={cn(
+                    'group relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap px-2.5 py-2 text-xs font-medium transition-colors sm:gap-2 sm:px-3 sm:text-sm',
+                    active
+                      ? 'text-primary'
+                      : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  <span>{t(`category.${cat}` as TranslationKey)}</span>
+                  <span
+                    className={cn(
+                      'inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-md px-1.5 text-[11px] font-semibold tabular-nums',
+                      active
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-muted-foreground group-hover:bg-secondary'
+                    )}
+                  >
+                    {total}
+                  </span>
+                  <span
+                    className={cn(
+                      'absolute inset-x-2 -bottom-px h-0.5 rounded-full transition-colors',
+                      active ? 'bg-primary' : 'bg-transparent'
+                    )}
+                  />
+                </button>
+              );
+            })}
+          </div>
 
-      <div className="flex flex-wrap gap-2">
-        {COURT_CATEGORIES.map((category) => {
-          const active =
-            view.kind === 'category' && view.category === category;
-          return (
-            <Button
-              key={category}
-              type="button"
-              size="sm"
-              variant={active ? 'default' : 'outline'}
-              onClick={() => setView({ kind: 'category', category })}
-            >
-              {t(`category.${category}` as TranslationKey)}
-            </Button>
-          );
-        })}
+          {/* Today / Tomorrow / All — compact segmented control */}
+          <div
+            role="tablist"
+            aria-label={t('dashboard.hearingScope', { court: categoryLabel })}
+            className="grid w-full grid-cols-3 rounded-md border bg-muted/50 p-0.5 sm:inline-flex sm:w-auto"
+          >
+            {scopes.map((stat) => {
+              const active = scope === stat.key;
+              return (
+                <button
+                  key={stat.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setScope(stat.key)}
+                  className={cn(
+                    'inline-flex items-center justify-center gap-1 rounded-[5px] px-2 py-1.5 text-[11px] font-semibold transition-all sm:gap-1.5 sm:px-3 sm:text-xs',
+                    active
+                      ? 'bg-card text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  <span className="truncate">{stat.label}</span>
+                  <span
+                    className={cn(
+                      'tabular-nums',
+                      active ? 'text-primary' : 'text-muted-foreground/80'
+                    )}
+                  >
+                    {stat.value}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       <div className="space-y-3">
-        <h2 className="font-display text-xl font-semibold">{title}</h2>
-        <CaseTable cases={listed} title={title} onSelect={(c) => setSelected(c)} />
+        <div className="flex items-baseline justify-between gap-2">
+          <h2 className="font-display text-lg font-semibold tracking-tight">
+            {title}
+          </h2>
+          <p className="text-xs text-muted-foreground tabular-nums">
+            {listed.length}
+          </p>
+        </div>
+        <CaseTable
+          cases={listed}
+          title={title}
+          compact
+          onSelect={(c) => setSelected(c)}
+        />
       </div>
 
       {selected && (

@@ -7,6 +7,7 @@ import {
 } from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import { CasesProvider } from './context/CasesContext';
+import { LoaderProvider } from './context/LoaderContext';
 import { LocaleProvider } from './i18n/LocaleContext';
 import { ThemeProvider } from './theme/ThemeContext';
 import { AddCasePage } from './pages/AddCasePage';
@@ -24,32 +25,35 @@ function App() {
   return (
     <ThemeProvider>
       <LocaleProvider>
-        <AuthProvider>
-        <CasesProvider>
-          <Routes>
-            <Route element={<PublicOnlyRoute />}>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/verify-otp" element={<VerifyOtpPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            </Route>
+        <LoaderProvider>
+          <AuthProvider>
+            <CasesProvider>
+              <Routes>
+                <Route element={<PublicOnlyRoute />}>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/verify-otp" element={<VerifyOtpPage />} />
+                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                </Route>
 
-            <Route element={<ProtectedRoute />}>
-              <Route element={<AppLayout />}>
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/cases/new" element={<AddCasePage />} />
-                <Route path="/cases/:id/history" element={<CaseHistoryPage />} />
-                <Route path="/cases/:id/detail" element={<CaseDetailPage />} />
-                <Route path="/calendar" element={<CalendarPage />} />
-                <Route path="/search" element={<SearchPage />} />
-              </Route>
-            </Route>
+                <Route element={<ProtectedRoute />}>
+                  <Route element={<AppLayout />}>
+                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/cases/new" element={<AddCasePage />} />
+                    <Route path="/cases/:id/edit" element={<AddCasePage />} />
+                    <Route path="/cases/:id/history" element={<CaseHistoryPage />} />
+                    <Route path="/cases/:id/detail" element={<CaseDetailPage />} />
+                    <Route path="/calendar" element={<CalendarPage />} />
+                    <Route path="/search" element={<SearchPage />} />
+                  </Route>
+                </Route>
 
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-          </CasesProvider>
-        </AuthProvider>
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              </Routes>
+            </CasesProvider>
+          </AuthProvider>
+        </LoaderProvider>
       </LocaleProvider>
     </ThemeProvider>
   );

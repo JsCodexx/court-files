@@ -43,14 +43,14 @@ export function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+    <div className="page-shell">
       <Card className="w-full max-w-md animate-rise-in">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="text-3xl">{t('login.title')}</CardTitle>
+          <CardTitle className="page-title">{t('login.title')}</CardTitle>
           <CardDescription>{t('login.lede')}</CardDescription>
         </CardHeader>
         <CardContent>

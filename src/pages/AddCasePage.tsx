@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import {
@@ -17,8 +16,8 @@ import { ADVOCATE_FOR_OPTIONS, COURT_CATEGORIES } from '../constants';
 import { useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
-import { AdvocateFor, CourtCategory } from '../types';
-import { todayISO } from '../utils/dates';
+import { AdvocateFor, CourtCase, CourtCategory } from '../types';
+import { isSunday, nextWorkingDayISO, todayISO } from '../utils/dates';
 import {
   formatCnic,
   isValidCaseId,
@@ -39,6 +38,7 @@ interface CaseFormState {
   party2IdCard: string;
   party2Phone: string;
   courtNumber: string;
+  city: string;
   judgeName: string;
   advocateFor: AdvocateFor;
   opponentCounsel: string;
@@ -62,10 +62,11 @@ const empty: CaseFormState = {
   party2IdCard: '',
   party2Phone: '',
   courtNumber: '',
+  city: '',
   judgeName: '',
   advocateFor: 'Party 1',
   opponentCounsel: '',
-  nextDate: todayISO(),
+  nextDate: nextWorkingDayISO(),
   proceeding: '',
   remarks: '',
   clientName: '',
@@ -73,19 +74,76 @@ const empty: CaseFormState = {
   clientPhone: '',
 };
 
+function fromCase(c: CourtCase): CaseFormState {
+  return {
+    caseId: c.caseId,
+    category: c.category,
+    party1Name: c.party1.name,
+    party1IdCard: c.party1.idCard,
+    party1Phone: c.party1.phone,
+    party2Name: c.party2.name,
+    party2IdCard: c.party2.idCard,
+    party2Phone: c.party2.phone,
+    courtNumber: c.courtNumber || '',
+    city: c.city || '',
+    judgeName: c.judgeName,
+    advocateFor: c.advocateFor,
+    opponentCounsel: c.opponentCounsel,
+    nextDate: c.nextDate,
+    proceeding: c.proceeding,
+    remarks: c.remarks,
+    clientName: c.client?.name || '',
+    clientAddress: c.client?.address || '',
+    clientPhone: c.client?.phone || '',
+  };
+}
+
 export function AddCasePage() {
-  const { addCase } = useCases();
+  const { id } = useParams<{ id?: string }>();
+  const isEdit = Boolean(id);
+  const { addCase, updateCase, getCase } = useCases();
   const { t } = useLocale();
   const navigate = useNavigate();
   const [form, setForm] = useState<CaseFormState>(empty);
+  /** Original next date when editing — past dates are allowed if unchanged. */
+  const [originalNextDate, setOriginalNextDate] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(isEdit);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    if (!id) {
+      setForm({ ...empty, nextDate: nextWorkingDayISO() });
+      setOriginalNextDate(null);
+      setLoading(false);
+      setNotFound(false);
+      return;
+    }
+    let alive = true;
+    setLoading(true);
+    getCase(id)
+      .then((c) => {
+        if (!alive) return;
+        setForm(fromCase(c));
+        setOriginalNextDate(c.nextDate);
+        setNotFound(false);
+      })
+      .catch(() => {
+        if (alive) setNotFound(true);
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [id, getCase]);
 
   const setValue = (key: keyof CaseFormState, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
-    // Clear the field's error as the user corrects it
     setFieldErrors((prev) => {
       if (!prev[key]) return prev;
       const next = { ...prev };
@@ -101,13 +159,11 @@ export function AddCasePage() {
     ) =>
       setValue(key, e.target.value);
 
-  /** CNIC fields: digits only, dashes inserted automatically (31209-8736287-1) */
   const setCnic =
     (key: keyof CaseFormState) =>
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setValue(key, maskCnic(e.target.value));
 
-  /** Phone fields: digits only, capped at 11 */
   const setPhone =
     (key: keyof CaseFormState) =>
     (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -120,15 +176,21 @@ export function AddCasePage() {
     if (!f.caseId.trim()) errs.caseId = required;
     else if (!isValidCaseId(f.caseId)) errs.caseId = t('validation.caseId');
 
+    if (!f.city.trim()) errs.city = required;
     if (!f.judgeName.trim()) errs.judgeName = required;
     if (!f.proceeding.trim()) errs.proceeding = required;
     if (!f.party1Name.trim()) errs.party1Name = required;
     if (!f.party2Name.trim()) errs.party2Name = required;
 
     if (!f.nextDate) errs.nextDate = required;
-    else if (f.nextDate < todayISO()) errs.nextDate = t('validation.datePast');
+    else if (isSunday(f.nextDate)) errs.nextDate = t('validation.sunday');
+    else if (
+      f.nextDate < todayISO() &&
+      !(isEdit && f.nextDate === originalNextDate)
+    ) {
+      errs.nextDate = t('validation.datePast');
+    }
 
-    // Optional fields validate only when filled
     if (f.party1IdCard.trim() && !isValidCnic(f.party1IdCard)) {
       errs.party1IdCard = t('validation.cnic');
     }
@@ -148,6 +210,34 @@ export function AddCasePage() {
     return errs;
   };
 
+  const buildPayload = (f: CaseFormState) => ({
+    caseId: f.caseId.trim(),
+    category: f.category,
+    party1: {
+      name: f.party1Name.trim(),
+      idCard: f.party1IdCard.trim() ? formatCnic(f.party1IdCard) : '',
+      phone: f.party1Phone.trim() ? normalizePhone(f.party1Phone) : '',
+    },
+    party2: {
+      name: f.party2Name.trim(),
+      idCard: f.party2IdCard.trim() ? formatCnic(f.party2IdCard) : '',
+      phone: f.party2Phone.trim() ? normalizePhone(f.party2Phone) : '',
+    },
+    courtNumber: f.courtNumber.trim() || undefined,
+    city: f.city.trim(),
+    judgeName: f.judgeName.trim(),
+    advocateFor: f.advocateFor,
+    opponentCounsel: f.opponentCounsel.trim(),
+    nextDate: f.nextDate,
+    proceeding: f.proceeding.trim(),
+    remarks: f.remarks.trim(),
+    client: {
+      name: f.clientName.trim(),
+      address: f.clientAddress.trim(),
+      phone: f.clientPhone.trim() ? normalizePhone(f.clientPhone) : '',
+    },
+  });
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -156,49 +246,24 @@ export function AddCasePage() {
     const errs = validate(form);
     setFieldErrors(errs);
     if (Object.keys(errs).length > 0) {
-      setError(t('validation.fixErrors'));
+      setError(t('validation.formErrors'));
       return;
     }
 
     setSubmitting(true);
     try {
-      await addCase({
-        caseId: form.caseId.trim(),
-        category: form.category,
-        party1: {
-          name: form.party1Name.trim(),
-          idCard: form.party1IdCard.trim() ? formatCnic(form.party1IdCard) : '',
-          phone: form.party1Phone.trim()
-            ? normalizePhone(form.party1Phone)
-            : '',
-        },
-        party2: {
-          name: form.party2Name.trim(),
-          idCard: form.party2IdCard.trim() ? formatCnic(form.party2IdCard) : '',
-          phone: form.party2Phone.trim()
-            ? normalizePhone(form.party2Phone)
-            : '',
-        },
-        courtNumber: form.courtNumber.trim() || undefined,
-        judgeName: form.judgeName.trim(),
-        advocateFor: form.advocateFor,
-        opponentCounsel: form.opponentCounsel.trim(),
-        nextDate: form.nextDate,
-        proceeding: form.proceeding.trim(),
-        remarks: form.remarks.trim(),
-        client: {
-          name: form.clientName.trim(),
-          address: form.clientAddress.trim(),
-          phone: form.clientPhone.trim()
-            ? normalizePhone(form.clientPhone)
-            : '',
-        },
-      });
-
-      setSuccess(t('addCase.saved'));
-      setForm({ ...empty, nextDate: todayISO() });
-      setFieldErrors({});
-      setTimeout(() => navigate('/dashboard'), 700);
+      const payload = buildPayload(form);
+      if (isEdit && id) {
+        await updateCase(id, payload);
+        setSuccess(t('addCase.updated'));
+        setTimeout(() => navigate(`/cases/${id}/detail`), 700);
+      } else {
+        await addCase(payload);
+        setSuccess(t('addCase.saved'));
+        setForm({ ...empty, nextDate: nextWorkingDayISO() });
+        setFieldErrors({});
+        setTimeout(() => navigate('/dashboard'), 700);
+      }
     } catch {
       setError(t('errors.saveFailed'));
     } finally {
@@ -217,18 +282,37 @@ export function AddCasePage() {
     <h2 className="border-b pb-2 font-display text-xl font-semibold">{text}</h2>
   );
 
+  if (notFound) {
+    return (
+      <div className="animate-rise-in space-y-4">
+        <Alert variant="destructive">{t('history.notFound')}</Alert>
+        <Button asChild variant="secondary">
+          <Link to="/dashboard">{t('history.back')}</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="p-10 text-center text-sm text-muted-foreground">
+        {t('common.dash')}
+      </div>
+    );
+  }
+
   return (
     <div className="animate-rise-in space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-semibold">
-          {t('addCase.title')}
+        <h1 className="page-title">
+          {t(isEdit ? 'addCase.editTitle' : 'addCase.title')}
         </h1>
-        <p className="text-sm text-muted-foreground">{t('addCase.lede')}</p>
+        <p className="page-lede">
+          {t(isEdit ? 'addCase.editLede' : 'addCase.lede')}
+        </p>
       </div>
 
-      <Card>
-        <CardContent className="pt-6">
-          <form onSubmit={onSubmit} noValidate className="space-y-6">
+      <form onSubmit={onSubmit} noValidate className="space-y-6">
             {error && <Alert variant="destructive">{error}</Alert>}
             {success && <Alert variant="success">{success}</Alert>}
 
@@ -276,6 +360,22 @@ export function AddCasePage() {
                   maxLength={20}
                   dir="ltr"
                 />
+              </div>
+              <div>
+                <Label>
+                  {t('addCase.city')} {req}
+                </Label>
+                <Input
+                  className="urdu-input"
+                  invalid={!!fieldErrors.city}
+                  value={form.city}
+                  onChange={set('city')}
+                  maxLength={100}
+                  dir="auto"
+                  lang="ur"
+                  aria-invalid={!!fieldErrors.city}
+                />
+                {fieldError('city')}
               </div>
               <div>
                 <Label>
@@ -332,8 +432,22 @@ export function AddCasePage() {
                   type="date"
                   invalid={!!fieldErrors.nextDate}
                   value={form.nextDate}
-                  min={todayISO()}
-                  onChange={set('nextDate')}
+                  min={
+                    isEdit && originalNextDate && originalNextDate < todayISO()
+                      ? originalNextDate
+                      : todayISO()
+                  }
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value && isSunday(value)) {
+                      setFieldErrors((prev) => ({
+                        ...prev,
+                        nextDate: t('validation.sunday'),
+                      }));
+                      return;
+                    }
+                    setValue('nextDate', value);
+                  }}
                   dir="ltr"
                   aria-invalid={!!fieldErrors.nextDate}
                 />
@@ -370,7 +484,7 @@ export function AddCasePage() {
             </div>
 
             {sectionTitle(t('addCase.party1'))}
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               <div>
                 <Label>
                   {t('addCase.name')} {req}
@@ -418,7 +532,7 @@ export function AddCasePage() {
             </div>
 
             {sectionTitle(t('addCase.party2'))}
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               <div>
                 <Label>
                   {t('addCase.name')} {req}
@@ -507,19 +621,19 @@ export function AddCasePage() {
 
             <div className="flex gap-2 border-t pt-4">
               <Button type="submit" disabled={submitting}>
-                {t('addCase.save')}
+                {t(isEdit ? 'addCase.update' : 'addCase.save')}
               </Button>
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => navigate('/dashboard')}
+                onClick={() =>
+                  navigate(isEdit && id ? `/cases/${id}/detail` : '/dashboard')
+                }
               >
                 {t('addCase.cancel')}
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
     </div>
   );
 }
