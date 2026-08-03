@@ -5,7 +5,12 @@ import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { cn } from '../lib/utils';
 import { CaseStatus, CourtCase } from '../types';
-import { formatDisplayDate, todayISO } from '../utils/dates';
+import {
+  formatDisplayDate,
+  isSunday,
+  nextWorkingDayISO,
+  todayISO,
+} from '../utils/dates';
 import { Alert } from './ui/alert';
 import { Button } from './ui/button';
 import {
@@ -24,12 +29,23 @@ interface Props {
   onClose: () => void;
 }
 
+const STATUSES: CaseStatus[] = ['pending', 'decided', 'party_left'];
+
+function statusLabelKey(s: CaseStatus): TranslationKey {
+  if (s === 'decided') return 'status.decided';
+  if (s === 'party_left') return 'status.partyLeft';
+  return 'status.pending';
+}
+
 export function HearingModal({ courtCase, onClose }: Props) {
   const { addHearing, updateCase, deleteCase, getCase } = useCases();
   const { t } = useLocale();
   const [current, setCurrent] = useState<CourtCase>(courtCase);
-  const [status, setStatus] = useState<CaseStatus>('pending');
-  const [date, setDate] = useState(todayISO());
+  const [status, setStatus] = useState<CaseStatus>(courtCase.status || 'pending');
+  const [statusRemarks, setStatusRemarks] = useState(
+    courtCase.statusRemarks || ''
+  );
+  const [date, setDate] = useState(nextWorkingDayISO());
   const [proceeding, setProceeding] = useState('');
   const [adjournmentReason, setAdjournmentReason] = useState('');
   const [shortOrder, setShortOrder] = useState('');
@@ -37,12 +53,14 @@ export function HearingModal({ courtCase, onClose }: Props) {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
-  // Load the latest case data (including full hearing history) from the server
   useEffect(() => {
     let alive = true;
     getCase(courtCase.id)
       .then((fresh) => {
-        if (alive) setCurrent(fresh);
+        if (!alive) return;
+        setCurrent(fresh);
+        setStatus(fresh.status || 'pending');
+        setStatusRemarks(fresh.statusRemarks || '');
       })
       .catch(() => {
         /* fall back to the case passed in */
@@ -57,12 +75,34 @@ export function HearingModal({ courtCase, onClose }: Props) {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
 
-    // Decided: close the case, no next date or proceeding needed
     if (status === 'decided') {
+      if (!statusRemarks.trim()) {
+        setError(t('hearing.decidedRemarksRequired'));
+        return;
+      }
       setSaving(true);
       try {
-        await updateCase(current.id, { status: 'decided' });
+        await updateCase(current.id, {
+          status: 'decided',
+          statusRemarks: statusRemarks.trim(),
+        });
+        onClose();
+      } catch {
+        setError(t('errors.saveFailed'));
+        setSaving(false);
+      }
+      return;
+    }
+
+    if (status === 'party_left') {
+      setSaving(true);
+      try {
+        await updateCase(current.id, {
+          status: 'party_left',
+          statusRemarks: statusRemarks.trim(),
+        });
         onClose();
       } catch {
         setError(t('errors.saveFailed'));
@@ -73,6 +113,10 @@ export function HearingModal({ courtCase, onClose }: Props) {
 
     if (!proceeding.trim()) {
       setError(t('hearing.proceedingRequired'));
+      return;
+    }
+    if (isSunday(date)) {
+      setError(t('validation.sunday'));
       return;
     }
     setSaving(true);
@@ -103,6 +147,13 @@ export function HearingModal({ courtCase, onClose }: Props) {
       setSaving(false);
     }
   };
+
+  const submitLabel =
+    status === 'decided'
+      ? t('hearing.markDecided')
+      : status === 'party_left'
+        ? t('hearing.markPartyLeft')
+        : t('hearing.save');
 
   return (
     <Dialog open onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -152,31 +203,75 @@ export function HearingModal({ courtCase, onClose }: Props) {
 
           <div>
             <Label>{t('hearing.status')}</Label>
-            <div className="grid grid-cols-2 gap-2">
-              {(['pending', 'decided'] as CaseStatus[]).map((s) => (
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              {STATUSES.map((s) => (
                 <button
                   key={s}
                   type="button"
-                  onClick={() => setStatus(s)}
+                  onClick={() => {
+                    setStatus(s);
+                    setError('');
+                  }}
                   aria-pressed={status === s}
                   className={cn(
-                    'rounded-md border px-4 py-2.5 text-sm font-semibold transition-colors',
+                    'rounded-md border px-3 py-2.5 text-sm font-semibold transition-colors',
                     status === s
                       ? s === 'decided'
                         ? 'border-success bg-success text-success-foreground'
-                        : 'border-primary bg-primary text-primary-foreground'
+                        : s === 'party_left'
+                          ? 'border-destructive bg-destructive text-destructive-foreground'
+                          : 'border-primary bg-primary text-primary-foreground'
                       : 'border-input bg-card text-muted-foreground hover:border-primary/60 hover:text-foreground'
                   )}
                 >
-                  {t(s === 'pending' ? 'status.pending' : 'status.decided')}
+                  {t(statusLabelKey(s))}
                 </button>
               ))}
             </div>
           </div>
 
-          {status === 'decided' ? (
-            <Alert variant="success">{t('hearing.decidedNote')}</Alert>
-          ) : (
+          {status === 'decided' && (
+            <div className="space-y-3">
+              <Alert variant="success">{t('hearing.decidedNote')}</Alert>
+              <div>
+                <Label>
+                  {t('hearing.statusRemarks')}{' '}
+                  <span className="text-destructive">*</span>
+                </Label>
+                <Textarea
+                  className="urdu-input"
+                  value={statusRemarks}
+                  onChange={(e) => setStatusRemarks(e.target.value)}
+                  placeholder={t('hearing.decidedRemarksPh')}
+                  required
+                  dir="auto"
+                  lang="ur"
+                />
+              </div>
+            </div>
+          )}
+
+          {status === 'party_left' && (
+            <div className="space-y-3">
+              <Alert variant="destructive">{t('hearing.partyLeftNote')}</Alert>
+              <div>
+                <Label>{t('hearing.statusRemarks')}</Label>
+                <Textarea
+                  className="urdu-input"
+                  value={statusRemarks}
+                  onChange={(e) => setStatusRemarks(e.target.value)}
+                  placeholder={t('hearing.partyLeftRemarksPh')}
+                  dir="auto"
+                  lang="ur"
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {t('hearing.partyLeftRemarksHint')}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {status === 'pending' && (
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <Label>
@@ -187,7 +282,15 @@ export function HearingModal({ courtCase, onClose }: Props) {
                   type="date"
                   value={date}
                   min={todayISO()}
-                  onChange={(e) => setDate(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value && isSunday(value)) {
+                      setError(t('validation.sunday'));
+                      return;
+                    }
+                    setError('');
+                    setDate(value);
+                  }}
                   required
                   dir="ltr"
                 />
@@ -244,6 +347,7 @@ export function HearingModal({ courtCase, onClose }: Props) {
               </div>
             </div>
           )}
+
           <DialogFooter>
             <Button
               type="button"
@@ -258,7 +362,7 @@ export function HearingModal({ courtCase, onClose }: Props) {
               {t('hearing.cancel')}
             </Button>
             <Button type="submit" disabled={saving}>
-              {t(status === 'decided' ? 'hearing.markDecided' : 'hearing.save')}
+              {submitLabel}
             </Button>
           </DialogFooter>
         </form>

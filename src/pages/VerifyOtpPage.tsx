@@ -31,14 +31,14 @@ export function VerifyOtpPage() {
 
   if (!pendingPhone && !demoOtp) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+      <div className="page-shell">
         <Card className="w-full max-w-md animate-rise-in">
           <CardHeader>
             <div className="mb-2 flex items-center justify-between">
               <LanguageSwitcher />
               <ThemeToggle />
             </div>
-            <CardTitle className="text-3xl">{t('otp.noneTitle')}</CardTitle>
+            <CardTitle className="page-title">{t('otp.noneTitle')}</CardTitle>
             <CardDescription>{t('otp.noneLede')}</CardDescription>
           </CardHeader>
           <CardContent>
@@ -72,14 +72,14 @@ export function VerifyOtpPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+    <div className="page-shell">
       <Card className="w-full max-w-md animate-rise-in">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="text-3xl">{t('otp.title')}</CardTitle>
+          <CardTitle className="page-title">{t('otp.title')}</CardTitle>
           <CardDescription>
             {t('otp.lede', { phone: pendingPhone || t('otp.yourPhone') })}
           </CardDescription>

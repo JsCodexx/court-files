@@ -154,3 +154,24 @@ export function isPastDate(iso: string): boolean {
     return false;
   }
 }
+
+/** Courts are closed on Sunday (JS getDay() === 0). */
+export function isSunday(isoOrDate: string | Date): boolean {
+  try {
+    const d =
+      typeof isoOrDate === 'string' ? parseISODate(isoOrDate) : isoOrDate;
+    return d.getDay() === 0;
+  } catch {
+    return false;
+  }
+}
+
+/** Today if it's a working day, otherwise the next Monday. */
+export function nextWorkingDayISO(from: Date = new Date()): string {
+  const d = new Date(from);
+  d.setHours(0, 0, 0, 0);
+  while (d.getDay() === 0) {
+    d.setDate(d.getDate() + 1);
+  }
+  return toISODate(d);
+}

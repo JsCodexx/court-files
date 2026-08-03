@@ -4,7 +4,7 @@ import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { CourtCase } from '../types';
 import { formatDisplayDate } from '../utils/dates';
-import { Badge } from './ui/badge';
+import { CaseStatusBadge } from './CaseStatusBadge';
 
 interface Props {
   courtCase: CourtCase;
@@ -94,6 +94,13 @@ export function CaseHoverCard({ courtCase, children }: Props) {
                     {t('hover.court')} <span dir="ltr">{courtCase.courtNumber}</span>
                   </>
                 ) : null}
+                {courtCase.city ? (
+                  <>
+                    {' · '}
+                    {t('hover.city')}:{' '}
+                    <span className="urdu-text">{courtCase.city}</span>
+                  </>
+                ) : null}
               </p>
               <p className="urdu-text pt-1 text-base font-bold">
                 {courtCase.party1.name} {t('common.vs')} {courtCase.party2.name}
@@ -111,17 +118,7 @@ export function CaseHoverCard({ courtCase, children }: Props) {
                 )}
                 {detailRow(
                   t('hover.status'),
-                  <Badge
-                    variant={
-                      courtCase.status === 'decided' ? 'success' : 'secondary'
-                    }
-                  >
-                    {t(
-                      courtCase.status === 'decided'
-                        ? 'status.decided'
-                        : 'status.pending'
-                    )}
-                  </Badge>
+                  <CaseStatusBadge status={courtCase.status} alwaysShow />
                 )}
                 {detailRow(t('hover.stage'), courtCase.proceeding || dash, true)}
                 {detailRow(

@@ -9,18 +9,66 @@
     @apply border-border;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
-    @apply bg-background font-body text-foreground antialiased;
+    @apply font-body text-foreground antialiased;
     min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: clip;
+    background-color: hsl(var(--background));
+  }
+
+  /* Pakistan flag green field only (no white stripe / emblem) */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url('../assets/pakistan-flag.svg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  /* Soft wash so green stays visible but text/UI remain readable */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      160deg,
+      hsl(var(--background) / 0.45) 0%,
+      hsl(var(--background) / 0.58) 45%,
+      hsl(var(--background) / 0.68) 100%
+    );
+  }
+
+  html.dark body::after {
+    background: linear-gradient(
+      160deg,
+      hsl(var(--background) / 0.42) 0%,
+      hsl(var(--background) / 0.55) 50%,
+      hsl(var(--background) / 0.7) 100%
+    );
   }
 
   #root {
+    position: relative;
+    z-index: 1;
     min-height: 100vh;
+    min-height: 100dvh;
   }
 
-  /* Urdu locale: Nastaliq needs extra line height everywhere */
+  /* Urdu locale uses Naskh — slightly taller line height for readability */
   html[data-locale='ur'] body {
-    @apply font-urdu leading-loose;
+    @apply font-urdu leading-relaxed;
   }
 
   html[data-locale='ur'] h1,
@@ -28,32 +76,207 @@
   html[data-locale='ur'] h3 {
     @apply font-urdu;
   }
+
+  /* Comfortable tap targets on touch devices */
+  @media (pointer: coarse) {
+    button,
+    a,
+    [role='button'],
+    input,
+    select,
+    textarea {
+      min-height: 2.5rem;
+    }
+  }
 }
 
 @layer components {
   /* Urdu-capable text/inputs regardless of UI language */
   .urdu-text,
   .urdu-input {
-    @apply font-urdu leading-loose;
+    @apply font-urdu leading-relaxed;
+  }
+
+  /* Page title scale that fits phones without wrapping awkwardly */
+  .page-title {
+    @apply font-display text-2xl font-semibold tracking-tight sm:text-3xl;
+  }
+
+  .page-lede {
+    @apply mt-1 text-sm text-muted-foreground;
+  }
+
+  /* Auth / full-page shells — transparent so the flag shows through */
+  .page-shell {
+    @apply flex min-h-[100dvh] items-center justify-center px-3 py-6 sm:px-4 sm:py-10;
+  }
+
+  /* Global loader — Pakistan crescent & star */
+  .loader-overlay {
+    @apply fixed inset-0 z-[100] flex items-center justify-center;
+    background: hsl(152 55% 12% / 0.55);
+    backdrop-filter: blur(6px);
+  }
+
+  .loader-panel {
+    @apply relative flex flex-col items-center gap-4 px-10 py-8;
+    border-radius: 1.25rem;
+    border: 1px solid hsl(0 0% 100% / 0.22);
+    background: linear-gradient(
+      165deg,
+      hsl(148 72% 21% / 0.92) 0%,
+      hsl(152 55% 12% / 0.96) 100%
+    );
+    box-shadow:
+      0 0 0 1px hsl(0 0% 100% / 0.06),
+      0 24px 48px hsl(152 55% 8% / 0.45);
+  }
+
+  .loader-orbit {
+    position: relative;
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+
+  .loader-orbit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 2px solid hsl(0 0% 100% / 0.15);
+    border-top-color: hsl(0 0% 100% / 0.95);
+    border-right-color: hsl(145 52% 55% / 0.85);
+    animation: loader-spin 0.9s linear infinite;
+  }
+
+  .loader-orbit::after {
+    content: '';
+    position: absolute;
+    inset: 0.45rem;
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    border-bottom-color: hsl(0 0% 100% / 0.55);
+    animation: loader-spin 1.35s linear infinite reverse;
+  }
+
+  .loader-emblem {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: loader-pulse 1.6s ease-in-out infinite;
+  }
+
+  .loader-emblem svg {
+    width: 2rem;
+    height: 2rem;
+    color: #fff;
+    filter: drop-shadow(0 0 8px hsl(0 0% 100% / 0.35));
+  }
+
+  .loader-label {
+    @apply text-sm font-medium tracking-wide text-white/90;
   }
 }
 
-/* Print: show only the document sheet (case detail page) */
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+/* Print: case document only — hide app chrome; zero @page margin drops browser URL header/footer */
 @media print {
-  aside,
-  .no-print {
+  @page {
+    size: auto;
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    background-image: none !important;
+    color: #000 !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin: 1.5cm !important;
+  }
+
+  body::before,
+  body::after {
     display: none !important;
   }
 
+  #root,
+  #root > div,
   main {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
     padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  aside,
+  .no-print,
+  [data-radix-portal],
+  [role='dialog'],
+  [role='status'] {
+    display: none !important;
   }
 
   main > div {
     padding: 0 !important;
+    margin: 0 !important;
   }
 
-  body {
-    background: #fff !important;
+  .print-sheet {
+    border: none !important;
+    box-shadow: none !important;
+    max-width: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+  }
+
+  .print-sheet .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  .print-sheet table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  .print-sheet th,
+  .print-sheet td {
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+    white-space: normal !important;
+    font-size: 10pt !important;
+    padding: 4px 6px !important;
+  }
+
+  a[href]::after {
+    content: none !important;
   }
 }

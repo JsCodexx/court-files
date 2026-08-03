@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { AuthSession, User } from '../types';
 import { ApiError, apiFetch, getToken, setToken } from '../utils/api';
+import { useLoader } from './LoaderContext';
 
 const SESSION_KEY = 'cf_session';
 const PENDING_PHONE_KEY = 'cf_pending_phone';
@@ -83,6 +84,7 @@ interface AuthResponse {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const { withLoader } = useLoader();
   const [user, setUser] = useState<AuthSession | null>(() => readSession());
   const [pendingPhone, setPendingPhone] = useState<string | null>(() =>
     readPendingPhone()
@@ -102,27 +104,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const registerDraft = useCallback(
     async (data: Omit<User, 'id' | 'createdAt'>) => {
       try {
-        const res = await apiFetch<{ ok: true; otp: string; phone: string }>(
-          '/auth/register',
-          {
-            method: 'POST',
-            body: {
-              name: data.name,
-              phone: data.phone,
-              email: data.email,
-              barAddress: data.barAddress,
-              password: data.password,
-            },
-          }
-        );
-        writePendingPhone(res.phone);
-        setPendingPhone(res.phone);
-        return { ok: true as const, otp: res.otp };
+        return await withLoader(async () => {
+          const res = await apiFetch<{ ok: true; otp: string; phone: string }>(
+            '/auth/register',
+            {
+              method: 'POST',
+              body: {
+                name: data.name,
+                phone: data.phone,
+                email: data.email,
+                barAddress: data.barAddress,
+                password: data.password,
+              },
+            }
+          );
+          writePendingPhone(res.phone);
+          setPendingPhone(res.phone);
+          return { ok: true as const, otp: res.otp };
+        });
       } catch (err) {
         return toError(err);
       }
     },
-    []
+    [withLoader]
   );
 
   const verifyOtp = useCallback(
@@ -132,19 +136,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { ok: false as const, error: 'errors.noRegistration' };
       }
       try {
-        const res = await apiFetch<AuthResponse>('/auth/verify-otp', {
-          method: 'POST',
-          body: { phone, otp },
+        return await withLoader(async () => {
+          const res = await apiFetch<AuthResponse>('/auth/verify-otp', {
+            method: 'POST',
+            body: { phone, otp },
+          });
+          applyAuth(res);
+          writePendingPhone(null);
+          setPendingPhone(null);
+          return { ok: true as const };
         });
-        applyAuth(res);
-        writePendingPhone(null);
-        setPendingPhone(null);
-        return { ok: true as const };
       } catch (err) {
         return toError(err);
       }
     },
-    [applyAuth]
+    [applyAuth, withLoader]
   );
 
   const resendOtp = useCallback(async () => {
@@ -153,30 +159,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { ok: false as const, error: 'errors.noRegistration' };
     }
     try {
-      const res = await apiFetch<{ ok: true; otp: string }>('/auth/resend-otp', {
-        method: 'POST',
-        body: { phone },
+      return await withLoader(async () => {
+        const res = await apiFetch<{ ok: true; otp: string }>(
+          '/auth/resend-otp',
+          {
+            method: 'POST',
+            body: { phone },
+          }
+        );
+        return { ok: true as const, otp: res.otp };
       });
-      return { ok: true as const, otp: res.otp };
     } catch (err) {
       return toError(err);
     }
-  }, []);
+  }, [withLoader]);
 
   const login = useCallback(
     async (emailOrPhone: string, password: string) => {
       try {
-        const res = await apiFetch<AuthResponse>('/auth/login', {
-          method: 'POST',
-          body: { emailOrPhone, password },
+        return await withLoader(async () => {
+          const res = await apiFetch<AuthResponse>('/auth/login', {
+            method: 'POST',
+            body: { emailOrPhone, password },
+          });
+          applyAuth(res);
+          return { ok: true as const };
         });
-        applyAuth(res);
-        return { ok: true as const };
       } catch (err) {
         return toError(err);
       }
     },
-    [applyAuth]
+    [applyAuth, withLoader]
   );
 
   const logout = useCallback(() => {
@@ -190,10 +203,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!getToken()) return;
     let alive = true;
-    apiFetch<{ ok: true; user: AuthSession & { phone: string; barAddress: string } }>(
-      '/auth/me'
-    )
-      .then((res) => {
+    withLoader(async () => {
+      try {
+        const res = await apiFetch<{
+          ok: true;
+          user: AuthSession & { phone: string; barAddress: string };
+        }>('/auth/me');
         if (!alive) return;
         const session: AuthSession = {
           userId: res.user.userId,
@@ -202,13 +217,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         };
         writeSession(session);
         setUser(session);
-      })
-      .catch((err) => {
+      } catch (err) {
         if (!alive) return;
-        if (err instanceof ApiError && (err.status === 401 || err.status === 404)) {
+        if (
+          err instanceof ApiError &&
+          (err.status === 401 || err.status === 404)
+        ) {
           logout();
         }
-      });
+      }
+    });
     return () => {
       alive = false;
     };

@@ -68,14 +68,14 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+    <div className="page-shell">
       <Card className="w-full max-w-2xl animate-rise-in">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="text-3xl">{t('register.title')}</CardTitle>
+          <CardTitle className="page-title">{t('register.title')}</CardTitle>
           <CardDescription>{t('register.lede')}</CardDescription>
         </CardHeader>
         <CardContent>
