@@ -3,6 +3,8 @@ export type CourtCategory =
   | 'Session Courts'
   | 'High Courts'
   | 'Supreme Courts'
+  | 'Family Courts'
+  | 'Magisterial Courts'
   | 'Others';
 
 export type AdvocateFor = 'Party 1' | 'Party 2';
@@ -53,7 +55,8 @@ export interface CourtCase {
   city: string;
   judgeName: string;
   advocateFor: AdvocateFor;
-  opponentCounsel: string;
+  party1Advocate: string;
+  party2Advocate: string;
   nextDate: string; // ISO date YYYY-MM-DD
   proceeding: string;
   remarks: string;

@@ -195,8 +195,13 @@ export function CaseDetailPage() {
               t(`advocateFor.${courtCase.advocateFor}` as TranslationKey)
             )}
             {detailRow(
-              t('hover.opponent'),
-              courtCase.opponentCounsel || dash,
+              t('hover.party1Advocate'),
+              courtCase.party1Advocate || dash,
+              true
+            )}
+            {detailRow(
+              t('hover.party2Advocate'),
+              courtCase.party2Advocate || dash,
               true
             )}
             {detailRow(

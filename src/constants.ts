@@ -3,6 +3,8 @@ export const COURT_CATEGORIES = [
   'Session Courts',
   'High Courts',
   'Supreme Courts',
+  'Family Courts',
+  'Magisterial Courts',
   'Others',
 ] as const;
 

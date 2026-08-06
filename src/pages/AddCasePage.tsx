@@ -41,7 +41,8 @@ interface CaseFormState {
   city: string;
   judgeName: string;
   advocateFor: AdvocateFor;
-  opponentCounsel: string;
+  party1Advocate: string;
+  party2Advocate: string;
   nextDate: string;
   proceeding: string;
   remarks: string;
@@ -65,7 +66,8 @@ const empty: CaseFormState = {
   city: '',
   judgeName: '',
   advocateFor: 'Party 1',
-  opponentCounsel: '',
+  party1Advocate: '',
+  party2Advocate: '',
   nextDate: nextWorkingDayISO(),
   proceeding: '',
   remarks: '',
@@ -88,7 +90,8 @@ function fromCase(c: CourtCase): CaseFormState {
     city: c.city || '',
     judgeName: c.judgeName,
     advocateFor: c.advocateFor,
-    opponentCounsel: c.opponentCounsel,
+    party1Advocate: c.party1Advocate || '',
+    party2Advocate: c.party2Advocate || '',
     nextDate: c.nextDate,
     proceeding: c.proceeding,
     remarks: c.remarks,
@@ -227,7 +230,8 @@ export function AddCasePage() {
     city: f.city.trim(),
     judgeName: f.judgeName.trim(),
     advocateFor: f.advocateFor,
-    opponentCounsel: f.opponentCounsel.trim(),
+    party1Advocate: f.party1Advocate.trim(),
+    party2Advocate: f.party2Advocate.trim(),
     nextDate: f.nextDate,
     proceeding: f.proceeding.trim(),
     remarks: f.remarks.trim(),
@@ -414,11 +418,22 @@ export function AddCasePage() {
                 </Select>
               </div>
               <div>
-                <Label>{t('addCase.opponentCounsel')}</Label>
+                <Label>{t('addCase.party1Advocate')}</Label>
                 <Input
                   className="urdu-input"
-                  value={form.opponentCounsel}
-                  onChange={set('opponentCounsel')}
+                  value={form.party1Advocate}
+                  onChange={set('party1Advocate')}
+                  maxLength={100}
+                  dir="auto"
+                  lang="ur"
+                />
+              </div>
+              <div>
+                <Label>{t('addCase.party2Advocate')}</Label>
+                <Input
+                  className="urdu-input"
+                  value={form.party2Advocate}
+                  onChange={set('party2Advocate')}
                   maxLength={100}
                   dir="auto"
                   lang="ur"
