@@ -23,6 +23,7 @@ import {
   startOfMonth,
   startOfWeek,
   toISODate,
+  todayISO,
 } from '../utils/dates';
 
 export function CalendarPage() {
@@ -33,8 +34,9 @@ export function CalendarPage() {
   const [selectedCase, setSelectedCase] = useState<CourtCase | null>(null);
   const [hearingDates, setHearingDates] = useState<Set<string>>(new Set());
   const [dayCases, setDayCases] = useState<CourtCase[]>([]);
+  const today = todayISO();
 
-  // Gold-dot markers from the server
+  // Markers from next dates + full hearing history
   useEffect(() => {
     let alive = true;
     fetchHearingDates()
@@ -49,7 +51,7 @@ export function CalendarPage() {
     };
   }, [fetchHearingDates, version]);
 
-  // Cases for the selected day from the server
+  // Cases for the selected day (includes historical hearings)
   useEffect(() => {
     let alive = true;
     fetchByDate(selectedDate)
@@ -84,6 +86,7 @@ export function CalendarPage() {
   }, [cursor]);
 
   const formattedSelected = formatDisplayDate(selectedDate, monthLabel);
+  const selectedIsPast = selectedDate < today;
 
   return (
     <div className="animate-rise-in space-y-6">
@@ -118,6 +121,17 @@ export function CalendarPage() {
             </Button>
           </div>
 
+          <div className="mb-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground sm:mb-4">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-amber-700 dark:bg-amber-500" />
+              {t('calendar.legendPast')}
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+              {t('calendar.legendUpcoming')}
+            </span>
+          </div>
+
           <div className="grid grid-cols-7 gap-0.5 sm:gap-1.5">
             {weekdays.map((d) => (
               <div
@@ -131,8 +145,9 @@ export function CalendarPage() {
               const iso = toISODate(day);
               const sunday = isSunday(day);
               const hasHearing = !sunday && hearingDates.has(iso);
+              const isPast = iso < today;
               const selected = selectedDate === iso;
-              const today = isSameDay(day, new Date());
+              const todayMark = isSameDay(day, new Date());
               return (
                 <button
                   key={iso}
@@ -151,20 +166,26 @@ export function CalendarPage() {
                     !isSameMonth(day, cursor) &&
                       !sunday &&
                       'text-muted-foreground/50',
-                    today &&
+                    todayMark &&
                       !sunday &&
                       'border-primary/60 font-semibold text-primary',
                     selected &&
                       !sunday &&
-                      'border-primary bg-primary text-primary-foreground hover:border-primary'
+                      (isPast
+                        ? 'border-amber-800 bg-amber-800 text-amber-50 hover:border-amber-800 dark:border-amber-600 dark:bg-amber-700'
+                        : 'border-primary bg-primary text-primary-foreground hover:border-primary')
                   )}
                 >
                   <span>{day.getDate()}</span>
                   {hasHearing ? (
                     <span
                       className={cn(
-                        'absolute bottom-1 h-1 w-1 rounded-full bg-primary sm:bottom-1.5 sm:h-1.5 sm:w-1.5',
-                        selected && 'bg-primary-foreground'
+                        'absolute bottom-1 h-1 w-1 rounded-full sm:bottom-1.5 sm:h-1.5 sm:w-1.5',
+                        selected
+                          ? 'bg-current opacity-90'
+                          : isPast
+                            ? 'bg-amber-700 dark:bg-amber-500'
+                            : 'bg-emerald-600 dark:bg-emerald-400'
                       )}
                     />
                   ) : null}
@@ -178,6 +199,11 @@ export function CalendarPage() {
       <div className="space-y-3">
         <h2 className="font-display text-lg font-semibold sm:text-xl">
           {t('calendar.casesOn', { date: formattedSelected })}
+          {selectedIsPast ? (
+            <span className="ms-2 text-sm font-normal text-amber-800 dark:text-amber-400">
+              ({t('calendar.legendPast')})
+            </span>
+          ) : null}
         </h2>
         <CaseTable
           cases={dayCases}

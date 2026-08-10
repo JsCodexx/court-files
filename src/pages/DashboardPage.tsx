@@ -12,12 +12,13 @@ import { cn } from '../lib/utils';
 import { CourtCase, CourtCategory } from '../types';
 
 type DayScope = 'today' | 'tomorrow' | 'all';
+type CategoryFilter = CourtCategory | 'all';
 
 export function DashboardPage() {
   const { cases, fetchToday, fetchTomorrow, version } = useCases();
   const { t } = useLocale();
-  const [category, setCategory] = useState<CourtCategory>(COURT_CATEGORIES[0]);
   const [scope, setScope] = useState<DayScope>('today');
+  const [category, setCategory] = useState<CategoryFilter>('all');
   const [selected, setSelected] = useState<CourtCase | null>(null);
   const [todayCases, setTodayCases] = useState<CourtCase[]>([]);
   const [tomorrowCases, setTomorrowCases] = useState<CourtCase[]>([]);
@@ -38,43 +39,62 @@ export function DashboardPage() {
     };
   }, [fetchToday, fetchTomorrow, version]);
 
-  const byCategory = useMemo(() => {
-    const inCat = (list: CourtCase[]) =>
-      list.filter((c) => c.category === category);
-    return {
-      today: inCat(todayCases),
-      tomorrow: inCat(tomorrowCases),
-      all: inCat(cases),
-    };
-  }, [category, todayCases, tomorrowCases, cases]);
+  const scopePool = useMemo(() => {
+    if (scope === 'today') return todayCases;
+    if (scope === 'tomorrow') return tomorrowCases;
+    return cases;
+  }, [scope, todayCases, tomorrowCases, cases]);
 
-  const listed = byCategory[scope];
-  const categoryLabel = t(`category.${category}` as TranslationKey);
+  const listed = useMemo(() => {
+    if (category === 'all') return scopePool;
+    return scopePool.filter((c) => c.category === category);
+  }, [scopePool, category]);
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: scopePool.length };
+    for (const cat of COURT_CATEGORIES) {
+      counts[cat] = scopePool.filter((c) => c.category === cat).length;
+    }
+    return counts;
+  }, [scopePool]);
+
+  const scopes: { key: DayScope; label: string; value: number }[] = [
+    {
+      key: 'today',
+      label: t('dashboard.today'),
+      value: todayCases.length,
+    },
+    {
+      key: 'tomorrow',
+      label: t('dashboard.tomorrow'),
+      value: tomorrowCases.length,
+    },
+    {
+      key: 'all',
+      label: t('dashboard.all'),
+      value: cases.length,
+    },
+  ];
+
+  const categoryTabs: { key: CategoryFilter; label: string }[] = [
+    { key: 'all', label: t('dashboard.allCourts') },
+    ...COURT_CATEGORIES.map((cat) => ({
+      key: cat as CategoryFilter,
+      label: t(`category.${cat}` as TranslationKey),
+    })),
+  ];
+
   const scopeLabel =
     scope === 'today'
       ? t('dashboard.today')
       : scope === 'tomorrow'
         ? t('dashboard.tomorrow')
         : t('dashboard.all');
-  const title = `${categoryLabel} — ${scopeLabel}`;
-
-  const scopes: { key: DayScope; label: string; value: number }[] = [
-    {
-      key: 'today',
-      label: t('dashboard.today'),
-      value: byCategory.today.length,
-    },
-    {
-      key: 'tomorrow',
-      label: t('dashboard.tomorrow'),
-      value: byCategory.tomorrow.length,
-    },
-    {
-      key: 'all',
-      label: t('dashboard.all'),
-      value: byCategory.all.length,
-    },
-  ];
+  const categoryLabel =
+    category === 'all'
+      ? t('dashboard.allCourts')
+      : t(`category.${category}` as TranslationKey);
+  const title = `${scopeLabel} — ${categoryLabel}`;
 
   return (
     <div className="animate-rise-in space-y-5">
@@ -91,25 +111,62 @@ export function DashboardPage() {
         </Button>
       </div>
 
-      {/* Slim filter bar: court type + hearing scope */}
       <div className="rounded-lg border bg-card/95 px-2.5 py-2.5 shadow-sm backdrop-blur-[2px] sm:px-4 sm:py-3">
         <div className="flex flex-col gap-3">
-          {/* Court types — scrollable tabs on small screens */}
+          {/* Primary: Today / Tomorrow / All */}
+          <div
+            role="tablist"
+            aria-label={t('dashboard.hearingScope')}
+            className="grid w-full grid-cols-3 rounded-md border bg-muted/50 p-0.5"
+          >
+            {scopes.map((stat) => {
+              const active = scope === stat.key;
+              return (
+                <button
+                  key={stat.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setScope(stat.key)}
+                  className={cn(
+                    'inline-flex items-center justify-center gap-1.5 rounded-[5px] px-2 py-2 text-xs font-semibold transition-all sm:px-3 sm:text-sm',
+                    active
+                      ? 'bg-card text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  <span className="truncate">{stat.label}</span>
+                  <span
+                    className={cn(
+                      'inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-md px-1.5 text-[11px] font-semibold tabular-nums',
+                      active
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-muted-foreground'
+                    )}
+                  >
+                    {stat.value}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Secondary: All courts / High / Session / … (counts for current scope) */}
           <div
             role="tablist"
             aria-label={t('dashboard.courtType')}
             className="-mx-0.5 flex gap-0.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-            {COURT_CATEGORIES.map((cat) => {
-              const active = category === cat;
-              const total = cases.filter((c) => c.category === cat).length;
+            {categoryTabs.map((tab) => {
+              const active = category === tab.key;
+              const total = categoryCounts[tab.key] ?? 0;
               return (
                 <button
-                  key={cat}
+                  key={tab.key}
                   type="button"
                   role="tab"
                   aria-selected={active}
-                  onClick={() => setCategory(cat)}
+                  onClick={() => setCategory(tab.key)}
                   className={cn(
                     'group relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap px-2.5 py-2 text-xs font-medium transition-colors sm:gap-2 sm:px-3 sm:text-sm',
                     active
@@ -117,7 +174,7 @@ export function DashboardPage() {
                       : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
-                  <span>{t(`category.${cat}` as TranslationKey)}</span>
+                  <span>{tab.label}</span>
                   <span
                     className={cn(
                       'inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-md px-1.5 text-[11px] font-semibold tabular-nums',
@@ -134,42 +191,6 @@ export function DashboardPage() {
                       active ? 'bg-primary' : 'bg-transparent'
                     )}
                   />
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Today / Tomorrow / All — compact segmented control */}
-          <div
-            role="tablist"
-            aria-label={t('dashboard.hearingScope', { court: categoryLabel })}
-            className="grid w-full grid-cols-3 rounded-md border bg-muted/50 p-0.5 sm:inline-flex sm:w-auto"
-          >
-            {scopes.map((stat) => {
-              const active = scope === stat.key;
-              return (
-                <button
-                  key={stat.key}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setScope(stat.key)}
-                  className={cn(
-                    'inline-flex items-center justify-center gap-1 rounded-[5px] px-2 py-1.5 text-[11px] font-semibold transition-all sm:gap-1.5 sm:px-3 sm:text-xs',
-                    active
-                      ? 'bg-card text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground'
-                  )}
-                >
-                  <span className="truncate">{stat.label}</span>
-                  <span
-                    className={cn(
-                      'tabular-nums',
-                      active ? 'text-primary' : 'text-muted-foreground/80'
-                    )}
-                  >
-                    {stat.value}
-                  </span>
                 </button>
               );
             })}
