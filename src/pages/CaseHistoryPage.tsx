@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Pencil, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Pencil, Plus, Scale, Trash2 } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { HearingModal } from '../components/HearingModal';
 import { CaseStatusBadge } from '../components/CaseStatusBadge';
+import { ChangeJudgeDialog } from '../components/ChangeJudgeDialog';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -36,6 +37,8 @@ import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { CourtCase, HearingRecord } from '../types';
 import { formatDisplayDate, isSunday } from '../utils/dates';
+import { isHearingEditable } from '../utils/hearings';
+import { ApiError } from '../utils/api';
 
 const PAGE_SIZES = [10, 25, 50];
 
@@ -62,6 +65,7 @@ export function CaseHistoryPage() {
   const [edit, setEdit] = useState<EditState | null>(null);
   const [saving, setSaving] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [changeJudgeOpen, setChangeJudgeOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -107,19 +111,31 @@ export function CaseHistoryPage() {
   const from = hearings.length === 0 ? 0 : (safePage - 1) * pageSize + 1;
   const to = Math.min(safePage * pageSize, hearings.length);
 
-  const onDelete = async (hearingId: string) => {
+  const onDelete = async (hearingId: string, createdAt: string) => {
     if (!courtCase) return;
+    if (!isHearingEditable(createdAt)) {
+      setError(t('hearing.editLocked'));
+      return;
+    }
     if (!window.confirm(t('history.deleteConfirm'))) return;
     setError('');
     try {
       const fresh = await deleteHearing(courtCase.id, hearingId);
       setCourtCase(fresh);
-    } catch {
-      setError(t('errors.saveFailed'));
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? t(err.errorKey as TranslationKey)
+          : t('errors.saveFailed')
+      );
     }
   };
 
-  const openEdit = (h: HearingRecord) =>
+  const openEdit = (h: HearingRecord) => {
+    if (!isHearingEditable(h.createdAt)) {
+      setError(t('hearing.editLocked'));
+      return;
+    }
     setEdit({
       hearing: h,
       date: h.date,
@@ -128,6 +144,7 @@ export function CaseHistoryPage() {
       shortOrder: h.shortOrder ?? '',
       remarks: h.remarks ?? '',
     });
+  };
 
   const onSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,8 +165,12 @@ export function CaseHistoryPage() {
       });
       setCourtCase(fresh);
       setEdit(null);
-    } catch {
-      setError(t('errors.saveFailed'));
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? t(err.errorKey as TranslationKey)
+          : t('errors.saveFailed')
+      );
     } finally {
       setSaving(false);
     }
@@ -233,6 +254,15 @@ export function CaseHistoryPage() {
               {t('addCase.edit')}
             </Link>
           </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setChangeJudgeOpen(true)}
+          >
+            <Scale className="h-4 w-4" />
+            {t('judge.change')}
+          </Button>
           <Button size="sm" onClick={() => setAdding(true)}>
             <Plus className="h-4 w-4" />
             {t('history.addHearing')}
@@ -241,6 +271,13 @@ export function CaseHistoryPage() {
       </div>
 
       {error && <Alert variant="destructive">{error}</Alert>}
+
+      <ChangeJudgeDialog
+        courtCase={courtCase}
+        open={changeJudgeOpen}
+        onClose={() => setChangeJudgeOpen(false)}
+        onSaved={setCourtCase}
+      />
 
       <Card className="overflow-hidden">
         <CardHeader className="border-b bg-muted/40 py-4">
@@ -266,6 +303,51 @@ export function CaseHistoryPage() {
                 <TableCell dir="ltr">{p.phone || nil}</TableCell>
               </TableRow>
             ))}
+          </TableBody>
+        </Table>
+      </Card>
+
+      <Card className="overflow-hidden">
+        <CardHeader className="border-b bg-muted/40 py-4">
+          <CardTitle className="text-lg">{t('history.benchTitle')}</CardTitle>
+        </CardHeader>
+        <Table className="min-w-[560px]">
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t('history.benchFrom')}</TableHead>
+              <TableHead>{t('history.judge')}</TableHead>
+              <TableHead>{t('history.advP1')}</TableHead>
+              <TableHead>{t('history.advP2')}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {(courtCase.benchHistory ?? []).length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={4}
+                  className="py-8 text-center text-muted-foreground"
+                >
+                  {t('history.empty')}
+                </TableCell>
+              </TableRow>
+            ) : (
+              (courtCase.benchHistory ?? []).map((b) => (
+                <TableRow key={b.id}>
+                  <TableCell dir="ltr" className="whitespace-nowrap font-medium">
+                    {formatDisplayDate(b.effectiveFrom.slice(0, 10), monthLabel)}
+                  </TableCell>
+                  <TableCell className="urdu-text">
+                    {b.judgeName || nil}
+                  </TableCell>
+                  <TableCell className="urdu-text">
+                    {b.party1Advocate || nil}
+                  </TableCell>
+                  <TableCell className="urdu-text">
+                    {b.party2Advocate || nil}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </Card>
@@ -319,6 +401,9 @@ export function CaseHistoryPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>{t('history.nextDate')}</TableHead>
+                <TableHead>{t('history.judge')}</TableHead>
+                <TableHead>{t('history.advP1')}</TableHead>
+                <TableHead>{t('history.advP2')}</TableHead>
                 <TableHead>{t('history.stage')}</TableHead>
                 <TableHead>{t('history.adjournment')}</TableHead>
                 <TableHead>{t('history.shortOrder')}</TableHead>
@@ -332,7 +417,7 @@ export function CaseHistoryPage() {
               {pageRows.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={9}
                     className="py-10 text-center text-muted-foreground"
                   >
                     {t('history.empty')}
@@ -343,6 +428,15 @@ export function CaseHistoryPage() {
                   <TableRow key={h.id}>
                     <TableCell dir="ltr" className="whitespace-nowrap font-medium">
                       {formatDisplayDate(h.date, monthLabel)}
+                    </TableCell>
+                    <TableCell className="urdu-text">
+                      {h.judgeName || nil}
+                    </TableCell>
+                    <TableCell className="urdu-text">
+                      {h.party1Advocate || nil}
+                    </TableCell>
+                    <TableCell className="urdu-text">
+                      {h.party2Advocate || nil}
                     </TableCell>
                     <TableCell className="urdu-text">{h.proceeding}</TableCell>
                     <TableCell className="urdu-text">
@@ -356,28 +450,53 @@ export function CaseHistoryPage() {
                     </TableCell>
                     <TableCell className="text-end">
                       <div className="inline-flex gap-1.5">
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground"
-                          onClick={() => openEdit(h)}
-                          aria-label={t('history.edit')}
-                          title={t('history.edit')}
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 rounded-full bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                          onClick={() => onDelete(h.id)}
-                          aria-label={t('history.deleteHearing')}
-                          title={t('history.deleteHearing')}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
+                        {(() => {
+                          const editable = isHearingEditable(h.createdAt);
+                          return (
+                            <>
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                disabled={!editable}
+                                className="h-8 w-8 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-40"
+                                onClick={() => openEdit(h)}
+                                aria-label={
+                                  editable
+                                    ? t('history.edit')
+                                    : t('history.editLocked')
+                                }
+                                title={
+                                  editable
+                                    ? t('history.edit')
+                                    : t('history.editLocked')
+                                }
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                              </Button>
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                disabled={!editable}
+                                className="h-8 w-8 rounded-full bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground disabled:opacity-40"
+                                onClick={() => onDelete(h.id, h.createdAt)}
+                                aria-label={
+                                  editable
+                                    ? t('history.deleteHearing')
+                                    : t('history.editLocked')
+                                }
+                                title={
+                                  editable
+                                    ? t('history.deleteHearing')
+                                    : t('history.editLocked')
+                                }
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </Button>
+                            </>
+                          );
+                        })()}
                       </div>
                     </TableCell>
                   </TableRow>

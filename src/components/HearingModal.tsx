@@ -11,6 +11,8 @@ import {
   nextWorkingDayISO,
   todayISO,
 } from '../utils/dates';
+import { getLatestHearing, isHearingEditable } from '../utils/hearings';
+import { ApiError } from '../utils/api';
 import { Alert } from './ui/alert';
 import { Button } from './ui/button';
 import {
@@ -61,6 +63,14 @@ export function HearingModal({ courtCase, onClose }: Props) {
         setCurrent(fresh);
         setStatus(fresh.status || 'pending');
         setStatusRemarks(fresh.statusRemarks || '');
+        const latest = getLatestHearing(fresh.hearings);
+        if (latest && isHearingEditable(latest.createdAt)) {
+          setDate(latest.date || nextWorkingDayISO());
+          setProceeding(latest.proceeding || '');
+          setAdjournmentReason(latest.adjournmentReason || '');
+          setShortOrder(latest.shortOrder || '');
+          setRemarks(latest.remarks || '');
+        }
       })
       .catch(() => {
         /* fall back to the case passed in */
@@ -72,6 +82,17 @@ export function HearingModal({ courtCase, onClose }: Props) {
 
   const monthLabel = (index: number, short?: boolean) =>
     t((short ? `monthShort.${index}` : `month.${index}`) as TranslationKey);
+
+  const latestHearing = getLatestHearing(current.hearings);
+  const latestEditable = latestHearing
+    ? isHearingEditable(latestHearing.createdAt)
+    : false;
+  const today = todayISO();
+  const scheduleLocked =
+    Boolean(latestHearing) &&
+    !latestEditable &&
+    Boolean(current.nextDate) &&
+    today < current.nextDate;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,6 +132,15 @@ export function HearingModal({ courtCase, onClose }: Props) {
       return;
     }
 
+    if (scheduleLocked) {
+      setError(
+        t('hearing.lockedUntilDate', {
+          date: formatDisplayDate(current.nextDate, monthLabel),
+        })
+      );
+      return;
+    }
+
     if (!proceeding.trim()) {
       setError(t('hearing.proceedingRequired'));
       return;
@@ -129,8 +159,12 @@ export function HearingModal({ courtCase, onClose }: Props) {
         remarks: remarks.trim(),
       });
       onClose();
-    } catch {
-      setError(t('errors.saveFailed'));
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? t(err.errorKey as TranslationKey)
+          : t('errors.saveFailed')
+      );
     } finally {
       setSaving(false);
     }
@@ -188,6 +222,23 @@ export function HearingModal({ courtCase, onClose }: Props) {
               >
                 <strong dir="ltr">{formatDisplayDate(h.date, monthLabel)}</strong>
                 <div className="urdu-text">{h.proceeding}</div>
+                <div className="mt-1 space-y-0.5 text-xs text-muted-foreground">
+                  {h.judgeName ? (
+                    <div className="urdu-text">
+                      {t('history.judge')}: {h.judgeName}
+                    </div>
+                  ) : null}
+                  {h.party1Advocate ? (
+                    <div className="urdu-text">
+                      {t('history.advP1')}: {h.party1Advocate}
+                    </div>
+                  ) : null}
+                  {h.party2Advocate ? (
+                    <div className="urdu-text">
+                      {t('history.advP2')}: {h.party2Advocate}
+                    </div>
+                  ) : null}
+                </div>
                 {h.remarks ? (
                   <div className="urdu-text text-xs text-muted-foreground">
                     {h.remarks}
@@ -200,6 +251,16 @@ export function HearingModal({ courtCase, onClose }: Props) {
 
         <form onSubmit={submit} className="space-y-4">
           {error && <Alert variant="destructive">{error}</Alert>}
+          {status === 'pending' && latestEditable ? (
+            <Alert>{t('hearing.correctionWindow')}</Alert>
+          ) : null}
+          {status === 'pending' && scheduleLocked ? (
+            <Alert variant="destructive">
+              {t('hearing.lockedUntilDate', {
+                date: formatDisplayDate(current.nextDate, monthLabel),
+              })}
+            </Alert>
+          ) : null}
 
           <div>
             <Label>{t('hearing.status')}</Label>
@@ -271,7 +332,7 @@ export function HearingModal({ courtCase, onClose }: Props) {
             </div>
           )}
 
-          {status === 'pending' && (
+          {status === 'pending' && !scheduleLocked && (
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <Label>
@@ -361,7 +422,10 @@ export function HearingModal({ courtCase, onClose }: Props) {
             <Button type="button" variant="secondary" onClick={onClose}>
               {t('hearing.cancel')}
             </Button>
-            <Button type="submit" disabled={saving}>
+            <Button
+              type="submit"
+              disabled={saving || (status === 'pending' && scheduleLocked)}
+            >
               {submitLabel}
             </Button>
           </DialogFooter>

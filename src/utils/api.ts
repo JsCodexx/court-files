@@ -35,6 +35,7 @@ const ERROR_KEY_MAP: Record<string, string> = {
   'No account found for this phone number.': 'errors.phoneNotFound',
   'No password reset in progress.': 'errors.noReset',
   'OTP has expired. Please try again.': 'errors.otpExpired',
+  'hearing.editLocked': 'hearing.editLocked',
 };
 
 export class ApiError extends Error {

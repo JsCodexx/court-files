@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { Scale } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ChangeJudgeDialog } from '../components/ChangeJudgeDialog';
+import { PersonPicker } from '../components/PersonPicker';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -40,9 +43,12 @@ interface CaseFormState {
   courtNumber: string;
   city: string;
   judgeName: string;
+  judgePersonId: string | null;
   advocateFor: AdvocateFor;
   party1Advocate: string;
+  party1AdvocateId: string | null;
   party2Advocate: string;
+  party2AdvocateId: string | null;
   nextDate: string;
   proceeding: string;
   remarks: string;
@@ -65,9 +71,12 @@ const empty: CaseFormState = {
   courtNumber: '',
   city: '',
   judgeName: '',
+  judgePersonId: null,
   advocateFor: 'Party 1',
   party1Advocate: '',
+  party1AdvocateId: null,
   party2Advocate: '',
+  party2AdvocateId: null,
   nextDate: nextWorkingDayISO(),
   proceeding: '',
   remarks: '',
@@ -89,9 +98,12 @@ function fromCase(c: CourtCase): CaseFormState {
     courtNumber: c.courtNumber || '',
     city: c.city || '',
     judgeName: c.judgeName,
+    judgePersonId: c.judgePersonId ?? null,
     advocateFor: c.advocateFor,
     party1Advocate: c.party1Advocate || '',
+    party1AdvocateId: c.party1AdvocateId ?? null,
     party2Advocate: c.party2Advocate || '',
+    party2AdvocateId: c.party2AdvocateId ?? null,
     nextDate: c.nextDate,
     proceeding: c.proceeding,
     remarks: c.remarks,
@@ -116,11 +128,14 @@ export function AddCasePage() {
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(isEdit);
   const [notFound, setNotFound] = useState(false);
+  const [editingCase, setEditingCase] = useState<CourtCase | null>(null);
+  const [changeJudgeOpen, setChangeJudgeOpen] = useState(false);
 
   useEffect(() => {
     if (!id) {
       setForm({ ...empty, nextDate: nextWorkingDayISO() });
       setOriginalNextDate(null);
+      setEditingCase(null);
       setLoading(false);
       setNotFound(false);
       return;
@@ -131,6 +146,7 @@ export function AddCasePage() {
       .then((c) => {
         if (!alive) return;
         setForm(fromCase(c));
+        setEditingCase(c);
         setOriginalNextDate(c.nextDate);
         setNotFound(false);
       })
@@ -229,9 +245,12 @@ export function AddCasePage() {
     courtNumber: f.courtNumber.trim() || undefined,
     city: f.city.trim(),
     judgeName: f.judgeName.trim(),
+    judgePersonId: f.judgePersonId,
     advocateFor: f.advocateFor,
     party1Advocate: f.party1Advocate.trim(),
+    party1AdvocateId: f.party1AdvocateId,
     party2Advocate: f.party2Advocate.trim(),
+    party2AdvocateId: f.party2AdvocateId,
     nextDate: f.nextDate,
     proceeding: f.proceeding.trim(),
     remarks: f.remarks.trim(),
@@ -307,14 +326,48 @@ export function AddCasePage() {
 
   return (
     <div className="animate-rise-in space-y-6">
-      <div>
-        <h1 className="page-title">
-          {t(isEdit ? 'addCase.editTitle' : 'addCase.title')}
-        </h1>
-        <p className="page-lede">
-          {t(isEdit ? 'addCase.editLede' : 'addCase.lede')}
-        </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="page-title">
+            {t(isEdit ? 'addCase.editTitle' : 'addCase.title')}
+          </h1>
+          <p className="page-lede">
+            {t(isEdit ? 'addCase.editLede' : 'addCase.lede')}
+          </p>
+        </div>
+        {isEdit && editingCase ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="shrink-0"
+            onClick={() => setChangeJudgeOpen(true)}
+          >
+            <Scale className="h-4 w-4" />
+            {t('judge.change')}
+          </Button>
+        ) : null}
       </div>
+
+      {isEdit && editingCase ? (
+        <ChangeJudgeDialog
+          courtCase={editingCase}
+          open={changeJudgeOpen}
+          onClose={() => setChangeJudgeOpen(false)}
+          onSaved={(fresh) => {
+            setEditingCase(fresh);
+            setForm((prev) => ({
+              ...prev,
+              judgeName: fresh.judgeName,
+              judgePersonId: fresh.judgePersonId ?? null,
+              party1Advocate: fresh.party1Advocate || '',
+              party1AdvocateId: fresh.party1AdvocateId ?? null,
+              party2Advocate: fresh.party2Advocate || '',
+              party2AdvocateId: fresh.party2AdvocateId ?? null,
+            }));
+          }}
+        />
+      ) : null}
 
       <form onSubmit={onSubmit} noValidate className="space-y-6">
             {error && <Alert variant="destructive">{error}</Alert>}
@@ -382,18 +435,26 @@ export function AddCasePage() {
                 {fieldError('city')}
               </div>
               <div>
-                <Label>
-                  {t('addCase.judgeName')} {req}
-                </Label>
-                <Input
-                  className="urdu-input"
+                <PersonPicker
+                  role="judge"
+                  label={t('addCase.judgeName')}
+                  required
+                  personId={form.judgePersonId}
+                  name={form.judgeName}
                   invalid={!!fieldErrors.judgeName}
-                  value={form.judgeName}
-                  onChange={set('judgeName')}
-                  maxLength={100}
-                  dir="auto"
-                  lang="ur"
-                  aria-invalid={!!fieldErrors.judgeName}
+                  onChange={({ personId, name }) => {
+                    setForm((prev) => ({
+                      ...prev,
+                      judgePersonId: personId,
+                      judgeName: name,
+                    }));
+                    setFieldErrors((prev) => {
+                      if (!prev.judgeName) return prev;
+                      const next = { ...prev };
+                      delete next.judgeName;
+                      return next;
+                    });
+                  }}
                 />
                 {fieldError('judgeName')}
               </div>
@@ -418,25 +479,33 @@ export function AddCasePage() {
                 </Select>
               </div>
               <div>
-                <Label>{t('addCase.party1Advocate')}</Label>
-                <Input
-                  className="urdu-input"
-                  value={form.party1Advocate}
-                  onChange={set('party1Advocate')}
-                  maxLength={100}
-                  dir="auto"
-                  lang="ur"
+                <PersonPicker
+                  role="advocate"
+                  label={t('addCase.party1Advocate')}
+                  personId={form.party1AdvocateId}
+                  name={form.party1Advocate}
+                  onChange={({ personId, name }) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      party1AdvocateId: personId,
+                      party1Advocate: name,
+                    }))
+                  }
                 />
               </div>
               <div>
-                <Label>{t('addCase.party2Advocate')}</Label>
-                <Input
-                  className="urdu-input"
-                  value={form.party2Advocate}
-                  onChange={set('party2Advocate')}
-                  maxLength={100}
-                  dir="auto"
-                  lang="ur"
+                <PersonPicker
+                  role="advocate"
+                  label={t('addCase.party2Advocate')}
+                  personId={form.party2AdvocateId}
+                  name={form.party2Advocate}
+                  onChange={({ personId, name }) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      party2AdvocateId: personId,
+                      party2Advocate: name,
+                    }))
+                  }
                 />
               </div>
               <div>

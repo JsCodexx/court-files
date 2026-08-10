@@ -27,6 +27,29 @@ export interface ClientInfo {
   phone: string;
 }
 
+export type PersonRole = 'judge' | 'advocate';
+
+export interface CasePerson {
+  id: string;
+  name: string;
+  role: PersonRole;
+  phone: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BenchHistoryRecord {
+  id: string;
+  judgePersonId: string | null;
+  party1AdvocateId: string | null;
+  party2AdvocateId: string | null;
+  judgeName: string;
+  party1Advocate: string;
+  party2Advocate: string;
+  effectiveFrom: string;
+  createdAt: string;
+}
+
 export interface HearingRecord {
   id: string;
   date: string; // ISO date YYYY-MM-DD
@@ -34,6 +57,12 @@ export interface HearingRecord {
   adjournmentReason?: string;
   shortOrder?: string;
   remarks?: string;
+  judgeName: string;
+  party1Advocate: string;
+  party2Advocate: string;
+  judgePersonId?: string | null;
+  party1AdvocateId?: string | null;
+  party2AdvocateId?: string | null;
   createdAt: string;
 }
 
@@ -57,6 +86,9 @@ export interface CourtCase {
   advocateFor: AdvocateFor;
   party1Advocate: string;
   party2Advocate: string;
+  judgePersonId?: string | null;
+  party1AdvocateId?: string | null;
+  party2AdvocateId?: string | null;
   nextDate: string; // ISO date YYYY-MM-DD
   proceeding: string;
   remarks: string;
@@ -65,6 +97,7 @@ export interface CourtCase {
   statusRemarks: string;
   client: ClientInfo;
   hearings: HearingRecord[];
+  benchHistory?: BenchHistoryRecord[];
   createdAt: string;
   updatedAt: string;
   userId: string;

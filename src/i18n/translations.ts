@@ -233,6 +233,7 @@ export const en = {
   'history.next': 'Next',
   'history.edit': 'Edit hearing',
   'history.editSave': 'Save changes',
+  'history.editLocked': 'Locked after 48 hours',
   'history.deleteHearing': 'Delete hearing',
   'history.deleteConfirm': 'Delete this hearing?',
   'history.back': 'Back to dashboard',
@@ -267,6 +268,12 @@ export const en = {
   'hearing.partyLeftRemarksHint': 'Remarks are optional for party left.',
   'hearing.markDecided': 'Mark as decided',
   'hearing.markPartyLeft': 'Mark as party left',
+  'hearing.editLocked':
+    'This hearing can only be changed within 48 hours of being saved.',
+  'hearing.correctionWindow':
+    'You can still correct the last hearing (within 48 hours). Saving will update it, not add a new one.',
+  'hearing.lockedUntilDate':
+    'The last hearing is locked. You can schedule the next one on or after {{date}}.',
 
   'login.forgot': 'Forgot password?',
   'forgot.title': 'Forgot password',
@@ -302,6 +309,20 @@ export const en = {
   'detail.print': 'Print',
   'detail.editHistory': 'Edit history',
   'detail.dateLine': 'Cause list dated {{date}}',
+  'judge.change': 'Change judge / advocates',
+  'judge.changeTitle': 'Change judge & advocates',
+  'judge.changeLede':
+    'Pick from your saved directory or add a new judge/advocate. The case keeps one file; each hearing stores who was assigned then, and transfers are logged in bench history.',
+  'judge.new': 'Judge',
+  'judge.save': 'Save changes',
+  'persons.pick': 'Select from directory',
+  'persons.addNew': '+ Add new',
+  'persons.newName': 'Enter name',
+  'history.benchTitle': 'Judge & advocate history',
+  'history.benchFrom': 'From',
+  'history.judge': 'Judge',
+  'history.advP1': 'Advocate (P1)',
+  'history.advP2': 'Advocate (P2)',
 
   'validation.required': 'This field is required.',
   'validation.phone': 'Phone must be exactly 11 digits, e.g. 03001234567.',
@@ -543,6 +564,7 @@ export const ur: Record<TranslationKey, string> = {
   'history.next': 'اگلا',
   'history.edit': 'سماعت میں ترمیم',
   'history.editSave': 'تبدیلیاں محفوظ کریں',
+  'history.editLocked': '۴۸ گھنٹے کے بعد مقفل',
   'history.deleteHearing': 'سماعت حذف کریں',
   'history.deleteConfirm': 'کیا یہ سماعت حذف کر دی جائے؟',
   'history.back': 'ڈیش بورڈ پر واپس',
@@ -577,6 +599,12 @@ export const ur: Record<TranslationKey, string> = {
   'hearing.partyLeftRemarksHint': 'فریق چلا گیا کے لیے ریمارکس اختیاری ہیں۔',
   'hearing.markDecided': 'فیصلہ شدہ قرار دیں',
   'hearing.markPartyLeft': 'فریق چلا گیا قرار دیں',
+  'hearing.editLocked':
+    'سماعت صرف محفوظ کرنے کے ۴۸ گھنٹوں کے اندر تبدیل کی جا سکتی ہے۔',
+  'hearing.correctionWindow':
+    'آپ اب بھی آخری سماعت درست کر سکتے ہیں (۴۸ گھنٹوں کے اندر)۔ محفوظ کرنے سے نئی سماعت نہیں بنے گی۔',
+  'hearing.lockedUntilDate':
+    'آخری سماعت مقفل ہے۔ اگلی سماعت {{date}} یا اس کے بعد مقرر کی جا سکتی ہے۔',
 
   'login.forgot': 'پاس ورڈ بھول گئے؟',
   'forgot.title': 'پاس ورڈ بھول گئے',
@@ -612,6 +640,20 @@ export const ur: Record<TranslationKey, string> = {
   'detail.print': 'پرنٹ',
   'detail.editHistory': 'تاریخچہ میں ترمیم',
   'detail.dateLine': 'فہرست مقدمات مورخہ {{date}}',
+  'judge.change': 'جج / وکلاء تبدیل کریں',
+  'judge.changeTitle': 'جج اور وکلاء تبدیل کریں',
+  'judge.changeLede':
+    'اپنی محفوظ ڈائریکٹری سے منتخب کریں یا نیا جج/وکیل شامل کریں۔ مقدمہ ایک ہی رہتا ہے؛ ہر سماعت اس وقت کے جج/وکلاء محفوظ کرتی ہے، اور تبدیلیاں تاریخچے میں درج ہوتی ہیں۔',
+  'judge.new': 'جج',
+  'judge.save': 'تبدیلیاں محفوظ کریں',
+  'persons.pick': 'ڈائریکٹری سے منتخب کریں',
+  'persons.addNew': '+ نیا شامل کریں',
+  'persons.newName': 'نام درج کریں',
+  'history.benchTitle': 'جج اور وکلاء کی تاریخ',
+  'history.benchFrom': 'از',
+  'history.judge': 'جج',
+  'history.advP1': 'وکیل (ف۱)',
+  'history.advP2': 'وکیل (ف۲)',
 
   'validation.required': 'یہ خانہ لازمی ہے۔',
   'validation.phone': 'فون نمبر بالکل ۱۱ ہندسوں کا ہونا چاہیے، مثلاً 03001234567۔',
