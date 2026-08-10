@@ -245,6 +245,10 @@
     margin: 0 !important;
   }
 
+  .print-only {
+    display: block !important;
+  }
+
   .print-sheet {
     border: none !important;
     box-shadow: none !important;
@@ -254,6 +258,11 @@
     margin: 0 !important;
     border-radius: 0 !important;
     overflow: visible !important;
+  }
+
+  .proceeding-judge-bar {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .print-sheet .overflow-x-auto {
@@ -279,4 +288,19 @@
   a[href]::after {
     content: none !important;
   }
+}
+
+/* Screen-only: hide print-only sheets until printing */
+.print-only {
+  display: none;
+}
+
+/* Punjab-style judge grouping bar for proceeding history print */
+.proceeding-judge-bar {
+  background: #e8e8e8;
+  border: 1px solid #bbb;
+  border-bottom: none;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.875rem;
+  color: #111;
 }

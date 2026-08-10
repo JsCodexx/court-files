@@ -83,6 +83,14 @@ export const en = {
   'dashboard.courtType': 'Court type',
   'dashboard.hearingScope': 'Hearing day',
   'dashboard.allCourts': 'All courts',
+  'dashboard.print': 'Print',
+  'dashboard.printHint': 'Print proceeding history for listed cases',
+
+  'print.proceedingHistory': 'Proceeding History',
+  'print.sr': 'Sr. #',
+  'print.proceedingDate': 'Proceeding Date',
+  'print.stage': 'Stage',
+  'print.noCases': 'No cases to print.',
 
   'addCase.title': 'Add New Case',
   'addCase.editTitle': 'Edit Case',
@@ -414,6 +422,14 @@ export const ur: Record<TranslationKey, string> = {
   'dashboard.courtType': 'عدالت کی قسم',
   'dashboard.hearingScope': 'سماعت کا دن',
   'dashboard.allCourts': 'تمام عدالتیں',
+  'dashboard.print': 'پرنٹ',
+  'dashboard.printHint': 'فہرست شدہ مقدمات کی کارروائی کی تاریخ پرنٹ کریں',
+
+  'print.proceedingHistory': 'کارروائی کی تاریخ',
+  'print.sr': 'نمبر',
+  'print.proceedingDate': 'تاریخ کارروائی',
+  'print.stage': 'مرحلہ',
+  'print.noCases': 'پرنٹ کے لیے کوئی مقدمہ نہیں۔',
 
   'addCase.title': 'نیا مقدمہ شامل کریں',
   'addCase.editTitle': 'مقدمہ ترمیم کریں',

@@ -53,6 +53,17 @@ export function formatDisplayDate(
   }
 }
 
+/** Official-style DD-MM-YYYY for proceeding-history printouts. */
+export function formatDMYDate(iso: string): string {
+  if (!iso) return '—';
+  try {
+    const d = parseISODate(iso);
+    return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()}`;
+  } catch {
+    return iso;
+  }
+}
+
 export function formatMonthYear(
   date: Date,
   monthLabel?: MonthLabel
