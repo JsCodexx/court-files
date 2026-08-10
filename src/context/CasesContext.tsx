@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { CaseStatus, CourtCase, CourtCategory, HearingRecord } from '../types';
+import { CaseStatus, CourtCase, CourtCategory } from '../types';
 import { ApiError, apiFetch } from '../utils/api';
 import { useAuth } from './AuthContext';
 import { useLoader } from './LoaderContext';
@@ -18,11 +18,21 @@ type CaseInput = Omit<
   | 'updatedAt'
   | 'userId'
   | 'hearings'
+  | 'benchHistory'
   | 'status'
   | 'statusRemarks'
 > & { status?: CaseStatus; statusRemarks?: string };
 
 export type SearchMode = 'name' | 'caseId' | 'idCard';
+
+/** Client payload for scheduling/editing a hearing (bench is taken from the case). */
+type HearingInput = {
+  date: string;
+  proceeding: string;
+  adjournmentReason?: string;
+  shortOrder?: string;
+  remarks?: string;
+};
 
 interface CasesContextValue {
   cases: CourtCase[];
@@ -33,14 +43,11 @@ interface CasesContextValue {
   refresh: () => Promise<void>;
   addCase: (input: CaseInput) => Promise<CourtCase>;
   updateCase: (id: string, patch: Partial<CaseInput>) => Promise<void>;
-  addHearing: (
-    caseId: string,
-    hearing: Omit<HearingRecord, 'id' | 'createdAt'>
-  ) => Promise<void>;
+  addHearing: (caseId: string, hearing: HearingInput) => Promise<void>;
   updateHearing: (
     caseId: string,
     hearingId: string,
-    patch: Partial<Omit<HearingRecord, 'id' | 'createdAt'>>
+    patch: Partial<HearingInput>
   ) => Promise<CourtCase>;
   deleteHearing: (caseId: string, hearingId: string) => Promise<CourtCase>;
   deleteCase: (id: string) => Promise<void>;
@@ -131,10 +138,7 @@ export function CasesProvider({ children }: { children: React.ReactNode }) {
   );
 
   const addHearing = useCallback(
-    async (
-      caseInternalId: string,
-      hearing: Omit<HearingRecord, 'id' | 'createdAt'>
-    ) => {
+    async (caseInternalId: string, hearing: HearingInput) => {
       await withLoader(async () => {
         const res = await apiFetch<{ ok: true; case: CourtCase }>(
           `/cases/${caseInternalId}/hearings`,
@@ -156,7 +160,7 @@ export function CasesProvider({ children }: { children: React.ReactNode }) {
     async (
       caseInternalId: string,
       hearingId: string,
-      patch: Partial<Omit<HearingRecord, 'id' | 'createdAt'>>
+      patch: Partial<HearingInput>
     ) => {
       return withLoader(async () => {
         const res = await apiFetch<{ ok: true; case: CourtCase }>(

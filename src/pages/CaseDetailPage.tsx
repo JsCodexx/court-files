@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, History, Pencil, Printer } from 'lucide-react';
+import { ArrowLeft, History, Pencil, Printer, Scale } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { CaseStatusBadge } from '../components/CaseStatusBadge';
+import { ChangeJudgeDialog } from '../components/ChangeJudgeDialog';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import { useCases } from '../context/CasesContext';
@@ -21,6 +22,7 @@ export function CaseDetailPage() {
   const { t } = useLocale();
   const [courtCase, setCourtCase] = useState<CourtCase | null>(null);
   const [notFound, setNotFound] = useState(false);
+  const [changeJudgeOpen, setChangeJudgeOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -103,6 +105,15 @@ export function CaseDetailPage() {
               {t('addCase.edit')}
             </Link>
           </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setChangeJudgeOpen(true)}
+          >
+            <Scale className="h-4 w-4" />
+            {t('judge.change')}
+          </Button>
           <Button asChild variant="outline" size="sm">
             <Link to={`/cases/${courtCase.id}/history`}>
               <History className="h-4 w-4" />
@@ -115,6 +126,13 @@ export function CaseDetailPage() {
           </Button>
         </div>
       </div>
+
+      <ChangeJudgeDialog
+        courtCase={courtCase}
+        open={changeJudgeOpen}
+        onClose={() => setChangeJudgeOpen(false)}
+        onSaved={setCourtCase}
+      />
 
       {/* The document sheet */}
       <div
@@ -253,19 +271,22 @@ export function CaseDetailPage() {
           <table className="w-full min-w-[640px] border-collapse print:min-w-0 print:table-fixed">
             <thead>
               <tr>
-                <th className={`${cellHead} w-12 print:w-[8%]`}>{t('table.serial')}</th>
-                <th className={`${cellHead} print:w-[14%]`}>{t('hover.date')}</th>
-                <th className={`${cellHead} print:w-[20%]`}>{t('history.stage')}</th>
-                <th className={`${cellHead} print:w-[20%]`}>{t('history.adjournment')}</th>
-                <th className={`${cellHead} print:w-[19%]`}>{t('history.shortOrder')}</th>
-                <th className={`${cellHead} print:w-[19%]`}>{t('history.remarks')}</th>
+                <th className={`${cellHead} w-12 print:w-[6%]`}>{t('table.serial')}</th>
+                <th className={`${cellHead} print:w-[12%]`}>{t('hover.date')}</th>
+                <th className={`${cellHead} print:w-[14%]`}>{t('history.judge')}</th>
+                <th className={`${cellHead} print:w-[12%]`}>{t('history.advP1')}</th>
+                <th className={`${cellHead} print:w-[12%]`}>{t('history.advP2')}</th>
+                <th className={`${cellHead} print:w-[12%]`}>{t('history.stage')}</th>
+                <th className={`${cellHead} print:w-[12%]`}>{t('history.adjournment')}</th>
+                <th className={`${cellHead} print:w-[10%]`}>{t('history.shortOrder')}</th>
+                <th className={`${cellHead} print:w-[10%]`}>{t('history.remarks')}</th>
               </tr>
             </thead>
             <tbody>
               {courtCase.hearings.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={9}
                     className={`${cell} py-6 text-center text-muted-foreground`}
                   >
                     {t('history.empty')}
@@ -280,6 +301,15 @@ export function CaseDetailPage() {
                       className={`${cell} whitespace-nowrap font-medium print:whitespace-normal`}
                     >
                       {formatDisplayDate(h.date, monthLabel)}
+                    </td>
+                    <td className={`${cell} urdu-text break-words`}>
+                      {h.judgeName || dash}
+                    </td>
+                    <td className={`${cell} urdu-text break-words`}>
+                      {h.party1Advocate || dash}
+                    </td>
+                    <td className={`${cell} urdu-text break-words`}>
+                      {h.party2Advocate || dash}
                     </td>
                     <td className={`${cell} urdu-text break-words`}>
                       {h.proceeding || dash}
