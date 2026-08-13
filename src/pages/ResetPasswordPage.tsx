@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useMemo, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import ThemeToggle from '../components/ThemeToggle';
 import { Alert } from '../components/ui/alert';
@@ -13,16 +13,25 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { useLoader } from '../context/LoaderContext';
 import { ApiError, apiFetch } from '../utils/api';
 
-export function ForgotPasswordPage() {
+const TOKEN_RE = /^[a-f0-9]{64}$/i;
+
+export function ResetPasswordPage() {
   const { t } = useLocale();
+  const { logout } = useAuth();
   const { withLoader } = useLoader();
-  const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const token = useMemo(() => (params.get('token') || '').trim(), [params]);
+  const tokenOk = TOKEN_RE.test(token);
+
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -31,18 +40,27 @@ export function ForgotPasswordPage() {
       ? t(err.errorKey as TranslationKey)
       : t('errors.network');
 
-  const onRequest = async (e: React.FormEvent) => {
+  const onReset = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    if (!tokenOk) {
+      setError(t('errors.resetInvalid'));
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError(t('register.passwordMismatch'));
+      return;
+    }
     setSubmitting(true);
     try {
       await withLoader(() =>
-        apiFetch<{ ok: true }>('/auth/forgot-password', {
+        apiFetch<{ ok: true }>('/auth/reset-password', {
           method: 'POST',
-          body: { email: email.trim().toLowerCase() },
+          body: { token, newPassword },
         })
       );
-      setSent(true);
+      logout();
+      navigate('/login', { state: { resetDone: true } });
     } catch (err) {
       setError(errorText(err));
     } finally {
@@ -58,45 +76,53 @@ export function ForgotPasswordPage() {
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="page-title">{t('forgot.title')}</CardTitle>
-          <CardDescription>{t('forgot.lede')}</CardDescription>
+          <CardTitle className="page-title">{t('forgot.resetTitle')}</CardTitle>
+          <CardDescription>{t('forgot.resetLede')}</CardDescription>
         </CardHeader>
         <CardContent>
-          {sent ? (
+          {!tokenOk ? (
             <div className="space-y-4">
-              <Alert variant="success">{t('forgot.checkEmail')}</Alert>
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={() => {
-                  setSent(false);
-                  setError('');
-                }}
-              >
-                {t('forgot.sendAgain')}
+              <Alert variant="destructive">{t('forgot.missingToken')}</Alert>
+              <Button asChild className="w-full">
+                <Link to="/forgot-password">{t('forgot.submit')}</Link>
               </Button>
             </div>
           ) : (
-            <form onSubmit={onRequest} className="space-y-4">
+            <form onSubmit={onReset} className="space-y-4">
               {error && <Alert variant="destructive">{error}</Alert>}
               <div>
                 <Label>
-                  {t('forgot.email')} <span className="text-destructive">*</span>
+                  {t('forgot.newPassword')}{' '}
+                  <span className="text-destructive">*</span>
                 </Label>
                 <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   required
-                  autoComplete="email"
+                  minLength={6}
                   dir="ltr"
+                  autoComplete="new-password"
                   autoFocus
-                  placeholder="name@example.com"
+                />
+              </div>
+              <div>
+                <Label>
+                  {t('forgot.confirmPassword')}{' '}
+                  <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  dir="ltr"
+                  autoComplete="new-password"
                 />
               </div>
               <Button type="submit" className="w-full" disabled={submitting}>
-                {t('forgot.submit')}
+                {t('forgot.reset')}
               </Button>
             </form>
           )}

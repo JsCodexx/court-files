@@ -35,7 +35,13 @@ const ERROR_KEY_MAP: Record<string, string> = {
   'No account found for this phone number.': 'errors.phoneNotFound',
   'No password reset in progress.': 'errors.noReset',
   'OTP has expired. Please try again.': 'errors.otpExpired',
-  'hearing.editLocked': 'hearing.editLocked',
+  'This reset link is invalid or has expired.': 'errors.resetInvalid',
+  'Too many requests. Please wait and try again.': 'errors.tooManyRequests',
+  'Password reset is temporarily unavailable.': 'errors.resetUnavailable',
+  'Current password is incorrect.': 'errors.currentPassword',
+  'New password must be different from the current password.':
+    'errors.passwordSame',
+  'This name is already in your list.': 'errors.personDuplicate',
 };
 
 export class ApiError extends Error {
