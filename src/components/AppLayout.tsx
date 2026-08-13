@@ -9,6 +9,7 @@ import {
   PlusCircle,
   Scale,
   Search,
+  UserRound,
 } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -49,6 +50,7 @@ export function AppLayout() {
     { to: '/cases/new', label: t('nav.addCase'), icon: PlusCircle },
     { to: '/calendar', label: t('nav.calendar'), icon: CalendarDays },
     { to: '/search', label: t('nav.search'), icon: Search },
+    { to: '/profile', label: t('nav.profile'), icon: UserRound },
   ];
 
   const handleLogout = () => {
@@ -165,9 +167,14 @@ export function AppLayout() {
                 <LanguageSwitcher variant="dark" />
                 <ThemeToggle className="text-sidebar-foreground hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground" />
               </div>
-              <div className="urdu-text truncate rounded-md bg-sidebar-foreground/10 px-3 py-2 text-sm">
+              <NavLink
+                to="/profile"
+                title={user?.name}
+                onClick={() => setMobileOpen(false)}
+                className="urdu-text block truncate rounded-md bg-sidebar-foreground/10 px-3 py-2 text-sm hover:bg-sidebar-foreground/15"
+              >
                 {user?.name}
-              </div>
+              </NavLink>
               <Button
                 type="button"
                 variant="ghost"

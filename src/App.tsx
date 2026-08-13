@@ -17,7 +17,9 @@ import { CaseHistoryPage } from './pages/CaseHistoryPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { LoginPage } from './pages/LoginPage';
+import { ProfilePage, ProfileOverview, ProfileSettings } from './pages/ProfilePage';
 import { RegisterPage } from './pages/RegisterPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { SearchPage } from './pages/SearchPage';
 import { VerifyOtpPage } from './pages/VerifyOtpPage';
 
@@ -35,6 +37,7 @@ function App() {
                   <Route path="/verify-otp" element={<VerifyOtpPage />} />
                   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 </Route>
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
 
                 <Route element={<ProtectedRoute />}>
                   <Route element={<AppLayout />}>
@@ -45,6 +48,10 @@ function App() {
                     <Route path="/cases/:id/detail" element={<CaseDetailPage />} />
                     <Route path="/calendar" element={<CalendarPage />} />
                     <Route path="/search" element={<SearchPage />} />
+                    <Route path="/profile" element={<ProfilePage />}>
+                      <Route index element={<ProfileOverview />} />
+                      <Route path="settings" element={<ProfileSettings />} />
+                    </Route>
                   </Route>
                 </Route>
 

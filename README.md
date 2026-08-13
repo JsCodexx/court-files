@@ -5,6 +5,7 @@ Frontend platform for advocates to register court cases, schedule hearings, trac
 ## Features
 
 - Account registration with OTP verification (demo OTP shown on screen; no SMS backend)
+- Forgot password sends a time-limited reset link by email (Gmail SMTP)
 - Dashboard: today's, tomorrow's, and all-case counts
 - Court tabs: Civil / Session / High Courts with shareable case lists
 - Add New Case with parties, judge, advocate side, next hearing, client info
