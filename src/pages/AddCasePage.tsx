@@ -3,6 +3,7 @@ import { Scale } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ChangeJudgeDialog } from '../components/ChangeJudgeDialog';
 import { PersonPicker } from '../components/PersonPicker';
+import { ProceedingPicker } from '../components/ProceedingPicker';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -538,19 +539,15 @@ export function AddCasePage() {
                 {fieldError('nextDate')}
               </div>
               <div>
-                <Label>
-                  {t('addCase.proceeding')} {req}
-                </Label>
-                <Input
-                  className="urdu-input"
-                  invalid={!!fieldErrors.proceeding}
+                <ProceedingPicker
+                  label={`${t('addCase.proceeding')}`}
+                  required
                   value={form.proceeding}
-                  onChange={set('proceeding')}
-                  maxLength={200}
+                  onChange={(v) =>
+                    setForm((prev) => ({ ...prev, proceeding: v }))
+                  }
+                  invalid={!!fieldErrors.proceeding}
                   placeholder={t('addCase.proceedingPh')}
-                  dir="auto"
-                  lang="ur"
-                  aria-invalid={!!fieldErrors.proceeding}
                 />
                 {fieldError('proceeding')}
               </div>
