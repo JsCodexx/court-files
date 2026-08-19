@@ -221,7 +221,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!alive) return;
         if (
           err instanceof ApiError &&
-          (err.status === 401 || err.status === 404)
+          (err.status === 401 || err.status === 403 || err.status === 404)
         ) {
           logout();
         }

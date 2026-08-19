@@ -11,6 +11,7 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { PasswordInput } from '../components/ui/password-input';
 import { useLoader } from '../context/LoaderContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -205,8 +206,7 @@ export function ProfileSettings() {
               {t('profile.currentPassword')}{' '}
               <span className="text-destructive">*</span>
             </Label>
-            <Input
-              type="password"
+            <PasswordInput
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               required
@@ -219,8 +219,7 @@ export function ProfileSettings() {
               {t('profile.newPassword')}{' '}
               <span className="text-destructive">*</span>
             </Label>
-            <Input
-              type="password"
+            <PasswordInput
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
@@ -234,8 +233,7 @@ export function ProfileSettings() {
               {t('profile.confirmPassword')}{' '}
               <span className="text-destructive">*</span>
             </Label>
-            <Input
-              type="password"
+            <PasswordInput
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required

@@ -58,7 +58,7 @@ export function VerifyOtpPage() {
       setError(t(result.error as TranslationKey));
       return;
     }
-    navigate('/dashboard');
+    navigate('/login', { state: { emailVerification: true } });
   };
 
   const onResend = async () => {

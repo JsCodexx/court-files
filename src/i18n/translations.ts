@@ -309,6 +309,13 @@ export const en = {
   'forgot.success': 'Password updated. You can now sign in.',
   'forgot.backToLogin': 'Back to sign in',
 
+  'verify.title': 'Email Verification',
+  'verify.lede': 'Confirming your email address...',
+  'verify.verifying': 'Verifying...',
+  'verify.success': 'Email verified successfully! You can now sign in.',
+  'verify.emailSent': 'A verification email has been sent. Please check your inbox and spam folder.',
+  'errors.emailNotVerified': 'Please verify your email before logging in.',
+
   'profile.title': 'Profile',
   'profile.lede': 'Your account details and security settings.',
   'profile.tabProfile': 'Profile',
@@ -681,6 +688,13 @@ export const ur: Record<TranslationKey, string> = {
   'forgot.reset': 'پاس ورڈ ری سیٹ کریں',
   'forgot.success': 'پاس ورڈ تبدیل ہو گیا۔ اب آپ سائن ان کر سکتے ہیں۔',
   'forgot.backToLogin': 'سائن ان پر واپس',
+
+  'verify.title': 'ای میل تصدیق',
+  'verify.lede': 'آپ کا ای میل ایڈریس تصدیق ہو رہا ہے...',
+  'verify.verifying': 'تصدیق ہو رہی ہے...',
+  'verify.success': 'ای میل کامیابی سے تصدیق ہو گئی! اب آپ سائن ان کر سکتے ہیں۔',
+  'verify.emailSent': 'تصدیقی ای میل بھیج دی گئی ہے۔ براہ کرم اپنا ان باکس اور اسپام فولڈر چیک کریں۔',
+  'errors.emailNotVerified': 'لاگ ان سے پہلے اپنا ای میل تصدیق کریں۔',
 
   'profile.title': 'پروفائل',
   'profile.lede': 'آپ کے اکاؤنٹ کی تفصیلات اور سیکیورٹی کی ترتیبات۔',

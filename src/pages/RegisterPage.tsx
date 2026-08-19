@@ -13,6 +13,7 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { PasswordInput } from '../components/ui/password-input';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -152,8 +153,7 @@ export function RegisterPage() {
                   {t('register.password')}{' '}
                   <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                  type="password"
+                <PasswordInput
                   value={form.password}
                   onChange={set('password')}
                   required
@@ -166,8 +166,7 @@ export function RegisterPage() {
                   {t('register.confirmPassword')}{' '}
                   <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                  type="password"
+                <PasswordInput
                   value={form.confirmPassword}
                   onChange={set('confirmPassword')}
                   required

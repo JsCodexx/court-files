@@ -89,6 +89,10 @@ export function HearingModal({ courtCase, onClose }: Props) {
     ? isHearingEditable(latestHearing.createdAt)
     : false;
   const today = todayISO();
+  // When we're editing the latest hearing (i.e. latestEditable is true),
+  // allow selecting past dates (dates lower than today).
+  const dateMin = latestEditable ? undefined : todayISO();
+  const dateMax = latestEditable ? todayISO() : undefined;
   const scheduleLocked =
     Boolean(latestHearing) &&
     !latestEditable &&
@@ -343,7 +347,8 @@ export function HearingModal({ courtCase, onClose }: Props) {
                 <Input
                   type="date"
                   value={date}
-                  min={todayISO()}
+                  min={dateMin}
+                  max={dateMax}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value && isSunday(value)) {

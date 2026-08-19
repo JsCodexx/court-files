@@ -21,6 +21,7 @@ import { ProfilePage, ProfileOverview, ProfileSettings } from './pages/ProfilePa
 import { RegisterPage } from './pages/RegisterPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { SearchPage } from './pages/SearchPage';
+import { VerifyEmailPage } from './pages/VerifyEmailPage';
 import { VerifyOtpPage } from './pages/VerifyOtpPage';
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
                   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 </Route>
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/verify-email" element={<VerifyEmailPage />} />
 
                 <Route element={<ProtectedRoute />}>
                   <Route element={<AppLayout />}>

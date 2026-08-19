@@ -42,6 +42,9 @@ const ERROR_KEY_MAP: Record<string, string> = {
   'New password must be different from the current password.':
     'errors.passwordSame',
   'This name is already in your list.': 'errors.personDuplicate',
+  'Please verify your email before logging in.': 'errors.emailNotVerified',
+  'Invalid or expired verification link.': 'errors.resetInvalid',
+  'Verification link has expired. Please request a new one.': 'errors.resetInvalid',
 };
 
 export class ApiError extends Error {
