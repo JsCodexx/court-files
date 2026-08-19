@@ -22,8 +22,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from './ui/dialog';
+import { ProceedingPicker } from './ProceedingPicker';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { ProceedingPicker } from './ProceedingPicker';
 import { Textarea } from './ui/textarea';
 
 interface Props {
@@ -357,18 +359,12 @@ export function HearingModal({ courtCase, onClose }: Props) {
                 />
               </div>
               <div className="sm:col-span-2">
-                <Label>
-                  {t('hearing.proceeding')}{' '}
-                  <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  className="urdu-input"
-                  value={proceeding}
-                  onChange={(e) => setProceeding(e.target.value)}
-                  placeholder={t('hearing.proceedingPh')}
+                <ProceedingPicker
+                  label={t('hearing.proceeding')}
                   required
-                  dir="auto"
-                  lang="ur"
+                  value={proceeding}
+                  onChange={setProceeding}
+                  placeholder={t('hearing.proceedingPh')}
                 />
               </div>
               <div className="sm:col-span-2">
