@@ -25,7 +25,6 @@ import {
 import { ProceedingPicker } from './ProceedingPicker';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { ProceedingPicker } from './ProceedingPicker';
 import { Textarea } from './ui/textarea';
 
 interface Props {
