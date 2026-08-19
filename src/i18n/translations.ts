@@ -357,6 +357,10 @@ export const en = {
   'persons.empty': 'No saved names yet. Type one and save it.',
   'persons.privateHint': 'This list is private to your account.',
   'persons.alreadySaved': 'This name is already in your list. Select it instead.',
+
+  'proceeding.pickLabel': 'Show saved proceedings',
+  'proceeding.empty': 'No saved proceedings yet. Type one and save it.',
+  'proceeding.saveNew': 'Save "{{name}}" for future use',
   'history.benchTitle': 'Judge & advocate history',
   'history.benchFrom': 'From',
   'history.judge': 'Judge',
@@ -726,6 +730,10 @@ export const ur: Record<TranslationKey, string> = {
   'persons.empty': 'ابھی کوئی محفوظ نام نہیں۔ نام لکھ کر محفوظ کریں۔',
   'persons.privateHint': 'یہ فہرست صرف آپ کے اکاؤنٹ کی ہے۔',
   'persons.alreadySaved': 'یہ نام پہلے سے آپ کی فہرست میں ہے۔ اسے منتخب کریں۔',
+
+  'proceeding.pickLabel': 'محفوظ کارروائیاں دکھائیں',
+  'proceeding.empty': 'ابھی کوئی محفوظ کارروائی نہیں۔ لکھ کر محفوظ کریں۔',
+  'proceeding.saveNew': '"{{name}}" مستقبل کے لیے محفوظ کریں',
   'history.benchTitle': 'جج اور وکلاء کی تاریخ',
   'history.benchFrom': 'از',
   'history.judge': 'جج',
