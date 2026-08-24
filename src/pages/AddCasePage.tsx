@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Scale } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ChangeJudgeDialog } from '../components/ChangeJudgeDialog';
+import { CityPicker } from '../components/CityPicker';
 import { PersonPicker } from '../components/PersonPicker';
 import { ProceedingPicker } from '../components/ProceedingPicker';
 import { Alert } from '../components/ui/alert';
@@ -420,18 +421,15 @@ export function AddCasePage() {
                 />
               </div>
               <div>
-                <Label>
-                  {t('addCase.city')} {req}
-                </Label>
-                <Input
-                  className="urdu-input"
-                  invalid={!!fieldErrors.city}
+                <CityPicker
+                  label={t('addCase.city')}
+                  required
                   value={form.city}
-                  onChange={set('city')}
-                  maxLength={100}
-                  dir="auto"
-                  lang="ur"
-                  aria-invalid={!!fieldErrors.city}
+                  onChange={(v) =>
+                    setForm((prev) => ({ ...prev, city: v }))
+                  }
+                  invalid={!!fieldErrors.city}
+                  placeholder={t('addCase.cityPh')}
                 />
                 {fieldError('city')}
               </div>

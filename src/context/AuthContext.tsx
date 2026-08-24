@@ -7,7 +7,13 @@ import React, {
   useState,
 } from 'react';
 import { AuthSession, User } from '../types';
-import { ApiError, apiFetch, getToken, setToken } from '../utils/api';
+import {
+  ApiError,
+  apiFetch,
+  getToken,
+  setOnUnauthorized,
+  setToken,
+} from '../utils/api';
 import { useLoader } from './LoaderContext';
 
 const SESSION_KEY = 'cf_session';
@@ -17,11 +23,12 @@ type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
 
 interface AuthContextValue {
   user: AuthSession | null;
+  authReady: boolean;
   registerDraft: (
     data: Omit<User, 'id' | 'createdAt'>
-  ) => Promise<Result<{ otp: string }>>;
+  ) => Promise<Result<{ otp?: string }>>;
   verifyOtp: (otp: string) => Promise<Result>;
-  resendOtp: () => Promise<Result<{ otp: string }>>;
+  resendOtp: () => Promise<Result<{ otp?: string }>>;
   login: (emailOrPhone: string, password: string) => Promise<Result>;
   logout: () => void;
   pendingPhone: string | null;
@@ -86,9 +93,16 @@ interface AuthResponse {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { withLoader } = useLoader();
   const [user, setUser] = useState<AuthSession | null>(() => readSession());
+  const [authReady, setAuthReady] = useState(() => !getToken());
   const [pendingPhone, setPendingPhone] = useState<string | null>(() =>
     readPendingPhone()
   );
+
+  const logout = useCallback(() => {
+    setToken(null);
+    writeSession(null);
+    setUser(null);
+  }, []);
 
   const applyAuth = useCallback((res: AuthResponse) => {
     const session: AuthSession = {
@@ -101,23 +115,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(session);
   }, []);
 
+  useEffect(() => {
+    setOnUnauthorized(logout);
+    return () => setOnUnauthorized(null);
+  }, [logout]);
+
   const registerDraft = useCallback(
     async (data: Omit<User, 'id' | 'createdAt'>) => {
       try {
         return await withLoader(async () => {
-          const res = await apiFetch<{ ok: true; otp: string; phone: string }>(
-            '/auth/register',
-            {
-              method: 'POST',
-              body: {
-                name: data.name,
-                phone: data.phone,
-                email: data.email,
-                barAddress: data.barAddress,
-                password: data.password,
-              },
-            }
-          );
+          const res = await apiFetch<{
+            ok: true;
+            otp?: string;
+            phone: string;
+          }>('/auth/register', {
+            method: 'POST',
+            body: {
+              name: data.name,
+              phone: data.phone,
+              email: data.email,
+              barAddress: data.barAddress,
+              password: data.password,
+            },
+          });
           writePendingPhone(res.phone);
           setPendingPhone(res.phone);
           return { ok: true as const, otp: res.otp };
@@ -137,11 +157,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       try {
         return await withLoader(async () => {
-          const res = await apiFetch<AuthResponse>('/auth/verify-otp', {
+          await apiFetch<{ ok: true; message: string }>('/auth/verify-otp', {
             method: 'POST',
             body: { phone, otp },
           });
-          applyAuth(res);
           writePendingPhone(null);
           setPendingPhone(null);
           return { ok: true as const };
@@ -150,7 +169,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return toError(err);
       }
     },
-    [applyAuth, withLoader]
+    [withLoader]
   );
 
   const resendOtp = useCallback(async () => {
@@ -160,7 +179,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     try {
       return await withLoader(async () => {
-        const res = await apiFetch<{ ok: true; otp: string }>(
+        const res = await apiFetch<{ ok: true; otp?: string }>(
           '/auth/resend-otp',
           {
             method: 'POST',
@@ -192,17 +211,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [applyAuth, withLoader]
   );
 
-  const logout = useCallback(() => {
-    setToken(null);
-    writeSession(null);
-    setUser(null);
-  }, []);
-
-  // Validate the stored token against the server on startup; refresh the
-  // session details or sign out if the token is no longer valid.
+  // Validate stored token on startup before showing protected routes.
   useEffect(() => {
-    if (!getToken()) return;
+    const token = getToken();
+    if (!token) {
+      setAuthReady(true);
+      return;
+    }
+
     let alive = true;
+    setAuthReady(false);
     withLoader(async () => {
       try {
         const res = await apiFetch<{
@@ -225,6 +243,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ) {
           logout();
         }
+      } finally {
+        if (alive) setAuthReady(true);
       }
     });
     return () => {
@@ -236,6 +256,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo(
     () => ({
       user,
+      authReady,
       registerDraft,
       verifyOtp,
       resendOtp,
@@ -243,7 +264,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       logout,
       pendingPhone,
     }),
-    [user, registerDraft, verifyOtp, resendOtp, login, logout, pendingPhone]
+    [
+      user,
+      authReady,
+      registerDraft,
+      verifyOtp,
+      resendOtp,
+      login,
+      logout,
+      pendingPhone,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

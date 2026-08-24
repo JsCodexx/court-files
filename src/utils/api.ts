@@ -3,6 +3,12 @@ const API_URL =
 
 const TOKEN_KEY = 'cf_token';
 
+let onUnauthorized: (() => void) | null = null;
+
+export function setOnUnauthorized(handler: (() => void) | null): void {
+  onUnauthorized = handler;
+}
+
 export function getToken(): string | null {
   try {
     return localStorage.getItem(TOKEN_KEY);
@@ -27,10 +33,14 @@ export function setToken(token: string | null): void {
 const ERROR_KEY_MAP: Record<string, string> = {
   'Email is already registered.': 'errors.emailRegistered',
   'Phone number is already registered.': 'errors.phoneRegistered',
+  'Unable to complete registration. Check your details or sign in if you already have an account.':
+    'errors.registrationFailed',
   'Password must be at least 6 characters.': 'errors.passwordShort',
+  'Password must be at least 8 characters.': 'errors.passwordShort',
   'No registration in progress.': 'errors.noRegistration',
   'Invalid OTP. Please try again.': 'errors.invalidOtp',
   'OTP has expired. Please register again.': 'errors.otpExpired',
+  'Too many failed attempts. Please register again.': 'errors.otpLocked',
   'Invalid credentials.': 'errors.invalidCredentials',
   'No account found for this phone number.': 'errors.phoneNotFound',
   'No password reset in progress.': 'errors.noReset',
@@ -44,7 +54,10 @@ const ERROR_KEY_MAP: Record<string, string> = {
   'This name is already in your list.': 'errors.personDuplicate',
   'Please verify your email before logging in.': 'errors.emailNotVerified',
   'Invalid or expired verification link.': 'errors.resetInvalid',
-  'Verification link has expired. Please request a new one.': 'errors.resetInvalid',
+  'Verification link has expired. Please request a new one.':
+    'errors.resetInvalid',
+  'Session expired. Please sign in again.': 'errors.sessionExpired',
+  'Internal server error': 'errors.network',
 };
 
 export class ApiError extends Error {
@@ -77,7 +90,8 @@ export async function apiFetch<T>(
     response = await fetch(`${API_URL}${path}`, {
       method: options.method || 'GET',
       headers,
-      body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+      body:
+        options.body !== undefined ? JSON.stringify(options.body) : undefined,
     });
   } catch {
     throw new ApiError('errors.network', 0);
@@ -91,7 +105,17 @@ export async function apiFetch<T>(
   }
 
   if (!response.ok || data?.ok === false) {
-    throw new ApiError(data?.error || `Request failed (${response.status})`, response.status);
+    const message = data?.error || `Request failed (${response.status})`;
+    if (
+      response.status === 401 &&
+      token &&
+      onUnauthorized &&
+      path !== '/auth/login' &&
+      path !== '/auth/register'
+    ) {
+      onUnauthorized();
+    }
+    throw new ApiError(message, response.status);
   }
 
   return data as T;

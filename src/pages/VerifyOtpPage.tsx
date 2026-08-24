@@ -68,7 +68,11 @@ export function VerifyOtpPage() {
       return;
     }
     setError('');
-    setInfo(t('otp.newDemo', { otp: result.otp }));
+    if (result.otp) {
+      setInfo(t('otp.newDemo', { otp: result.otp }));
+    } else {
+      setInfo(t('otp.resent'));
+    }
   };
 
   return (

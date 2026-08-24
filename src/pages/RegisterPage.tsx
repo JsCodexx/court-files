@@ -65,7 +65,9 @@ export function RegisterPage() {
       setError(t(result.error as TranslationKey));
       return;
     }
-    navigate('/verify-otp', { state: { demoOtp: result.otp } });
+    navigate('/verify-otp', {
+      state: result.otp ? { demoOtp: result.otp } : undefined,
+    });
   };
 
   return (
@@ -157,7 +159,7 @@ export function RegisterPage() {
                   value={form.password}
                   onChange={set('password')}
                   required
-                  minLength={6}
+                  minLength={8}
                   dir="ltr"
                 />
               </div>
@@ -170,7 +172,7 @@ export function RegisterPage() {
                   value={form.confirmPassword}
                   onChange={set('confirmPassword')}
                   required
-                  minLength={6}
+                  minLength={8}
                   dir="ltr"
                 />
               </div>
