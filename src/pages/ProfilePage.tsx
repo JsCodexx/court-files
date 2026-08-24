@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import {
@@ -11,6 +11,8 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { PasswordInput } from '../components/ui/password-input';
+import { useAuth } from '../context/AuthContext';
 import { useLoader } from '../context/LoaderContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -147,6 +149,8 @@ export function ProfileOverview() {
 
 export function ProfileSettings() {
   const { t } = useLocale();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const { withLoader } = useLoader();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -178,7 +182,11 @@ export function ProfileSettings() {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-      setSuccess(t('profile.passwordUpdated'));
+      logout();
+      navigate('/login', {
+        replace: true,
+        state: { passwordChanged: true },
+      });
     } catch (err) {
       setError(
         err instanceof ApiError
@@ -205,8 +213,7 @@ export function ProfileSettings() {
               {t('profile.currentPassword')}{' '}
               <span className="text-destructive">*</span>
             </Label>
-            <Input
-              type="password"
+            <PasswordInput
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               required
@@ -219,12 +226,11 @@ export function ProfileSettings() {
               {t('profile.newPassword')}{' '}
               <span className="text-destructive">*</span>
             </Label>
-            <Input
-              type="password"
+            <PasswordInput
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
-              minLength={6}
+              minLength={8}
               dir="ltr"
               autoComplete="new-password"
             />
@@ -234,12 +240,11 @@ export function ProfileSettings() {
               {t('profile.confirmPassword')}{' '}
               <span className="text-destructive">*</span>
             </Label>
-            <Input
-              type="password"
+            <PasswordInput
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              minLength={6}
+              minLength={8}
               dir="ltr"
               autoComplete="new-password"
             />

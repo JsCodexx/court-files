@@ -13,6 +13,7 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { PasswordInput } from '../components/ui/password-input';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -64,7 +65,9 @@ export function RegisterPage() {
       setError(t(result.error as TranslationKey));
       return;
     }
-    navigate('/verify-otp', { state: { demoOtp: result.otp } });
+    navigate('/verify-otp', {
+      state: result.otp ? { demoOtp: result.otp } : undefined,
+    });
   };
 
   return (
@@ -152,12 +155,11 @@ export function RegisterPage() {
                   {t('register.password')}{' '}
                   <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                  type="password"
+                <PasswordInput
                   value={form.password}
                   onChange={set('password')}
                   required
-                  minLength={6}
+                  minLength={8}
                   dir="ltr"
                 />
               </div>
@@ -166,12 +168,11 @@ export function RegisterPage() {
                   {t('register.confirmPassword')}{' '}
                   <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                  type="password"
+                <PasswordInput
                   value={form.confirmPassword}
                   onChange={set('confirmPassword')}
                   required
-                  minLength={6}
+                  minLength={8}
                   dir="ltr"
                 />
               </div>

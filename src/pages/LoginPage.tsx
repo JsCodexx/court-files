@@ -13,6 +13,7 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { PasswordInput } from '../components/ui/password-input';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -24,6 +25,12 @@ export function LoginPage() {
   const location = useLocation();
   const resetDone = Boolean(
     (location.state as { resetDone?: boolean } | null)?.resetDone
+  );
+  const emailVerification = Boolean(
+    (location.state as { emailVerification?: boolean } | null)?.emailVerification
+  );
+  const passwordChanged = Boolean(
+    (location.state as { passwordChanged?: boolean } | null)?.passwordChanged
   );
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -58,6 +65,12 @@ export function LoginPage() {
             {resetDone && !error && (
               <Alert variant="success">{t('forgot.success')}</Alert>
             )}
+            {emailVerification && !error && (
+              <Alert variant="info">{t('verify.emailSent')}</Alert>
+            )}
+            {passwordChanged && !error && (
+              <Alert variant="success">{t('profile.passwordUpdated')}</Alert>
+            )}
             {error && <Alert variant="destructive">{error}</Alert>}
             <div>
               <Label>{t('login.emailOrPhone')}</Label>
@@ -79,8 +92,7 @@ export function LoginPage() {
                   {t('login.forgot')}
                 </Link>
               </div>
-              <Input
-                type="password"
+              <PasswordInput
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required

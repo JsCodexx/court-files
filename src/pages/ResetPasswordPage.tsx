@@ -13,6 +13,7 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { PasswordInput } from '../components/ui/password-input';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -95,12 +96,11 @@ export function ResetPasswordPage() {
                   {t('forgot.newPassword')}{' '}
                   <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                  type="password"
+                <PasswordInput
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
-                  minLength={6}
+                  minLength={8}
                   dir="ltr"
                   autoComplete="new-password"
                   autoFocus
@@ -111,12 +111,11 @@ export function ResetPasswordPage() {
                   {t('forgot.confirmPassword')}{' '}
                   <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                  type="password"
+                <PasswordInput
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  minLength={6}
+                  minLength={8}
                   dir="ltr"
                   autoComplete="new-password"
                 />
