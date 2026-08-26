@@ -3,6 +3,7 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  CreditCard,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -50,6 +51,7 @@ export function AppLayout() {
     { to: '/cases/new', label: t('nav.addCase'), icon: PlusCircle },
     { to: '/calendar', label: t('nav.calendar'), icon: CalendarDays },
     { to: '/search', label: t('nav.search'), icon: Search },
+    { to: '/plans', label: t('nav.plans'), icon: CreditCard },
     { to: '/profile', label: t('nav.profile'), icon: UserRound },
   ];
 
