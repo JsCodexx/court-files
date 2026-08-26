@@ -17,6 +17,8 @@ import { CaseHistoryPage } from './pages/CaseHistoryPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { LoginPage } from './pages/LoginPage';
+import { PaymentsPage } from './pages/PaymentsPage';
+import { PlansPage } from './pages/PlansPage';
 import { ProfilePage, ProfileOverview, ProfileSettings } from './pages/ProfilePage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
@@ -50,6 +52,8 @@ function App() {
                     <Route path="/cases/:id/detail" element={<CaseDetailPage />} />
                     <Route path="/calendar" element={<CalendarPage />} />
                     <Route path="/search" element={<SearchPage />} />
+                    <Route path="/plans" element={<PlansPage />} />
+                    <Route path="/payments" element={<PaymentsPage />} />
                     <Route path="/profile" element={<ProfilePage />}>
                       <Route index element={<ProfileOverview />} />
                       <Route path="settings" element={<ProfileSettings />} />
