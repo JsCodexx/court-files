@@ -24,6 +24,12 @@ npm test
 npm run build
 ```
 
+## Deploy to EC2 (CI/CD)
+
+GitHub Actions → separate frontend EC2 (Nginx static SPA).
+
+See **[deploy/README.md](./deploy/README.md)** for setup, secrets, and the workflow in `.github/workflows/deploy-ec2.yml`.
+
 ## Deploy to Vercel
 
 `vercel.json` sets the Create React App preset and rewrites all routes to
