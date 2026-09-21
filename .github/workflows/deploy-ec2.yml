@@ -67,6 +67,8 @@ jobs:
             set -e
             APP_DIR="${{ secrets.EC2_APP_DIR }}"
             APP_DIR="${APP_DIR:-/var/www/court-files}"
-            sudo chown -R www-data:www-data "$APP_DIR" || sudo chown -R nginx:nginx "$APP_DIR" || true
+            # Keep deploy user as owner so the next rsync can write.
+            # Nginx only needs read access (files are world-readable).
+            sudo chown -R ubuntu:ubuntu "$APP_DIR"
             sudo nginx -t
             sudo systemctl reload nginx
