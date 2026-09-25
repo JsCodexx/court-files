@@ -57,7 +57,7 @@ export function AppLayout() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const CollapseIcon = open
@@ -145,7 +145,7 @@ export function AppLayout() {
                     'flex items-center rounded-md text-sm font-medium transition-colors',
                     open ? 'gap-3 px-3 py-2.5' : 'justify-center px-2 py-2.5',
                     isActive
-                      ? 'bg-sidebar-accent text-primary-foreground'
+                      ? 'bg-sidebar-accent text-sidebar-foreground'
                       : 'text-sidebar-muted hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground'
                   )
                 }
@@ -206,8 +206,8 @@ export function AppLayout() {
         </div>
       </aside>
 
-      <main className="flex min-w-0 flex-1 flex-col">
-        <div className="no-print sticky top-0 z-20 flex items-center justify-between gap-2 border-b bg-card/95 px-4 py-3 backdrop-blur-[2px] lg:hidden">
+      <main className="flex min-w-0 flex-1 flex-col bg-background">
+        <div className="no-print sticky top-0 z-20 flex items-center justify-between gap-2 border-b border-border bg-card px-4 py-3 shadow-sm lg:hidden">
           <Button
             type="button"
             variant="secondary"

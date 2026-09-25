@@ -38,6 +38,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     root.classList.toggle('dark', theme === 'dark');
     root.style.colorScheme = theme;
     localStorage.setItem(THEME_KEY, theme);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute('content', theme === 'dark' ? '#0B1411' : '#0F6B45');
+    }
   }, [theme]);
 
   const setTheme = useCallback((next: Theme) => setThemeState(next), []);

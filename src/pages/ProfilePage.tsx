@@ -124,7 +124,7 @@ export function ProfileOverview() {
   ];
 
   return (
-    <div className="overflow-hidden rounded-lg border bg-card/95 shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
       <dl className="divide-y">
         {rows.map((row) => (
           <div

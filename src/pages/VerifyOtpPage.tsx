@@ -18,7 +18,7 @@ import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 
 export function VerifyOtpPage() {
-  const { verifyOtp, resendOtp, pendingPhone } = useAuth();
+  const { verifyOtp, resendOtp, pendingPhone, pendingEmail } = useAuth();
   const { t } = useLocale();
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,7 +58,7 @@ export function VerifyOtpPage() {
       setError(t(result.error as TranslationKey));
       return;
     }
-    navigate('/login', { state: { emailVerification: true } });
+    navigate('/login', { state: { accountReady: true } });
   };
 
   const onResend = async () => {
@@ -85,12 +85,15 @@ export function VerifyOtpPage() {
           </div>
           <CardTitle className="page-title">{t('otp.title')}</CardTitle>
           <CardDescription>
-            {t('otp.lede', { phone: pendingPhone || t('otp.yourPhone') })}
+            {t('otp.lede', {
+              email: pendingEmail || t('otp.yourEmail'),
+            })}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">
             {info && <Alert variant="info">{info}</Alert>}
+            <Alert variant="info">{t('otp.spamHint')}</Alert>
             {error && <Alert variant="destructive">{error}</Alert>}
             <div>
               <Label>
@@ -117,13 +120,13 @@ export function VerifyOtpPage() {
             </div>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            {t('otp.wrongNumber')}{' '}
-            <Link
-              to="/register"
-              className="font-semibold text-primary hover:underline"
-            >
-              {t('otp.goBack')}
-            </Link>
+                {t('otp.wrongEmail')}{' '}
+                <Link
+                  to="/register"
+                  className="font-semibold text-primary hover:underline"
+                >
+                  {t('otp.goBack')}
+                </Link>
           </p>
         </CardContent>
       </Card>

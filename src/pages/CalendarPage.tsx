@@ -127,7 +127,7 @@ export function CalendarPage() {
               {t('calendar.legendPast')}
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+              <span className="h-2 w-2 rounded-full bg-primary" />
               {t('calendar.legendUpcoming')}
             </span>
           </div>
@@ -185,7 +185,7 @@ export function CalendarPage() {
                           ? 'bg-current opacity-90'
                           : isPast
                             ? 'bg-amber-700 dark:bg-amber-500'
-                            : 'bg-emerald-600 dark:bg-emerald-400'
+                            : 'bg-primary'
                       )}
                     />
                   ) : null}
