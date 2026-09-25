@@ -29,6 +29,9 @@ export function LoginPage() {
   const emailVerification = Boolean(
     (location.state as { emailVerification?: boolean } | null)?.emailVerification
   );
+  const accountReady = Boolean(
+    (location.state as { accountReady?: boolean } | null)?.accountReady
+  );
   const passwordChanged = Boolean(
     (location.state as { passwordChanged?: boolean } | null)?.passwordChanged
   );
@@ -67,6 +70,9 @@ export function LoginPage() {
             )}
             {emailVerification && !error && (
               <Alert variant="info">{t('verify.emailSent')}</Alert>
+            )}
+            {accountReady && !error && (
+              <Alert variant="success">{t('otp.accountReady')}</Alert>
             )}
             {passwordChanged && !error && (
               <Alert variant="success">{t('profile.passwordUpdated')}</Alert>

@@ -126,12 +126,12 @@ export function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border bg-card/95 px-2.5 py-2.5 shadow-sm backdrop-blur-[2px] sm:px-4 sm:py-3">
+        <div className="rounded-lg border border-border bg-card px-2.5 py-2.5 shadow-sm sm:px-4 sm:py-3">
           <div className="flex flex-col gap-3">
             <div
               role="tablist"
               aria-label={t('dashboard.hearingScope')}
-              className="grid w-full grid-cols-3 rounded-md border bg-muted/50 p-0.5"
+              className="grid w-full grid-cols-3 rounded-md border border-border bg-muted p-0.5"
             >
               {scopes.map((stat) => {
                 const active = scope === stat.key;

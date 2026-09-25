@@ -6,6 +6,155 @@ export const en = {
   'brand.name': 'Court Files',
   'brand.sub': 'Case & hearing ledger',
 
+  'landing.nav.signIn': 'Sign in',
+  'landing.nav.getStarted': 'Get started',
+  'landing.nav.openApp': 'Open dashboard',
+  'landing.hero.headline': 'Your cases and hearings, in one ledger.',
+  'landing.hero.lede':
+    'Built for advocates — register matters, track next dates, and keep proceeding history ready when you need it.',
+  'landing.hero.ctaPrimary': 'Create free account',
+  'landing.hero.ctaSecondary': 'Sign in',
+  'landing.preview.badge': 'Today’s cause list',
+  'landing.preview.court': 'Civil Court · Lahore',
+  'landing.preview.case1': 'Ali vs Khan',
+  'landing.preview.case1Meta': 'Next hearing · 22 Sep',
+  'landing.preview.case2': 'State vs Rehman',
+  'landing.preview.case2Meta': 'Arguments · Courtroom 3',
+  'landing.preview.case3': 'Begum vs Estate',
+  'landing.preview.case3Meta': 'Order reserved',
+  'landing.features.title': 'Everything a chamber needs day to day',
+  'landing.features.lede':
+    'From the morning cause list to a printed proceeding history — without scattered notebooks.',
+  'landing.feature.cases.title': 'Case register',
+  'landing.feature.cases.body':
+    'Parties, judges, advocates, clients, and court categories in one place.',
+  'landing.feature.hearings.title': 'Hearing calendar',
+  'landing.feature.hearings.body':
+    'See today, tomorrow, and upcoming dates at a glance. Sundays stay closed.',
+  'landing.feature.search.title': 'Fast search',
+  'landing.feature.search.body':
+    'Find a matter by party name, case ID, or ID card in seconds.',
+  'landing.feature.history.title': 'Proceeding history',
+  'landing.feature.history.body':
+    'Log each date’s outcome and print a clean history when you need it.',
+  'landing.feature.share.title': 'Share cause lists',
+  'landing.feature.share.body':
+    'Send today’s list over WhatsApp, email, or copy for your chamber.',
+  'landing.feature.bilingual.title': 'English & Urdu',
+  'landing.feature.bilingual.body':
+    'Work in the language your practice uses — switch anytime.',
+  'landing.cta.title': 'Start keeping your court diary online',
+  'landing.cta.lede':
+    'Register once, verify your phone, and your ledger is ready for the next list.',
+  'landing.cta.button': 'Get started',
+  'landing.footer.rights': 'Court Files. For advocates across Pakistan.',
+
+  'site.company.name': 'Court Files',
+  'site.company.website': 'https://clerkdiary.com',
+  'site.company.email': 'aliwheed@gmail.com',
+  'site.nav.legal': 'Company & policies',
+  'site.nav.about': 'About',
+  'site.nav.pricing': 'Pricing',
+  'site.nav.contact': 'Contact',
+  'site.nav.terms': 'Terms & Conditions',
+  'site.nav.privacy': 'Privacy Policy',
+  'site.nav.refund': 'Refund & Cancellation',
+  'site.nav.merchant': 'Business info',
+  'site.footer.updated': 'Policies last updated: 25 September 2026.',
+
+  'about.title': 'About Court Files',
+  'about.lede':
+    'Public information about our service for customers and payment-partner reviews.',
+  'about.what.heading': 'What our service does',
+  'about.what.body':
+    'Court Files is an online case and hearing ledger for advocates in Pakistan. It helps lawyers register court cases, schedule and track hearings, search matters, keep proceeding history, share cause lists, and manage their chamber workflow in English or Urdu.',
+  'about.who.heading': 'Who it is for',
+  'about.who.body':
+    'The service is designed for practising advocates and chambers who need a reliable digital court diary instead of paper notebooks or scattered spreadsheets.',
+  'about.company.heading': 'Business / company name',
+  'about.company.body':
+    'Business name: Court Files.\nWebsite: https://clerkdiary.com\nWe provide software-as-a-service (SaaS) subscription access to the Court Files application.',
+
+  'pricing.title': 'Pricing & subscriptions',
+  'pricing.lede':
+    'Transparent prepaid plans. Pay securely with EasyPaisa after you create an account.',
+  'pricing.cta': 'Create account to purchase',
+  'pricing.fallbackNote':
+    'Showing published plan prices. Live amounts match our catalog even if the API is temporarily unavailable.',
+  'pricing.paymentNote':
+    'Payments are processed in Pakistani Rupees (PKR) via EasyPaisa. Prices shown are the full prepaid amount for the plan period.',
+  'pricing.refundLink': 'See our',
+
+  'contact.title': 'Contact',
+  'contact.lede': 'Reach us for support, billing questions, or merchant review inquiries.',
+  'contact.business': 'Business name',
+  'contact.website': 'Website',
+  'contact.email': 'Email',
+  'contact.hours': 'Support hours',
+  'contact.hoursValue': 'Monday–Saturday, 10:00–18:00 Pakistan Standard Time (PKT).',
+  'contact.note':
+    'For payment disputes or account help, email us with your registered phone/email and order ID if available.',
+
+  'terms.title': 'Terms & Conditions',
+  'terms.lede': 'These terms govern use of Court Files at clerkdiary.com.',
+  'terms.s1.heading': '1. Agreement',
+  'terms.s1.body':
+    'By creating an account or using Court Files, you agree to these Terms & Conditions, our Privacy Policy, and our Refund & Cancellation Policy. If you do not agree, do not use the service.',
+  'terms.s2.heading': '2. The service',
+  'terms.s2.body':
+    'Court Files provides digital tools for advocates to manage cases, hearings, and related chamber records. Features may change as we improve the product. We do not provide legal advice and are not a law firm.',
+  'terms.s3.heading': '3. Accounts',
+  'terms.s3.body':
+    'You must provide accurate registration details and keep your login credentials secure. You are responsible for activity under your account. We may suspend accounts that misuse the service, violate these terms, or attempt fraud.',
+  'terms.s4.heading': '4. Subscriptions & payments',
+  'terms.s4.body':
+    'Paid plans are prepaid for a fixed period (for example monthly or yearly) as listed on our Pricing page. Payments are collected in PKR through EasyPaisa or other methods we enable. Access to paid features depends on a valid active subscription period.',
+  'terms.s5.heading': '5. Acceptable use',
+  'terms.s5.body':
+    'You may only use Court Files for lawful professional purposes. You must not attempt to break security, scrape or abuse the system, share accounts in a way that violates plan terms, or store unlawful content.',
+  'terms.s6.heading': '6. Limitation of liability',
+  'terms.s6.body':
+    'The service is provided on an “as available” basis. To the fullest extent allowed by law, Court Files is not liable for indirect or consequential losses, including missed hearings arising from user error, device issues, or third-party outages. Nothing in these terms excludes liability that cannot be excluded under applicable Pakistani law.',
+  'terms.s7.heading': '7. Changes & contact',
+  'terms.s7.body':
+    'We may update these terms by posting a revised version on this website. Continued use after changes means you accept the updated terms. Questions: aliwheed@gmail.com.',
+
+  'privacy.title': 'Privacy Policy',
+  'privacy.lede': 'How Court Files collects, uses, and protects your information.',
+  'privacy.s1.heading': '1. Information we collect',
+  'privacy.s1.body':
+    'We collect account details you provide (such as name, phone number, email, and bar address), case and hearing data you enter, payment-related metadata needed to confirm subscriptions (such as order/transaction references), and basic technical logs (for example device/browser and IP) needed to operate and secure the service.',
+  'privacy.s2.heading': '2. How we use information',
+  'privacy.s2.body':
+    'We use your information to create and secure your account, deliver the Court Files service, process subscriptions, send service emails (verification, password reset, important notices), provide support, prevent fraud/abuse, and improve reliability.',
+  'privacy.s3.heading': '3. Sharing',
+  'privacy.s3.body':
+    'We do not sell your personal data. We may share limited data with infrastructure and payment partners strictly as needed to run the service (for example hosting, email delivery, and EasyPaisa payment confirmation). We may disclose information if required by law.',
+  'privacy.s4.heading': '4. Storage & security',
+  'privacy.s4.body':
+    'Data is stored with reputable cloud providers. We use industry-standard safeguards such as encrypted transport (HTTPS) and access controls. No method of transmission or storage is 100% secure; please protect your password.',
+  'privacy.s5.heading': '5. Retention',
+  'privacy.s5.body':
+    'We keep account and case data while your account remains active and as needed for legal, accounting, or dispute purposes. You may request account deletion by contacting support; some records may be retained where legally required.',
+  'privacy.s6.heading': '6. Contact',
+  'privacy.s6.body':
+    'Privacy questions or data requests: aliwheed@gmail.com. Website: https://clerkdiary.com.',
+
+  'refund.title': 'Refund & Cancellation Policy',
+  'refund.lede': 'Clear rules for EasyPaisa and other subscription payments.',
+  'refund.s1.heading': '1. No refunds',
+  'refund.s1.body':
+    'All subscription payments are final. Once a payment is successfully completed, Court Files does not offer refunds, chargebacks facilitation, or partial refunds for unused time, change of mind, duplicate purchases made by the user in error, or failure to use the service.',
+  'refund.s2.heading': '2. Cancellation anytime',
+  'refund.s2.body':
+    'You may cancel or stop using your Court Files subscription at any time. Cancellation means you choose not to continue or renew; you remain free to stop using the product whenever you want. Prepaid access continues until the end of the paid period already purchased, unless your account is suspended for misuse or fraud.',
+  'refund.s3.heading': '3. Failed or incomplete payments',
+  'refund.s3.body':
+    'If a payment fails or is not completed with EasyPaisa, no subscription is activated and no charge should remain pending with us. If you were charged by the payment provider but your plan was not activated, contact us with your order/transaction details and we will investigate with the payment partner.',
+  'refund.s4.heading': '4. Contact for billing help',
+  'refund.s4.body':
+    'Email aliwheed@gmail.com with your registered email/phone and payment reference. We aim to respond within 2 business days.',
+
   'nav.dashboard': 'Dashboard',
   'nav.addCase': 'Add New Case',
   'nav.calendar': 'Calendar',
@@ -48,7 +197,7 @@ export const en = {
 
   'register.title': 'Create account',
   'register.lede':
-    'Register with your bar details. An OTP will be sent to your phone.',
+    'Register with your bar details. A verification code will be sent to your email.',
   'register.name': 'Name',
   'register.phone': 'Phone number',
   'register.email': 'Email address',
@@ -60,22 +209,27 @@ export const en = {
   'register.signIn': 'Sign in',
   'register.passwordMismatch': 'Passwords do not match.',
 
-  'otp.title': 'Verify OTP',
-  'otp.lede': 'We sent a 6-digit code to {{phone}}.',
+  'otp.title': 'Verify your email',
+  'otp.lede': 'We sent a 6-digit code to {{email}}. If you do not see it, check Spam / Junk.',
   'otp.yourPhone': 'your phone',
+  'otp.yourEmail': 'your email',
   'otp.label': 'One-time password',
   'otp.placeholder': '6-digit code',
   'otp.submit': 'Complete registration',
-  'otp.resend': 'Resend OTP',
+  'otp.resend': 'Resend code',
   'otp.wrongNumber': 'Wrong number?',
+  'otp.wrongEmail': 'Wrong email?',
   'otp.goBack': 'Go back',
-  'otp.demoInfo': 'Demo OTP (frontend only): {{otp}}',
-  'otp.enterInfo': 'Enter the OTP sent to your phone.',
-  'otp.resent': 'A new OTP has been sent to your phone.',
-  'otp.newDemo': 'New demo OTP: {{otp}}',
+  'otp.demoInfo': 'Demo OTP (also emailed): {{otp}}',
+  'otp.enterInfo': 'Enter the verification code sent to your email.',
+  'otp.resent': 'A new verification code has been sent to your email. Check inbox and spam.',
+  'otp.newDemo': 'New demo OTP (also emailed): {{otp}}',
+  'otp.spamHint':
+    'Didn’t get the email? Check your Spam / Junk folder and mark it as Not spam so future codes arrive in your inbox.',
   'otp.noneTitle': 'No pending registration',
   'otp.noneLede': 'Start again from the registration form.',
   'otp.register': 'Register',
+  'otp.accountReady': 'Account created and email verified. You can sign in now.',
 
   'dashboard.title': 'Dashboard',
   'dashboard.lede': 'Overview of hearings and court dockets.',
@@ -259,6 +413,10 @@ export const en = {
   'errors.passwordShort': 'Password must be at least 8 characters.',
   'errors.registrationFailed':
     'Unable to complete registration. Check your details or sign in if you already have an account.',
+  'errors.mailNotConfigured':
+    'Email delivery is not configured. Cannot send verification OTP.',
+  'errors.mailSendFailed':
+    'Could not send verification email. Please try again later.',
   'errors.otpLocked': 'Too many failed OTP attempts. Please register again.',
   'errors.sessionExpired': 'Your session expired. Please sign in again.',
   'errors.noRegistration': 'No registration in progress.',
@@ -426,6 +584,155 @@ export const ur: Record<TranslationKey, string> = {
   'brand.name': 'کورٹ فائلز',
   'brand.sub': 'مقدمات اور سماعت کا ریکارڈ',
 
+  'landing.nav.signIn': 'سائن ان',
+  'landing.nav.getStarted': 'شروع کریں',
+  'landing.nav.openApp': 'ڈیش بورڈ کھولیں',
+  'landing.hero.headline': 'آپ کے مقدمات اور سماعتیں، ایک ہی ریکارڈ میں۔',
+  'landing.hero.lede':
+    'وکیلوں کے لیے بنایا گیا — مقدمات درج کریں، اگلی تاریخیں رکھیں، اور ضرورت پڑنے پر کارروائی کی تاریخ تیار رکھیں۔',
+  'landing.hero.ctaPrimary': 'مفت اکاؤنٹ بنائیں',
+  'landing.hero.ctaSecondary': 'سائن ان',
+  'landing.preview.badge': 'آج کی وجہ فہرست',
+  'landing.preview.court': 'دیوانی عدالت · لاہور',
+  'landing.preview.case1': 'علی بنام خان',
+  'landing.preview.case1Meta': 'اگلی سماعت · ۲۲ ستمبر',
+  'landing.preview.case2': 'ریاست بنام رحمان',
+  'landing.preview.case2Meta': 'دلائل · کمرہ نمبر ۳',
+  'landing.preview.case3': 'بیگم بنام جائیداد',
+  'landing.preview.case3Meta': 'حکم محفوظ',
+  'landing.features.title': 'چیمبر کے روزمرہ کام، ایک جگہ',
+  'landing.features.lede':
+    'صبح کی وجہ فہرست سے پرنٹ شدہ کارروائی تک — بکھری ہوئی کاپیوں کے بغیر۔',
+  'landing.feature.cases.title': 'مقدمات کا رجسٹر',
+  'landing.feature.cases.body':
+    'فریقین، جج، وکلاء، کلائنٹ اور عدالت کی اقسام ایک ہی جگہ۔',
+  'landing.feature.hearings.title': 'سماعت کا کیلنڈر',
+  'landing.feature.hearings.body':
+    'آج، کل اور آنے والی تاریخیں ایک نظر میں۔ اتوار بند رہتا ہے۔',
+  'landing.feature.search.title': 'تیز تلاش',
+  'landing.feature.search.body':
+    'نام، کیس آئی ڈی یا شناختی کارڈ سے چند لمحوں میں مقدمہ تلاش کریں۔',
+  'landing.feature.history.title': 'کارروائی کی تاریخ',
+  'landing.feature.history.body':
+    'ہر تاریخ کا نتیجہ محفوظ کریں اور ضرورت پر صاف پرنٹ لیں۔',
+  'landing.feature.share.title': 'فہرست شیئر کریں',
+  'landing.feature.share.body':
+    'آج کی فہرست واٹس ایپ، ای میل یا کاپی سے چیمبر تک بھیجیں۔',
+  'landing.feature.bilingual.title': 'انگریزی اور اردو',
+  'landing.feature.bilingual.body':
+    'جس زبان میں آپ کام کرتے ہیں اسی میں چلائیں — کبھی بھی بدل لیں۔',
+  'landing.cta.title': 'اپنا عدالتی ڈائری آن لائن رکھنا شروع کریں',
+  'landing.cta.lede':
+    'ایک بار رجسٹر ہوں، فون تصدیق کریں، اور اگلی فہرست کے لیے ریکارڈ تیار ہے۔',
+  'landing.cta.button': 'شروع کریں',
+  'landing.footer.rights': 'کورٹ فائلز۔ پاکستان بھر کے وکیلوں کے لیے۔',
+
+  'site.company.name': 'کورٹ فائلز',
+  'site.company.website': 'https://clerkdiary.com',
+  'site.company.email': 'aliwheed@gmail.com',
+  'site.nav.legal': 'کمپنی اور پالیسیاں',
+  'site.nav.about': 'تعارف',
+  'site.nav.pricing': 'قیمتیں',
+  'site.nav.contact': 'رابطہ',
+  'site.nav.terms': 'شرائط و ضوابط',
+  'site.nav.privacy': 'پرائیویسی پالیسی',
+  'site.nav.refund': 'رقم واپسی اور منسوخی',
+  'site.nav.merchant': 'کاروباری معلومات',
+  'site.footer.updated': 'پالیسیاں آخری بار اپ ڈیٹ: ۲۵ ستمبر ۲۰۲۶۔',
+
+  'about.title': 'کورٹ فائلز کا تعارف',
+  'about.lede':
+    'گاہکوں اور ادائیگی پارٹنر کی جانچ کے لیے ہماری سروس کی عوامی معلومات۔',
+  'about.what.heading': 'ہماری سروس کیا کرتی ہے',
+  'about.what.body':
+    'کورٹ فائلز پاکستان کے وکیلوں کے لیے آن لائن مقدمات اور سماعت کا ریکارڈ ہے۔ یہ مقدمات درج کرنے، سماعتیں شیڈول اور ٹریک کرنے، تلاش، کارروائی کی تاریخ، وجہ فہرست شیئر کرنے، اور چیمبر کا کام انگریزی یا اردو میں منظم کرنے میں مدد دیتی ہے۔',
+  'about.who.heading': 'یہ کس کے لیے ہے',
+  'about.who.body':
+    'یہ سروس ان وکیلوں اور چیمبرز کے لیے ہے جنہیں کاغذی نوٹ بکس یا بکھری فائلوں کے بجائے قابلِ اعتماد ڈیجیٹل عدالتی ڈائری درکار ہو۔',
+  'about.company.heading': 'کاروبار / کمپنی کا نام',
+  'about.company.body':
+    'کاروباری نام: کورٹ فائلز۔\nویب سائٹ: https://clerkdiary.com\nہم کورٹ فائلز ایپ تک رسائی سافٹ ویئر ایز اے سروس (SaaS) سبسکرپشن کے طور پر فراہم کرتے ہیں۔',
+
+  'pricing.title': 'قیمتیں اور سبسکرپشن',
+  'pricing.lede':
+    'شفاف پیشگی پلان۔ اکاؤنٹ بنانے کے بعد EasyPaisa سے محفوظ ادائیگی کریں۔',
+  'pricing.cta': 'خریدنے کے لیے اکاؤنٹ بنائیں',
+  'pricing.fallbackNote':
+    'شائع شدہ پلان قیمتیں دکھائی جا رہی ہیں۔ اگر API عارضی طور پر دستیاب نہ ہو تب بھی یہی کیٹلاگ لاگو رہتی ہے۔',
+  'pricing.paymentNote':
+    'ادائیگیاں پاکستانی روپے (PKR) میں EasyPaisa کے ذریعے ہوتی ہیں۔ دکھائی گئی رقم پلان کی مدت کی مکمل پیشگی قیمت ہے۔',
+  'pricing.refundLink': 'دیکھیں ہماری',
+
+  'contact.title': 'رابطہ',
+  'contact.lede': 'سپورٹ، بلنگ، یا مرچنٹ ریویو کے لیے ہم سے رابطہ کریں۔',
+  'contact.business': 'کاروباری نام',
+  'contact.website': 'ویب سائٹ',
+  'contact.email': 'ای میل',
+  'contact.hours': 'سپورٹ اوقات',
+  'contact.hoursValue': 'پیر تا ہفتہ، صبح ۱۰ بجے تا شام ۶ بجے پاکستان معیاری وقت (PKT)۔',
+  'contact.note':
+    'ادائیگی یا اکاؤنٹ مدد کے لیے رجسٹرڈ فون/ای میل اور آرڈر آئی ڈی (اگر ہو) کے ساتھ ای میل کریں۔',
+
+  'terms.title': 'شرائط و ضوابط',
+  'terms.lede': 'یہ شرائط clerkdiary.com پر کورٹ فائلز کے استعمال پر لاگو ہیں۔',
+  'terms.s1.heading': '۱۔ معاہدہ',
+  'terms.s1.body':
+    'اکاؤنٹ بنا کر یا کورٹ فائلز استعمال کر کے آپ ان شرائط، پرائیویسی پالیسی، اور رقم واپسی و منسوخی پالیسی سے اتفاق کرتے ہیں۔ اگر اتفاق نہ ہو تو سروس استعمال نہ کریں۔',
+  'terms.s2.heading': '۲۔ سروس',
+  'terms.s2.body':
+    'کورٹ فائلز وکیلوں کو مقدمات، سماعتیں اور متعلقہ ریکارڈ منظم کرنے کے ڈیجیٹل آلات دیتی ہے۔ فیچرز بہتری کے ساتھ بدل سکتے ہیں۔ ہم قانونی مشورہ نہیں دیتے اور لاء فرم نہیں ہیں۔',
+  'terms.s3.heading': '۳۔ اکاؤنٹس',
+  'terms.s3.body':
+    'درست رجسٹریشن معلومات دیں اور لاگ اِن محفوظ رکھیں۔ آپ اپنے اکاؤنٹ کی سرگرمی کے ذمہ دار ہیں۔ غلط استعمال، شرائط کی خلاف ورزی یا فراڈ پر اکاؤنٹ معطل کیا جا سکتا ہے۔',
+  'terms.s4.heading': '۴۔ سبسکرپشن اور ادائیگی',
+  'terms.s4.body':
+    'ادائیگی والے پلان مقررہ مدت کے لیے پیشگی ہوتے ہیں (مثلاً ماہانہ یا سالانہ) جیسا کہ قیمتوں کے صفحے پر درج ہے۔ ادائیگی PKR میں EasyPaisa یا دیگر فعال طریقوں سے ہوتی ہے۔ ادا شدہ فیچرز فعال سبسکرپشن مدت پر منحصر ہیں۔',
+  'terms.s5.heading': '۵۔ جائز استعمال',
+  'terms.s5.body':
+    'کورٹ فائلز صرف قانونی پیشہ ورانہ مقاصد کے لیے استعمال کریں۔ سیکیورٹی توڑنے، غلط استعمال، غیر قانونی مواد محفوظ کرنے، یا فراڈ کی کوشش ممنوع ہے۔',
+  'terms.s6.heading': '۶۔ ذمہ داری کی حد',
+  'terms.s6.body':
+    'سروس “دستیاب ہونے کے مطابق” فراہم کی جاتی ہے۔ قانون کی اجازت کی حد تک کورٹ فائلز بالواسطہ نقصانات کا ذمہ دار نہیں، بشمول صارف کی غلطی یا تیسرے فریق کی بندش۔ پاکستانی قانون کے تحت جو ذمہ داری خارج نہیں کی جا سکتی وہ برقرار رہتی ہے۔',
+  'terms.s7.heading': '۷۔ تبدیلیاں اور رابطہ',
+  'terms.s7.body':
+    'ہم یہ شرائط ویب سائٹ پر نیا ورژن شائع کر کے اپ ڈیٹ کر سکتے ہیں۔ تبدیلی کے بعد استعمال سے آپ اپ ڈیٹ شدہ شرائط قبول کرتے ہیں۔ سوالات: aliwheed@gmail.com۔',
+
+  'privacy.title': 'پرائیویسی پالیسی',
+  'privacy.lede': 'کورٹ فائلز آپ کی معلومات کیسے جمع، استعمال اور محفوظ کرتا ہے۔',
+  'privacy.s1.heading': '۱۔ ہم کون سی معلومات لیتے ہیں',
+  'privacy.s1.body':
+    'ہم وہ اکاؤنٹ تفصیلات لیتے ہیں جو آپ دیتے ہیں (نام، فون، ای میل، بار ایڈریس)، آپ کے درج کردہ مقدمات/سماعتیں، سبسکرپشن کی تصدیق کے لیے ادائیگی میٹا ڈیٹا (آرڈر/لین دین حوالہ)، اور سروس چلانے/محفوظ رکھنے کے لیے بنیادی تکنیکی لاگز۔',
+  'privacy.s2.heading': '۲۔ استعمال',
+  'privacy.s2.body':
+    'معلومات اکاؤنٹ بنانے، سروس فراہم کرنے، سبسکرپشن، سروس ای میلز، سپورٹ، فراڈ روک تھام، اور بہتری کے لیے استعمال ہوتی ہیں۔',
+  'privacy.s3.heading': '۳۔ شیئرنگ',
+  'privacy.s3.body':
+    'ہم ذاتی ڈیٹا فروخت نہیں کرتے۔ سروس چلانے کے لیے محدود ڈیٹا ہوسٹنگ، ای میل، اور EasyPaisa جیسی پارٹنرز سے شیئر ہو سکتا ہے۔ قانون کے تحت افشا بھی ہو سکتا ہے۔',
+  'privacy.s4.heading': '۴۔ ذخیرہ اور سیکیورٹی',
+  'privacy.s4.body':
+    'ڈیٹا معتبر کلاؤڈ فراہم کنندگان پر محفوظ ہوتا ہے۔ ہم HTTPS اور رسائی کنٹرول استعمال کرتے ہیں۔ کوئی نظام سو فیصد محفوظ نہیں؛ اپنا پاس ورڈ محفوظ رکھیں۔',
+  'privacy.s5.heading': '۵۔ برقرار رکھنا',
+  'privacy.s5.body':
+    'اکاؤنٹ فعال رہتے ہوئے اور قانونی/اکاؤنٹنگ ضروریات تک ڈیٹا رکھا جاتا ہے۔ حذف کی درخواست سپورٹ کو بھیج سکتے ہیں؛ کچھ ریکارڈ قانونی طور پر رکھے جا سکتے ہیں۔',
+  'privacy.s6.heading': '۶۔ رابطہ',
+  'privacy.s6.body':
+    'پرائیویسی سوالات: aliwheed@gmail.com۔ ویب سائٹ: https://clerkdiary.com۔',
+
+  'refund.title': 'رقم واپسی اور منسوخی پالیسی',
+  'refund.lede': 'EasyPaisa اور دیگر سبسکرپشن ادائیگیوں کے واضح قواعد۔',
+  'refund.s1.heading': '۱۔ رقم واپسی نہیں',
+  'refund.s1.body':
+    'تمام سبسکرپشن ادائیگیاں حتمی ہیں۔ کامیاب ادائیگی کے بعد کورٹ فائلز رقم واپس، جزوی واپسی، یا غیر استعمال شدہ وقت کی واپسی نہیں کرتا — بشمول رائے کی تبدیلی یا غلطی سے دوہری خریداری۔',
+  'refund.s2.heading': '۲۔ کسی بھی وقت منسوخی',
+  'refund.s2.body':
+    'آپ کسی بھی وقت سبسکرپشن منسوخ کر سکتے یا استعمال بند کر سکتے ہیں۔ منسوخی کا مطلب ہے آپ جاری/تجدید نہیں کرنا چاہتے۔ پہلے سے ادا شدہ رسائی ادائیگی کی مدت ختم ہونے تک رہتی ہے، الا یہ کہ غلط استعمال یا فراڈ پر اکاؤنٹ معطل ہو۔',
+  'refund.s3.heading': '۳۔ ناکام یا نامکمل ادائیگی',
+  'refund.s3.body':
+    'اگر EasyPaisa ادائیگی ناکام یا مکمل نہ ہو تو سبسکرپشن فعال نہیں ہوتی۔ اگر فراہم کنندہ نے رقم کاٹی مگر پلان فعال نہ ہوا تو آرڈر تفصیل کے ساتھ ہم سے رابطہ کریں تاکہ جانچ کی جا سکے۔',
+  'refund.s4.heading': '۴۔ بلنگ مدد',
+  'refund.s4.body':
+    'aliwheed@gmail.com پر رجسٹرڈ ای میل/فون اور ادائیگی حوالہ بھیجیں۔ ہم دو کاروباری دنوں میں جواب دینے کی کوشش کرتے ہیں۔',
+
   'nav.dashboard': 'ڈیش بورڈ',
   'nav.addCase': 'نیا مقدمہ شامل کریں',
   'nav.calendar': 'کیلنڈر',
@@ -468,7 +775,7 @@ export const ur: Record<TranslationKey, string> = {
 
   'register.title': 'اکاؤنٹ بنائیں',
   'register.lede':
-    'اپنے بار کی تفصیلات کے ساتھ رجسٹر کریں۔ آپ کے فون پر او ٹی پی بھیجا جائے گا۔',
+    'اپنے بار کی تفصیلات کے ساتھ رجسٹر کریں۔ تصدیقی کوڈ آپ کے ای میل پر بھیجا جائے گا۔',
   'register.name': 'نام',
   'register.phone': 'فون نمبر',
   'register.email': 'ای میل ایڈریس',
@@ -480,22 +787,27 @@ export const ur: Record<TranslationKey, string> = {
   'register.signIn': 'سائن ان',
   'register.passwordMismatch': 'پاس ورڈ مماثل نہیں ہیں۔',
 
-  'otp.title': 'او ٹی پی تصدیق',
-  'otp.lede': 'ہم نے {{phone}} پر چھ ہندسوں کا کوڈ بھیجا ہے۔',
+  'otp.title': 'ای میل تصدیق',
+  'otp.lede': 'ہم نے {{email}} پر چھ ہندسوں کا کوڈ بھیجا ہے۔ اگر نظر نہ آئے تو اسپام / جنک چیک کریں۔',
   'otp.yourPhone': 'آپ کا فون',
+  'otp.yourEmail': 'آپ کا ای میل',
   'otp.label': 'ایک بار استعمال پاس ورڈ',
   'otp.placeholder': 'چھ ہندسوں کا کوڈ',
   'otp.submit': 'رجسٹریشن مکمل کریں',
-  'otp.resend': 'او ٹی پی دوبارہ بھیجیں',
+  'otp.resend': 'کوڈ دوبارہ بھیجیں',
   'otp.wrongNumber': 'غلط نمبر؟',
+  'otp.wrongEmail': 'غلط ای میل؟',
   'otp.goBack': 'واپس جائیں',
-  'otp.demoInfo': 'ڈیمو او ٹی پی (صرف فرنٹ اینڈ): {{otp}}',
-  'otp.enterInfo': 'اپنے فون پر بھیجا گیا او ٹی پی درج کریں۔',
-  'otp.resent': 'نیا او ٹی پی آپ کے فون پر بھیج دیا گیا ہے۔',
-  'otp.newDemo': 'نیا ڈیمو او ٹی پی: {{otp}}',
-  'otp.noneTitle': 'کوئی زیر زیر رجسٹریشن نہیں',
+  'otp.demoInfo': 'ڈیمو او ٹی پی (ای میل بھی بھیجا گیا): {{otp}}',
+  'otp.enterInfo': 'اپنے ای میل پر بھیجا گیا تصدیقی کوڈ درج کریں۔',
+  'otp.resent': 'نیا تصدیقی کوڈ آپ کے ای میل پر بھیج دیا گیا ہے۔ ان باکس اور اسپام چیک کریں۔',
+  'otp.newDemo': 'نیا ڈیمو او ٹی پی (ای میل بھی): {{otp}}',
+  'otp.spamHint':
+    'ای میل نہیں ملی؟ اسپام / جنک فولڈر چیک کریں اور اسے Not spam نشان زد کریں تاکہ اگلی بار ان باکس میں آئے۔',
+  'otp.noneTitle': 'کوئی جاری رجسٹریشن نہیں',
   'otp.noneLede': 'رجسٹریشن فارم سے دوبارہ شروع کریں۔',
   'otp.register': 'رجسٹر',
+  'otp.accountReady': 'اکاؤنٹ بن گیا اور ای میل تصدیق ہو گئی۔ اب سائن اِن کر سکتے ہیں۔',
 
   'dashboard.title': 'ڈیش بورڈ',
   'dashboard.lede': 'سماعتوں اور عدالتی فہرست کا جائزہ۔',
@@ -679,6 +991,10 @@ export const ur: Record<TranslationKey, string> = {
   'errors.passwordShort': 'پاس ورڈ کم از کم ۸ حروف کا ہونا چاہیے۔',
   'errors.registrationFailed':
     'رجسٹریشن مکمل نہیں ہو سکی۔ تفصیلات چیک کریں یا اگر پہلے سے اکاؤنٹ ہے تو سائن ان کریں۔',
+  'errors.mailNotConfigured':
+    'ای میل بھیجنا ترتیب نہیں دیا گیا۔ تصدیقی او ٹی پی نہیں بھیج سکتے۔',
+  'errors.mailSendFailed':
+    'تصدیقی ای میل نہیں بھیج سکتے۔ بعد میں دوبارہ کوشش کریں۔',
   'errors.otpLocked': 'بہت زیادہ غلط او ٹی پی۔ دوبارہ رجسٹر کریں۔',
   'errors.sessionExpired': 'آپ کا سیشن ختم ہو گیا۔ دوبارہ سائن ان کریں۔',
   'errors.noRegistration': 'کوئی جاری رجسٹریشن نہیں۔',

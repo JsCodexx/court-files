@@ -146,7 +146,7 @@ export function PlansPage() {
                 onClick={onPayEasyPaisa}
                 className="flex w-full items-center gap-4 rounded-lg border border-border bg-card p-4 text-start transition-colors hover:border-primary hover:bg-accent/40"
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-md bg-emerald-600/15 text-emerald-700 dark:text-emerald-400">
+                <span className="flex h-12 w-12 items-center justify-center rounded-md bg-primary/15 text-primary">
                   <Smartphone className="h-6 w-6" />
                 </span>
                 <span className="min-w-0 flex-1">

@@ -35,6 +35,10 @@ const ERROR_KEY_MAP: Record<string, string> = {
   'Phone number is already registered.': 'errors.phoneRegistered',
   'Unable to complete registration. Check your details or sign in if you already have an account.':
     'errors.registrationFailed',
+  'Email delivery is not configured. Cannot send verification OTP.':
+    'errors.mailNotConfigured',
+  'Could not send verification email. Please try again later.':
+    'errors.mailSendFailed',
   'Password must be at least 6 characters.': 'errors.passwordShort',
   'Password must be at least 8 characters.': 'errors.passwordShort',
   'No registration in progress.': 'errors.noRegistration',

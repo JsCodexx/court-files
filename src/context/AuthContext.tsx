@@ -18,6 +18,7 @@ import { useLoader } from './LoaderContext';
 
 const SESSION_KEY = 'cf_session';
 const PENDING_PHONE_KEY = 'cf_pending_phone';
+const PENDING_EMAIL_KEY = 'cf_pending_email';
 
 type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
 
@@ -32,6 +33,7 @@ interface AuthContextValue {
   login: (emailOrPhone: string, password: string) => Promise<Result>;
   logout: () => void;
   pendingPhone: string | null;
+  pendingEmail: string | null;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -77,6 +79,26 @@ function writePendingPhone(phone: string | null): void {
   }
 }
 
+function readPendingEmail(): string | null {
+  try {
+    return localStorage.getItem(PENDING_EMAIL_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writePendingEmail(email: string | null): void {
+  try {
+    if (email) {
+      localStorage.setItem(PENDING_EMAIL_KEY, email);
+    } else {
+      localStorage.removeItem(PENDING_EMAIL_KEY);
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
 function toError(err: unknown): { ok: false; error: string } {
   if (err instanceof ApiError) {
     return { ok: false, error: err.errorKey };
@@ -96,6 +118,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authReady, setAuthReady] = useState(() => !getToken());
   const [pendingPhone, setPendingPhone] = useState<string | null>(() =>
     readPendingPhone()
+  );
+  const [pendingEmail, setPendingEmail] = useState<string | null>(() =>
+    readPendingEmail()
   );
 
   const logout = useCallback(() => {
@@ -128,6 +153,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             ok: true;
             otp?: string;
             phone: string;
+            email: string;
           }>('/auth/register', {
             method: 'POST',
             body: {
@@ -140,6 +166,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           });
           writePendingPhone(res.phone);
           setPendingPhone(res.phone);
+          writePendingEmail(res.email);
+          setPendingEmail(res.email);
           return { ok: true as const, otp: res.otp };
         });
       } catch (err) {
@@ -163,6 +191,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           });
           writePendingPhone(null);
           setPendingPhone(null);
+          writePendingEmail(null);
+          setPendingEmail(null);
           return { ok: true as const };
         });
       } catch (err) {
@@ -263,6 +293,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       logout,
       pendingPhone,
+      pendingEmail,
     }),
     [
       user,
@@ -273,6 +304,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       logout,
       pendingPhone,
+      pendingEmail,
     ]
   );
 

@@ -16,10 +16,19 @@ import { CaseDetailPage } from './pages/CaseDetailPage';
 import { CaseHistoryPage } from './pages/CaseHistoryPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { LandingPage } from './pages/LandingPage';
+import {
+  AboutPage,
+  ContactPage,
+  PrivacyPage,
+  RefundPolicyPage,
+  TermsPage,
+} from './pages/LegalPages';
 import { LoginPage } from './pages/LoginPage';
 import { PaymentsPage } from './pages/PaymentsPage';
 import { PlansPage } from './pages/PlansPage';
 import { ProfilePage, ProfileOverview, ProfileSettings } from './pages/ProfilePage';
+import { PublicPricingPage } from './pages/PublicPricingPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { SearchPage } from './pages/SearchPage';
@@ -61,8 +70,14 @@ function App() {
                   </Route>
                 </Route>
 
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/pricing" element={<PublicPricingPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/refund-policy" element={<RefundPolicyPage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </CasesProvider>
           </AuthProvider>

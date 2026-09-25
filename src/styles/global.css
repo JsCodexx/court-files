@@ -33,6 +33,12 @@
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+    /* Light mode: soft emerald tint only — UI colors stay crisp */
+    opacity: 0.2;
+  }
+
+  html.dark body::before {
+    opacity: 0.85;
   }
 
   /* Soft wash so green stays visible but text/UI remain readable */
@@ -43,19 +49,19 @@
     z-index: 0;
     pointer-events: none;
     background: linear-gradient(
-      160deg,
-      hsl(var(--background) / 0.45) 0%,
-      hsl(var(--background) / 0.58) 45%,
-      hsl(var(--background) / 0.68) 100%
+      165deg,
+      hsl(var(--background) / 0.92) 0%,
+      hsl(var(--background) / 0.95) 50%,
+      hsl(var(--background) / 0.97) 100%
     );
   }
 
   html.dark body::after {
     background: linear-gradient(
       160deg,
-      hsl(var(--background) / 0.42) 0%,
-      hsl(var(--background) / 0.55) 50%,
-      hsl(var(--background) / 0.7) 100%
+      hsl(var(--background) / 0.62) 0%,
+      hsl(var(--background) / 0.74) 50%,
+      hsl(var(--background) / 0.85) 100%
     );
   }
 
@@ -106,30 +112,30 @@
     @apply mt-1 text-sm text-muted-foreground;
   }
 
-  /* Auth / full-page shells — transparent so the flag shows through */
+  /* Auth / full-page shells */
   .page-shell {
-    @apply flex min-h-[100dvh] items-center justify-center px-3 py-6 sm:px-4 sm:py-10;
+    @apply flex min-h-[100dvh] items-center justify-center bg-background px-3 py-6 sm:px-4 sm:py-10;
   }
 
   /* Global loader — Pakistan crescent & star */
   .loader-overlay {
     @apply fixed inset-0 z-[100] flex items-center justify-center;
-    background: hsl(152 55% 12% / 0.55);
+    background: hsl(var(--sidebar) / 0.58);
     backdrop-filter: blur(6px);
   }
 
   .loader-panel {
     @apply relative flex flex-col items-center gap-4 px-10 py-8;
     border-radius: 1.25rem;
-    border: 1px solid hsl(0 0% 100% / 0.22);
+    border: 1px solid hsl(0 0% 100% / 0.18);
     background: linear-gradient(
       165deg,
-      hsl(148 72% 21% / 0.92) 0%,
-      hsl(152 55% 12% / 0.96) 100%
+      hsl(var(--primary) / 0.95) 0%,
+      hsl(var(--sidebar) / 0.98) 100%
     );
     box-shadow:
-      0 0 0 1px hsl(0 0% 100% / 0.06),
-      0 24px 48px hsl(152 55% 8% / 0.45);
+      0 0 0 1px hsl(0 0% 100% / 0.05),
+      0 24px 48px hsl(var(--sidebar) / 0.5);
   }
 
   .loader-orbit {
@@ -145,7 +151,7 @@
     border-radius: 9999px;
     border: 2px solid hsl(0 0% 100% / 0.15);
     border-top-color: hsl(0 0% 100% / 0.95);
-    border-right-color: hsl(145 52% 55% / 0.85);
+    border-right-color: hsl(var(--primary) / 0.85);
     animation: loader-spin 0.9s linear infinite;
   }
 
