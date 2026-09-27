@@ -18,6 +18,13 @@ export function ProtectedRoute() {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
+  if (
+    user.mustChangePassword &&
+    location.pathname !== '/change-password-required'
+  ) {
+    return <Navigate to="/change-password-required" replace />;
+  }
+
   return <Outlet />;
 }
 
@@ -32,6 +39,9 @@ export function PublicOnlyRoute() {
     );
   }
 
+  if (user?.mustChangePassword) {
+    return <Navigate to="/change-password-required" replace />;
+  }
   if (user) return <Navigate to="/dashboard" replace />;
   return <Outlet />;
 }

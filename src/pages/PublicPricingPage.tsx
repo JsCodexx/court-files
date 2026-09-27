@@ -120,7 +120,7 @@ export function PublicPricingPage() {
               </CardContent>
               <CardFooter>
                 <Button asChild className="w-full">
-                  <Link to="/register">{t('pricing.cta')}</Link>
+                  <Link to={`/checkout?plan=${plan.id}`}>{t('pricing.cta')}</Link>
                 </Button>
               </CardFooter>
             </Card>

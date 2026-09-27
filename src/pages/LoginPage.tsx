@@ -49,6 +49,10 @@ export function LoginPage() {
       setError(t(result.error as TranslationKey));
       return;
     }
+    if (result.mustChangePassword) {
+      navigate('/change-password-required', { replace: true });
+      return;
+    }
     navigate('/dashboard');
   };
 
