@@ -15,8 +15,11 @@ import { CalendarPage } from './pages/CalendarPage';
 import { CaseDetailPage } from './pages/CaseDetailPage';
 import { CaseHistoryPage } from './pages/CaseHistoryPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { ForceChangePasswordPage } from './pages/ForceChangePasswordPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { LandingPage } from './pages/LandingPage';
+import { GuestCheckoutPage } from './pages/GuestCheckoutPage';
+import { HowItWorksPage } from './pages/HowItWorksPage';
 import {
   AboutPage,
   ContactPage,
@@ -53,6 +56,10 @@ function App() {
                 <Route path="/verify-email" element={<VerifyEmailPage />} />
 
                 <Route element={<ProtectedRoute />}>
+                  <Route
+                    path="/change-password-required"
+                    element={<ForceChangePasswordPage />}
+                  />
                   <Route element={<AppLayout />}>
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/cases/new" element={<AddCasePage />} />
@@ -72,7 +79,9 @@ function App() {
 
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/how-it-works" element={<HowItWorksPage />} />
                 <Route path="/pricing" element={<PublicPricingPage />} />
+                <Route path="/checkout" element={<GuestCheckoutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/terms" element={<TermsPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />

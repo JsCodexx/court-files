@@ -9,10 +9,11 @@ import {
   Share2,
 } from 'lucide-react';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
-import { SiteFooterLinks } from '../components/SiteShell';
+import { CompanyFooter } from '../components/CompanyFooter';
 import ThemeToggle from '../components/ThemeToggle';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../context/AuthContext';
+import { COMPANY } from '../constants/company';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { cn } from '../lib/utils';
@@ -135,8 +136,13 @@ export function LandingPage() {
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
               <Scale className="h-5 w-5" />
             </span>
-            <span className="truncate font-display text-lg font-semibold tracking-tight text-foreground sm:text-xl">
-              {t('brand.name')}
+            <span className="min-w-0">
+              <span className="block truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                {COMPANY.legalName}
+              </span>
+              <span className="block truncate font-display text-lg font-semibold tracking-tight text-foreground sm:text-xl">
+                {COMPANY.productName}
+              </span>
             </span>
           </Link>
           <div className="flex items-center gap-1.5 sm:gap-2">
@@ -146,7 +152,7 @@ export function LandingPage() {
               <Link to="/login">{t('landing.nav.signIn')}</Link>
             </Button>
             <Button asChild size="sm">
-              <Link to="/register">{t('landing.nav.getStarted')}</Link>
+              <Link to="/checkout">{t('landing.nav.buyNow')}</Link>
             </Button>
           </div>
         </div>
@@ -156,8 +162,11 @@ export function LandingPage() {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/50" />
         <div className="relative mx-auto grid max-w-6xl gap-10 px-4 pb-16 pt-10 sm:px-6 sm:pb-20 sm:pt-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:pt-16">
           <div className="animate-rise-in">
-            <p className="font-display text-4xl font-semibold tracking-tight text-primary sm:text-5xl lg:text-6xl">
-              {t('brand.name')}
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+              {t('brand.presents', { product: COMPANY.productName })}
+            </p>
+            <p className="mt-3 font-display text-4xl font-semibold tracking-tight text-primary sm:text-5xl lg:text-6xl">
+              {COMPANY.productName}
             </p>
             <p className="mt-2 text-sm font-semibold uppercase tracking-[0.16em] text-primary/75">
               {t('brand.sub')}
@@ -170,10 +179,10 @@ export function LandingPage() {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button asChild size="lg" className="min-w-[10.5rem]">
-                <Link to="/register">{t('landing.hero.ctaPrimary')}</Link>
+                <Link to="/checkout">{t('landing.hero.ctaPrimary')}</Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <Link to="/login">{t('landing.hero.ctaSecondary')}</Link>
+                <Link to="/how-it-works">{t('landing.hero.ctaSecondary')}</Link>
               </Button>
             </div>
           </div>
@@ -233,35 +242,12 @@ export function LandingPage() {
             variant="secondary"
             className="shrink-0 border-0 bg-card text-primary hover:bg-card/90"
           >
-            <Link to="/register">{t('landing.cta.button')}</Link>
+            <Link to="/checkout">{t('landing.cta.button')}</Link>
           </Button>
         </div>
       </section>
 
-      <footer className="bg-sidebar text-sidebar-foreground">
-        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <Scale className="h-4 w-4 text-sidebar-accent" />
-                <span className="font-display text-sm font-semibold">
-                  {t('brand.name')}
-                </span>
-              </div>
-              <p className="mt-2 text-sm text-sidebar-muted">
-                {t('landing.footer.rights')}
-              </p>
-              <p className="mt-1 text-sm text-sidebar-muted" dir="ltr">
-                {t('site.company.website')}
-              </p>
-            </div>
-            <SiteFooterLinks />
-          </div>
-          <p className="border-t border-sidebar-foreground/10 pt-4 text-xs text-sidebar-muted">
-            {t('site.footer.updated')}
-          </p>
-        </div>
-      </footer>
+      <CompanyFooter />
     </div>
   );
 }

@@ -5,15 +5,17 @@ export type TranslationKey = keyof typeof en;
 export const en = {
   'brand.name': 'Court Files',
   'brand.sub': 'Case & hearing ledger',
+  'brand.presents': 'Digital Dunya presents {{product}}',
 
   'landing.nav.signIn': 'Sign in',
   'landing.nav.getStarted': 'Get started',
+  'landing.nav.buyNow': 'Buy now',
   'landing.nav.openApp': 'Open dashboard',
   'landing.hero.headline': 'Your cases and hearings, in one ledger.',
   'landing.hero.lede':
     'Built for advocates — register matters, track next dates, and keep proceeding history ready when you need it.',
-  'landing.hero.ctaPrimary': 'Create free account',
-  'landing.hero.ctaSecondary': 'Sign in',
+  'landing.hero.ctaPrimary': 'Buy Monthly or Yearly',
+  'landing.hero.ctaSecondary': 'How it works',
   'landing.preview.badge': 'Today’s cause list',
   'landing.preview.court': 'Civil Court · Lahore',
   'landing.preview.case1': 'Ali vs Khan',
@@ -45,55 +47,65 @@ export const en = {
     'Work in the language your practice uses — switch anytime.',
   'landing.cta.title': 'Start keeping your court diary online',
   'landing.cta.lede':
-    'Register once, verify your phone, and your ledger is ready for the next list.',
-  'landing.cta.button': 'Get started',
-  'landing.footer.rights': 'Court Files. For advocates across Pakistan.',
+    'Choose Monthly or Yearly, pay with RapidGateway, then open Court Files — presented by Digital Dunya.',
+  'landing.cta.button': 'Buy now',
+  'landing.footer.rights': 'Digital Dunya presents Court Files — for advocates across Pakistan.',
 
-  'site.company.name': 'Court Files',
+  'site.company.name': 'Digital Dunya',
   'site.company.website': 'https://clerkdiary.com',
   'site.company.email': 'aliwheed@gmail.com',
+  'site.company.phone': '+92 302 7857887',
+  'site.company.address':
+    'House #3 street #2 Mohallah Eid Gah Minchinabad District Bahawalnagar',
   'site.nav.legal': 'Company & policies',
   'site.nav.about': 'About',
   'site.nav.pricing': 'Pricing',
+  'site.nav.howItWorks': 'How it works',
+  'site.nav.checkout': 'Checkout',
   'site.nav.contact': 'Contact',
   'site.nav.terms': 'Terms & Conditions',
   'site.nav.privacy': 'Privacy Policy',
   'site.nav.refund': 'Refund & Cancellation',
   'site.nav.merchant': 'Business info',
-  'site.footer.updated': 'Policies last updated: 25 September 2026.',
+  'site.footer.contactHeading': 'Contact',
+  'site.footer.gatewayNote':
+    'Payments via RapidGateway for smooth payment across all digital wallet connectivity.',
+  'site.footer.updated': 'Policies last updated: 27 September 2026.',
 
   'about.title': 'About Court Files',
   'about.lede':
     'Public information about our service for customers and payment-partner reviews.',
   'about.what.heading': 'What our service does',
   'about.what.body':
-    'Court Files is an online case and hearing ledger for advocates in Pakistan. It helps lawyers register court cases, schedule and track hearings, search matters, keep proceeding history, share cause lists, and manage their chamber workflow in English or Urdu.',
+    'Digital Dunya presents Court Files — an online case and hearing ledger for advocates in Pakistan. It helps lawyers register court cases, schedule and track hearings, search matters, keep proceeding history, share cause lists, and manage their chamber workflow in English or Urdu.',
   'about.who.heading': 'Who it is for',
   'about.who.body':
     'The service is designed for practising advocates and chambers who need a reliable digital court diary instead of paper notebooks or scattered spreadsheets.',
   'about.company.heading': 'Business / company name',
   'about.company.body':
-    'Business name: Court Files.\nWebsite: https://clerkdiary.com\nWe provide software-as-a-service (SaaS) subscription access to the Court Files application.',
+    'Business name: Digital Dunya\nProduct: Court Files\nWebsite: https://clerkdiary.com\nEmail: aliwheed@gmail.com\nPhone: +92 302 7857887\nAddress: House #3 street #2 Mohallah Eid Gah Minchinabad District Bahawalnagar\n\nWe provide software-as-a-service (SaaS) subscription access to Court Files. Only Monthly and Yearly plans are offered. Payments use RapidGateway for digital wallet connectivity.',
 
   'pricing.title': 'Pricing & subscriptions',
   'pricing.lede':
-    'Transparent prepaid plans. Pay securely with EasyPaisa after you create an account.',
-  'pricing.cta': 'Create account to purchase',
+    'Only two prepaid services: Monthly and Yearly. Pay with RapidGateway — no account required before checkout.',
+  'pricing.cta': 'Checkout without account',
   'pricing.fallbackNote':
     'Showing published plan prices. Live amounts match our catalog even if the API is temporarily unavailable.',
   'pricing.paymentNote':
-    'Payments are processed in Pakistani Rupees (PKR) via EasyPaisa. Prices shown are the full prepaid amount for the plan period.',
+    'Payments are processed in Pakistani Rupees (PKR) via RapidGateway for smooth payment across all digital wallet connectivity. Prices shown are the full prepaid amount for the plan period.',
   'pricing.refundLink': 'See our',
 
   'contact.title': 'Contact',
-  'contact.lede': 'Reach us for support, billing questions, or merchant review inquiries.',
+  'contact.lede': 'Reach Digital Dunya for support, billing questions, or merchant review inquiries.',
   'contact.business': 'Business name',
   'contact.website': 'Website',
   'contact.email': 'Email',
+  'contact.phone': 'Phone',
+  'contact.address': 'Address',
   'contact.hours': 'Support hours',
   'contact.hoursValue': 'Monday–Saturday, 10:00–18:00 Pakistan Standard Time (PKT).',
   'contact.note':
-    'For payment disputes or account help, email us with your registered phone/email and order ID if available.',
+    'For payment disputes or account help, email or call us with your registered phone/email and order ID if available.',
 
   'terms.title': 'Terms & Conditions',
   'terms.lede': 'These terms govern use of Court Files at clerkdiary.com.',
@@ -108,7 +120,7 @@ export const en = {
     'You must provide accurate registration details and keep your login credentials secure. You are responsible for activity under your account. We may suspend accounts that misuse the service, violate these terms, or attempt fraud.',
   'terms.s4.heading': '4. Subscriptions & payments',
   'terms.s4.body':
-    'Paid plans are prepaid for a fixed period (for example monthly or yearly) as listed on our Pricing page. Payments are collected in PKR through EasyPaisa or other methods we enable. Access to paid features depends on a valid active subscription period.',
+    'Paid plans are prepaid for a fixed period (Monthly or Yearly only) as listed on our Pricing page. Payments are collected in PKR through RapidGateway for digital wallet connectivity. Access to paid features depends on a valid active subscription period.',
   'terms.s5.heading': '5. Acceptable use',
   'terms.s5.body':
     'You may only use Court Files for lawful professional purposes. You must not attempt to break security, scrape or abuse the system, share accounts in a way that violates plan terms, or store unlawful content.',
@@ -129,7 +141,7 @@ export const en = {
     'We use your information to create and secure your account, deliver the Court Files service, process subscriptions, send service emails (verification, password reset, important notices), provide support, prevent fraud/abuse, and improve reliability.',
   'privacy.s3.heading': '3. Sharing',
   'privacy.s3.body':
-    'We do not sell your personal data. We may share limited data with infrastructure and payment partners strictly as needed to run the service (for example hosting, email delivery, and EasyPaisa payment confirmation). We may disclose information if required by law.',
+    'We do not sell your personal data. We may share limited data with infrastructure and payment partners strictly as needed to run the service (for example hosting, email delivery, and RapidGateway payment confirmation). We may disclose information if required by law.',
   'privacy.s4.heading': '4. Storage & security',
   'privacy.s4.body':
     'Data is stored with reputable cloud providers. We use industry-standard safeguards such as encrypted transport (HTTPS) and access controls. No method of transmission or storage is 100% secure; please protect your password.',
@@ -141,7 +153,7 @@ export const en = {
     'Privacy questions or data requests: aliwheed@gmail.com. Website: https://clerkdiary.com.',
 
   'refund.title': 'Refund & Cancellation Policy',
-  'refund.lede': 'Clear rules for EasyPaisa and other subscription payments.',
+  'refund.lede': 'Clear rules for RapidGateway subscription payments.',
   'refund.s1.heading': '1. No refunds',
   'refund.s1.body':
     'All subscription payments are final. Once a payment is successfully completed, Court Files does not offer refunds, chargebacks facilitation, or partial refunds for unused time, change of mind, duplicate purchases made by the user in error, or failure to use the service.',
@@ -150,10 +162,69 @@ export const en = {
     'You may cancel or stop using your Court Files subscription at any time. Cancellation means you choose not to continue or renew; you remain free to stop using the product whenever you want. Prepaid access continues until the end of the paid period already purchased, unless your account is suspended for misuse or fraud.',
   'refund.s3.heading': '3. Failed or incomplete payments',
   'refund.s3.body':
-    'If a payment fails or is not completed with EasyPaisa, no subscription is activated and no charge should remain pending with us. If you were charged by the payment provider but your plan was not activated, contact us with your order/transaction details and we will investigate with the payment partner.',
+    'If a payment fails or is not completed with RapidGateway, no subscription is activated and no charge should remain pending with us. If you were charged by the payment provider but your plan was not activated, contact us with your order/transaction details and we will investigate with the payment partner.',
   'refund.s4.heading': '4. Contact for billing help',
   'refund.s4.body':
-    'Email aliwheed@gmail.com with your registered email/phone and payment reference. We aim to respond within 2 business days.',
+    'Email aliwheed@gmail.com or call +92 302 7857887 with your registered email/phone and payment reference. We aim to respond within 2 business days.',
+
+  'checkout.title': 'Checkout',
+  'checkout.lede':
+    'Buy Monthly or Yearly Court Files access. No account is required before payment — RapidGateway handles a secure digital-wallet checkout.',
+  'checkout.choosePlan': 'Choose a service',
+  'checkout.choosePlanLede': 'Only two services are offered. Each includes full Court Files access for the paid period.',
+  'checkout.detailsTitle': 'Your details & payment',
+  'checkout.detailsLede': 'We use these details for your receipt and to open access after payment.',
+  'checkout.payWith': 'Pay with {{gateway}}',
+  'checkout.gatewayHint':
+    'RapidGateway provides smooth payment across digital wallet connectivity in Pakistan.',
+  'checkout.payCta': 'Pay Rs {{amount}} with {{gateway}}',
+  'checkout.noAccountRequired':
+    'No signup form before payment. After payment we create your account and email a temporary password.',
+  'checkout.gatewayUseCase':
+    'Intended use of the payment gateway: collect prepaid Monthly (Rs 150) and Yearly (Rs 1,400) subscription fees for Court Files at checkout, then unlock product access for the paid period.',
+  'checkout.demoReady': 'Checkout session ready. Confirm the demo RapidGateway payment below.',
+  'checkout.demoHint': 'Demo mode: simulate a successful {{gateway}} payment for this order.',
+  'checkout.demoConfirm': 'Confirm {{gateway}} payment',
+  'checkout.paidSuccess':
+    'Payment successful. Check your email for a welcome message and a temporary password, then sign in.',
+  'checkout.afterPay':
+    'We emailed a payment welcome message and a one-time temporary password to your checkout email. Sign in with that password — you will be asked to set a new password, then sign in again.',
+  'checkout.createAccount': 'Sign in with email from checkout',
+  'checkout.amount': 'Amount',
+
+  'forcePw.title': 'Set a new password',
+  'forcePw.lede': 'Signed in as {{email}}. Replace your temporary password to continue.',
+  'forcePw.hint':
+    'This temporary password is one-time. After you save a new password, you must sign in again.',
+  'forcePw.submit': 'Save password and sign in again',
+  'forcePw.samePassword': 'New password must be different from the temporary password.',
+
+  'journey.title': 'Business model & customer journey',
+  'journey.lede':
+    'How Digital Dunya operates Court Files, how customers buy, and how RapidGateway is used in payment.',
+  'journey.model.heading': 'Business model',
+  'journey.model.body':
+    'Digital Dunya operates Court Files as a prepaid SaaS product for advocates in Pakistan.\n\nWe do not sell physical goods. Customers purchase either a Monthly or Yearly digital subscription. After payment succeeds through RapidGateway, the customer can create or use an account to access case/hearing tools for the paid period.\n\nRevenue is subscription fees only (Rs 150 / 30 days or Rs 1,400 / 365 days). Support is provided by email and phone listed in the website footer.',
+  'journey.stepsTitle': 'Complete customer journey',
+  'journey.step': 'Step {{n}}',
+  'journey.s1.heading': 'Discover the service',
+  'journey.s1.body':
+    'A visitor opens clerkdiary.com, reads what Court Files does (presented by Digital Dunya), and reviews public pricing, policies, and contact details — without logging in.',
+  'journey.s2.heading': 'Choose Monthly or Yearly',
+  'journey.s2.body':
+    'On Pricing or Checkout, the customer selects one of the two subscription services and sees the exact PKR price and included features.',
+  'journey.s3.heading': 'Guest checkout (no account required)',
+  'journey.s3.body':
+    'The customer enters name, email, and phone on the public Checkout page. They are not forced to register or sign in before paying.',
+  'journey.s4.heading': 'Pay with RapidGateway',
+  'journey.s4.body':
+    'The customer pays with RapidGateway for digital wallet connectivity. RapidGateway is used only to collect the prepaid subscription amount securely and return a payment result to Digital Dunya.',
+  'journey.s5.heading': 'Access Court Files (optional account after payment)',
+  'journey.s5.body':
+    'After successful payment, the customer may create an account or sign in to use Court Files. Account creation is optional after checkout, not a requirement before payment.',
+  'journey.gateway.heading': 'Intended use of RapidGateway',
+  'journey.gateway.body':
+    '{{gateway}} is the payment gateway used during checkout to accept prepaid subscription payments for Court Files.\n\nWhen a customer clicks Pay on /checkout, they are directed through {{gateway}} to complete payment using connected digital wallets. On success, Digital Dunya records the paid order and the customer can proceed to use the product. On failure or cancellation, no subscription access is granted.',
 
   'nav.dashboard': 'Dashboard',
   'nav.addCase': 'Add New Case',
@@ -495,14 +566,15 @@ export const en = {
   'profile.passwordUpdated': 'Password updated.',
 
   'plans.title': 'Purchase plan',
-  'plans.lede': 'Choose a plan, then pay with EasyPaisa.',
+  'plans.lede': 'Choose Monthly or Yearly, then pay with RapidGateway.',
   'plans.loading': 'Loading plans…',
   'plans.purchase': 'Purchase plan',
   'plans.back': 'Back to plans',
   'plans.payTitle': 'Payment method',
   'plans.payLede': 'Pay Rs {{amount}} for {{plan}}',
-  'plans.easypaisa': 'EasyPaisa',
-  'plans.easypaisaHint': 'Pay securely with your EasyPaisa wallet or account',
+  'plans.easypaisa': 'RapidGateway',
+  'plans.easypaisaHint':
+    'Smooth payment across all digital wallet connectivity via RapidGateway',
 
   'payments.title': 'Payments',
   'payments.lede': 'Complete checkout and review your payment history.',
@@ -510,16 +582,17 @@ export const en = {
   'payments.checkoutLede': '{{plan}} — Rs {{amount}}',
   'payments.status': 'Status',
   'payments.orderId': 'Order ID',
-  'payments.redirecting': 'Starting EasyPaisa checkout…',
-  'payments.demoReady': 'Demo mode: EasyPaisa merchant keys are not set. Confirm below to simulate a successful payment.',
+  'payments.redirecting': 'Starting RapidGateway checkout…',
+  'payments.demoReady':
+    'Demo mode: RapidGateway merchant keys are not set. Confirm below to simulate a successful payment.',
   'payments.demoHint':
-    'No EasyPaisa credentials configured. This button marks the payment as paid for testing only.',
+    'No RapidGateway credentials configured. This button marks the payment as paid for testing only.',
   'payments.demoConfirm': 'Simulate successful payment',
   'payments.paidSuccess': 'Payment successful. Thank you!',
   'payments.callbackError': 'Payment could not be verified. Please try again or contact support.',
   'payments.choosePlan': 'Choose a plan',
   'payments.historyTitle': 'Payment history',
-  'payments.historyLede': 'Your recent EasyPaisa transactions.',
+  'payments.historyLede': 'Your recent RapidGateway transactions.',
   'payments.empty': 'No payments yet.',
 
   'hover.title': 'Case Detail',
@@ -583,15 +656,17 @@ export const en = {
 export const ur: Record<TranslationKey, string> = {
   'brand.name': 'کورٹ فائلز',
   'brand.sub': 'مقدمات اور سماعت کا ریکارڈ',
+  'brand.presents': 'ڈیجیٹل دنیا پیش کرتا ہے {{product}}',
 
   'landing.nav.signIn': 'سائن ان',
   'landing.nav.getStarted': 'شروع کریں',
+  'landing.nav.buyNow': 'اب خریدیں',
   'landing.nav.openApp': 'ڈیش بورڈ کھولیں',
   'landing.hero.headline': 'آپ کے مقدمات اور سماعتیں، ایک ہی ریکارڈ میں۔',
   'landing.hero.lede':
     'وکیلوں کے لیے بنایا گیا — مقدمات درج کریں، اگلی تاریخیں رکھیں، اور ضرورت پڑنے پر کارروائی کی تاریخ تیار رکھیں۔',
-  'landing.hero.ctaPrimary': 'مفت اکاؤنٹ بنائیں',
-  'landing.hero.ctaSecondary': 'سائن ان',
+  'landing.hero.ctaPrimary': 'ماہانہ یا سالانہ خریدیں',
+  'landing.hero.ctaSecondary': 'کیسے کام کرتا ہے',
   'landing.preview.badge': 'آج کی وجہ فہرست',
   'landing.preview.court': 'دیوانی عدالت · لاہور',
   'landing.preview.case1': 'علی بنام خان',
@@ -623,55 +698,62 @@ export const ur: Record<TranslationKey, string> = {
     'جس زبان میں آپ کام کرتے ہیں اسی میں چلائیں — کبھی بھی بدل لیں۔',
   'landing.cta.title': 'اپنا عدالتی ڈائری آن لائن رکھنا شروع کریں',
   'landing.cta.lede':
-    'ایک بار رجسٹر ہوں، فون تصدیق کریں، اور اگلی فہرست کے لیے ریکارڈ تیار ہے۔',
-  'landing.cta.button': 'شروع کریں',
-  'landing.footer.rights': 'کورٹ فائلز۔ پاکستان بھر کے وکیلوں کے لیے۔',
+    'ماہانہ یا سالانہ چنیں، RapidGateway سے ادا کریں، پھر کورٹ فائلز کھولیں — ڈیجیٹل دنیا کی پیشکش۔',
+  'landing.cta.button': 'اب خریدیں',
+  'landing.footer.rights': 'ڈیجیٹل دنیا پیش کرتا ہے کورٹ فائلز — پاکستان بھر کے وکیلوں کے لیے۔',
 
-  'site.company.name': 'کورٹ فائلز',
+  'site.company.name': 'ڈیجیٹل دنیا',
   'site.company.website': 'https://clerkdiary.com',
   'site.company.email': 'aliwheed@gmail.com',
+  'site.company.phone': '+92 302 7857887',
+  'site.company.address':
+    'House #3 street #2 Mohallah Eid Gah Minchinabad District Bahawalnagar',
   'site.nav.legal': 'کمپنی اور پالیسیاں',
   'site.nav.about': 'تعارف',
   'site.nav.pricing': 'قیمتیں',
+  'site.nav.howItWorks': 'کیسے کام کرتا ہے',
+  'site.nav.checkout': 'چیک آؤٹ',
   'site.nav.contact': 'رابطہ',
   'site.nav.terms': 'شرائط و ضوابط',
   'site.nav.privacy': 'پرائیویسی پالیسی',
   'site.nav.refund': 'رقم واپسی اور منسوخی',
   'site.nav.merchant': 'کاروباری معلومات',
-  'site.footer.updated': 'پالیسیاں آخری بار اپ ڈیٹ: ۲۵ ستمبر ۲۰۲۶۔',
+  'site.footer.updated': 'پالیسیاں آخری بار اپ ڈیٹ: ۲۷ ستمبر ۲۰۲۶۔',
 
   'about.title': 'کورٹ فائلز کا تعارف',
   'about.lede':
     'گاہکوں اور ادائیگی پارٹنر کی جانچ کے لیے ہماری سروس کی عوامی معلومات۔',
   'about.what.heading': 'ہماری سروس کیا کرتی ہے',
   'about.what.body':
-    'کورٹ فائلز پاکستان کے وکیلوں کے لیے آن لائن مقدمات اور سماعت کا ریکارڈ ہے۔ یہ مقدمات درج کرنے، سماعتیں شیڈول اور ٹریک کرنے، تلاش، کارروائی کی تاریخ، وجہ فہرست شیئر کرنے، اور چیمبر کا کام انگریزی یا اردو میں منظم کرنے میں مدد دیتی ہے۔',
+    'ڈیجیٹل دنیا پیش کرتا ہے کورٹ فائلز — پاکستان کے وکیلوں کے لیے آن لائن مقدمات اور سماعت کا ریکارڈ۔ یہ مقدمات درج کرنے، سماعتیں شیڈول اور ٹریک کرنے، تلاش، کارروائی کی تاریخ، وجہ فہرست شیئر کرنے، اور چیمبر کا کام انگریزی یا اردو میں منظم کرنے میں مدد دیتی ہے۔',
   'about.who.heading': 'یہ کس کے لیے ہے',
   'about.who.body':
     'یہ سروس ان وکیلوں اور چیمبرز کے لیے ہے جنہیں کاغذی نوٹ بکس یا بکھری فائلوں کے بجائے قابلِ اعتماد ڈیجیٹل عدالتی ڈائری درکار ہو۔',
   'about.company.heading': 'کاروبار / کمپنی کا نام',
   'about.company.body':
-    'کاروباری نام: کورٹ فائلز۔\nویب سائٹ: https://clerkdiary.com\nہم کورٹ فائلز ایپ تک رسائی سافٹ ویئر ایز اے سروس (SaaS) سبسکرپشن کے طور پر فراہم کرتے ہیں۔',
+    'کاروباری نام: ڈیجیٹل دنیا\nپروڈکٹ: کورٹ فائلز\nویب سائٹ: https://clerkdiary.com\nای میل: aliwheed@gmail.com\nفون: +92 302 7857887\nپتہ: House #3 street #2 Mohallah Eid Gah Minchinabad District Bahawalnagar\n\nہم کورٹ فائلز تک SaaS سبسکرپشن فراہم کرتے ہیں۔ صرف ماہانہ اور سالانہ پلان۔ ادائیگی RapidGateway سے ڈیجیٹل والیٹ کنیکٹیویٹی کے ساتھ۔',
 
   'pricing.title': 'قیمتیں اور سبسکرپشن',
   'pricing.lede':
-    'شفاف پیشگی پلان۔ اکاؤنٹ بنانے کے بعد EasyPaisa سے محفوظ ادائیگی کریں۔',
-  'pricing.cta': 'خریدنے کے لیے اکاؤنٹ بنائیں',
+    'صرف دو پیشگی سروسز: ماہانہ اور سالانہ۔ RapidGateway سے ادا کریں — چیک آؤٹ سے پہلے اکاؤنٹ ضروری نہیں۔',
+  'pricing.cta': 'بغیر اکاؤنٹ چیک آؤٹ',
   'pricing.fallbackNote':
     'شائع شدہ پلان قیمتیں دکھائی جا رہی ہیں۔ اگر API عارضی طور پر دستیاب نہ ہو تب بھی یہی کیٹلاگ لاگو رہتی ہے۔',
   'pricing.paymentNote':
-    'ادائیگیاں پاکستانی روپے (PKR) میں EasyPaisa کے ذریعے ہوتی ہیں۔ دکھائی گئی رقم پلان کی مدت کی مکمل پیشگی قیمت ہے۔',
+    'ادائیگیاں PKR میں RapidGateway کے ذریعے ہوتی ہیں تاکہ تمام ڈیجیٹل والیٹ کنیکٹیویٹی پر آسان ادائیگی ہو۔ دکھائی گئی رقم پلان کی مدت کی مکمل پیشگی قیمت ہے۔',
   'pricing.refundLink': 'دیکھیں ہماری',
 
   'contact.title': 'رابطہ',
-  'contact.lede': 'سپورٹ، بلنگ، یا مرچنٹ ریویو کے لیے ہم سے رابطہ کریں۔',
+  'contact.lede': 'سپورٹ، بلنگ، یا مرچنٹ ریویو کے لیے ڈیجیٹل دنیا سے رابطہ کریں۔',
   'contact.business': 'کاروباری نام',
   'contact.website': 'ویب سائٹ',
   'contact.email': 'ای میل',
+  'contact.phone': 'فون',
+  'contact.address': 'پتہ',
   'contact.hours': 'سپورٹ اوقات',
   'contact.hoursValue': 'پیر تا ہفتہ، صبح ۱۰ بجے تا شام ۶ بجے پاکستان معیاری وقت (PKT)۔',
   'contact.note':
-    'ادائیگی یا اکاؤنٹ مدد کے لیے رجسٹرڈ فون/ای میل اور آرڈر آئی ڈی (اگر ہو) کے ساتھ ای میل کریں۔',
+    'ادائیگی یا اکاؤنٹ مدد کے لیے رجسٹرڈ فون/ای میل اور آرڈر آئی ڈی (اگر ہو) کے ساتھ ای میل یا فون کریں۔',
 
   'terms.title': 'شرائط و ضوابط',
   'terms.lede': 'یہ شرائط clerkdiary.com پر کورٹ فائلز کے استعمال پر لاگو ہیں۔',
@@ -686,7 +768,7 @@ export const ur: Record<TranslationKey, string> = {
     'درست رجسٹریشن معلومات دیں اور لاگ اِن محفوظ رکھیں۔ آپ اپنے اکاؤنٹ کی سرگرمی کے ذمہ دار ہیں۔ غلط استعمال، شرائط کی خلاف ورزی یا فراڈ پر اکاؤنٹ معطل کیا جا سکتا ہے۔',
   'terms.s4.heading': '۴۔ سبسکرپشن اور ادائیگی',
   'terms.s4.body':
-    'ادائیگی والے پلان مقررہ مدت کے لیے پیشگی ہوتے ہیں (مثلاً ماہانہ یا سالانہ) جیسا کہ قیمتوں کے صفحے پر درج ہے۔ ادائیگی PKR میں EasyPaisa یا دیگر فعال طریقوں سے ہوتی ہے۔ ادا شدہ فیچرز فعال سبسکرپشن مدت پر منحصر ہیں۔',
+    'ادائیگی والے پلان صرف ماہانہ یا سالانہ ہوتے ہیں جیسا کہ قیمتوں کے صفحے پر درج ہے۔ ادائیگی PKR میں RapidGateway سے ڈیجیٹل والیٹ کنیکٹیویٹی کے ساتھ ہوتی ہے۔ ادا شدہ فیچرز فعال سبسکرپشن مدت پر منحصر ہیں۔',
   'terms.s5.heading': '۵۔ جائز استعمال',
   'terms.s5.body':
     'کورٹ فائلز صرف قانونی پیشہ ورانہ مقاصد کے لیے استعمال کریں۔ سیکیورٹی توڑنے، غلط استعمال، غیر قانونی مواد محفوظ کرنے، یا فراڈ کی کوشش ممنوع ہے۔',
@@ -707,7 +789,7 @@ export const ur: Record<TranslationKey, string> = {
     'معلومات اکاؤنٹ بنانے، سروس فراہم کرنے، سبسکرپشن، سروس ای میلز، سپورٹ، فراڈ روک تھام، اور بہتری کے لیے استعمال ہوتی ہیں۔',
   'privacy.s3.heading': '۳۔ شیئرنگ',
   'privacy.s3.body':
-    'ہم ذاتی ڈیٹا فروخت نہیں کرتے۔ سروس چلانے کے لیے محدود ڈیٹا ہوسٹنگ، ای میل، اور EasyPaisa جیسی پارٹنرز سے شیئر ہو سکتا ہے۔ قانون کے تحت افشا بھی ہو سکتا ہے۔',
+    'ہم ذاتی ڈیٹا فروخت نہیں کرتے۔ سروس چلانے کے لیے محدود ڈیٹا ہوسٹنگ، ای میل، اور RapidGateway جیسی پارٹنرز سے شیئر ہو سکتا ہے۔ قانون کے تحت افشا بھی ہو سکتا ہے۔',
   'privacy.s4.heading': '۴۔ ذخیرہ اور سیکیورٹی',
   'privacy.s4.body':
     'ڈیٹا معتبر کلاؤڈ فراہم کنندگان پر محفوظ ہوتا ہے۔ ہم HTTPS اور رسائی کنٹرول استعمال کرتے ہیں۔ کوئی نظام سو فیصد محفوظ نہیں؛ اپنا پاس ورڈ محفوظ رکھیں۔',
@@ -719,7 +801,7 @@ export const ur: Record<TranslationKey, string> = {
     'پرائیویسی سوالات: aliwheed@gmail.com۔ ویب سائٹ: https://clerkdiary.com۔',
 
   'refund.title': 'رقم واپسی اور منسوخی پالیسی',
-  'refund.lede': 'EasyPaisa اور دیگر سبسکرپشن ادائیگیوں کے واضح قواعد۔',
+  'refund.lede': 'RapidGateway سبسکرپشن ادائیگیوں کے واضح قواعد۔',
   'refund.s1.heading': '۱۔ رقم واپسی نہیں',
   'refund.s1.body':
     'تمام سبسکرپشن ادائیگیاں حتمی ہیں۔ کامیاب ادائیگی کے بعد کورٹ فائلز رقم واپس، جزوی واپسی، یا غیر استعمال شدہ وقت کی واپسی نہیں کرتا — بشمول رائے کی تبدیلی یا غلطی سے دوہری خریداری۔',
@@ -728,10 +810,73 @@ export const ur: Record<TranslationKey, string> = {
     'آپ کسی بھی وقت سبسکرپشن منسوخ کر سکتے یا استعمال بند کر سکتے ہیں۔ منسوخی کا مطلب ہے آپ جاری/تجدید نہیں کرنا چاہتے۔ پہلے سے ادا شدہ رسائی ادائیگی کی مدت ختم ہونے تک رہتی ہے، الا یہ کہ غلط استعمال یا فراڈ پر اکاؤنٹ معطل ہو۔',
   'refund.s3.heading': '۳۔ ناکام یا نامکمل ادائیگی',
   'refund.s3.body':
-    'اگر EasyPaisa ادائیگی ناکام یا مکمل نہ ہو تو سبسکرپشن فعال نہیں ہوتی۔ اگر فراہم کنندہ نے رقم کاٹی مگر پلان فعال نہ ہوا تو آرڈر تفصیل کے ساتھ ہم سے رابطہ کریں تاکہ جانچ کی جا سکے۔',
+    'اگر RapidGateway ادائیگی ناکام یا مکمل نہ ہو تو سبسکرپشن فعال نہیں ہوتی۔ اگر فراہم کنندہ نے رقم کاٹی مگر پلان فعال نہ ہوا تو آرڈر تفصیل کے ساتھ ہم سے رابطہ کریں تاکہ جانچ کی جا سکے۔',
   'refund.s4.heading': '۴۔ بلنگ مدد',
   'refund.s4.body':
-    'aliwheed@gmail.com پر رجسٹرڈ ای میل/فون اور ادائیگی حوالہ بھیجیں۔ ہم دو کاروباری دنوں میں جواب دینے کی کوشش کرتے ہیں۔',
+    'aliwheed@gmail.com یا +92 302 7857887 پر رجسٹرڈ ای میل/فون اور ادائیگی حوالہ بھیجیں۔ ہم دو کاروباری دنوں میں جواب دینے کی کوشش کرتے ہیں۔',
+
+  'checkout.title': 'چیک آؤٹ',
+  'checkout.lede':
+    'ماہانہ یا سالانہ کورٹ فائلز خریدیں۔ ادائیگی سے پہلے اکاؤنٹ ضروری نہیں — RapidGateway ڈیجیٹل والیٹ چیک آؤٹ فراہم کرتا ہے۔',
+  'checkout.choosePlan': 'سروس منتخب کریں',
+  'checkout.choosePlanLede': 'صرف دو سروسز ہیں۔ ہر ایک ادا شدہ مدت کے لیے مکمل کورٹ فائلز رسائی دیتی ہے۔',
+  'checkout.detailsTitle': 'آپ کی تفصیلات اور ادائیگی',
+  'checkout.detailsLede': 'رسید اور ادائیگی کے بعد رسائی کے لیے یہ تفصیلات استعمال ہوتی ہیں۔',
+  'checkout.payWith': '{{gateway}} سے ادا کریں',
+  'checkout.gatewayHint':
+    'RapidGateway پاکستان میں ڈیجیٹل والیٹ کنیکٹیویٹی کے ساتھ آسان ادائیگی دیتا ہے۔',
+  'checkout.payCta': '{{gateway}} سے Rs {{amount}} ادا کریں',
+  'checkout.noAccountRequired':
+    'ادائیگی سے پہلے رجسٹریشن فارم نہیں۔ ادائیگی کے بعد اکاؤنٹ بنتا ہے اور عارضی پاس ورڈ ای میل ہوتا ہے۔',
+  'checkout.gatewayUseCase':
+    'پیمنٹ گیٹ وے کا مقصد: چیک آؤٹ پر ماہانہ (Rs 150) اور سالانہ (Rs 1,400) سبسکرپشن فیس وصول کر کے ادا شدہ مدت کی رسائی دینا۔',
+  'checkout.demoReady': 'چیک آؤٹ تیار ہے۔ نیچے ڈیمو RapidGateway ادائیگی کی تصدیق کریں۔',
+  'checkout.demoHint': 'ڈیمو موڈ: اس آرڈر کے لیے {{gateway}} کی کامیاب ادائیگی کی نقل۔',
+  'checkout.demoConfirm': '{{gateway}} ادائیگی کی تصدیق',
+  'checkout.paidSuccess':
+    'ادائیگی کامیاب۔ خوش آمدید اور عارضی پاس ورڈ کے لیے اپنا ای میل چیک کریں، پھر سائن اِن کریں۔',
+  'checkout.afterPay':
+    'ہم نے آپ کے چیک آؤٹ ای میل پر ادائیگی کی خوش آمدید اور ایک وقتی عارضی پاس ورڈ بھیجا ہے۔ اس پاس ورڈ سے سائن اِن کریں — نیا پاس ورڈ سیٹ کرنے کے بعد دوبارہ سائن اِن کریں۔',
+  'checkout.createAccount': 'چیک آؤٹ والی ای میل سے سائن اِن کریں',
+  'checkout.amount': 'رقم',
+
+  'forcePw.title': 'نیا پاس ورڈ سیٹ کریں',
+  'forcePw.lede': '{{email}} سے سائن اِن۔ جاری رکھنے کے لیے عارضی پاس ورڈ تبدیل کریں۔',
+  'forcePw.hint':
+    'یہ عارضی پاس ورڈ ایک وقتی ہے۔ نیا پاس ورڈ محفوظ کرنے کے بعد دوبارہ سائن اِن کریں۔',
+  'forcePw.submit': 'پاس ورڈ محفوظ کریں اور دوبارہ سائن اِن کریں',
+  'forcePw.samePassword': 'نیا پاس ورڈ عارضی پاس ورڈ سے مختلف ہونا چاہیے۔',
+
+  'journey.title': 'کاروباری ماڈل اور گاہک کا سفر',
+  'journey.lede':
+    'ڈیجیٹل دنیا کورٹ فائلز کیسے چلاتی ہے، گاہک کیسے خریدتا ہے، اور RapidGateway ادائیگی میں کیسے استعمال ہوتا ہے۔',
+  'journey.model.heading': 'کاروباری ماڈل',
+  'journey.model.body':
+    'ڈیجیٹل دنیا کورٹ فائلز کو پاکستان کے وکیلوں کے لیے پیشگی SaaS پروڈکٹ کے طور پر چلاتی ہے۔\n\nہم جسمانی سامان نہیں بیچتے۔ گاہک ماہانہ یا سالانہ ڈیجیٹل سبسکرپشن خریدتا ہے۔ RapidGateway سے کامیاب ادائیگی کے بعد اکاؤنٹ بنا کر یا استعمال کر کے ادا شدہ مدت تک ٹولز استعمال کر سکتا ہے۔\n\nآمدنی صرف سبسکرپشن فیس ہے (Rs 150 / ۳۰ دن یا Rs 1,400 / ۳۶۵ دن)۔ سپورٹ فوٹر میں درج ای میل اور فون پر ہے۔',
+  'journey.stepsTitle': 'مکمل گاہک کا سفر',
+  'journey.step': 'مرحلہ {{n}}',
+  'journey.s1.heading': 'سروس دریافت کریں',
+  'journey.s1.body':
+    'وزیٹر clerkdiary.com کھولتا ہے، کورٹ فائلز (ڈیجیٹل دنیا کی پیشکش) پڑھتا ہے، اور بغیر لاگ اِن قیمتیں، پالیسیاں اور رابطہ دیکھتا ہے۔',
+  'journey.s2.heading': 'ماہانہ یا سالانہ منتخب کریں',
+  'journey.s2.body':
+    'قیمتوں یا چیک آؤٹ پر گاہک دو سبسکرپشن میں سے ایک چنتا ہے اور PKR قیمت و فیچرز دیکھتا ہے۔',
+  'journey.s3.heading': 'گیسٹ چیک آؤٹ (اکاؤنٹ ضروری نہیں)',
+  'journey.s3.body':
+    'گاہک عوامی چیک آؤٹ پر نام، ای میل، فون درج کرتا ہے۔ ادائیگی سے پہلے رجسٹر/سائن اِن لازمی نہیں۔',
+  'journey.s4.heading': 'RapidGateway سے ادائیگی',
+  'journey.s4.body':
+    'گاہک ڈیجیٹل والیٹ کنیکٹیویٹی کے لیے RapidGateway سے ادا کرتا ہے۔ گیٹ وے صرف محفوظ ادائیگی وصول کر کے نتیجہ ڈیجیٹل دنیا کو لوٹاتا ہے۔',
+  'journey.s5.heading': 'کورٹ فائلز تک رسائی (ادائیگی کے بعد اختیاری اکاؤنٹ)',
+  'journey.s5.body':
+    'کامیاب ادائیگی کے بعد گاہک اکاؤنٹ بنا یا سائن اِن کر سکتا ہے۔ اکاؤنٹ ادائیگی کے بعد اختیاری ہے، پہلے لازمی نہیں۔',
+  'journey.gateway.heading': 'RapidGateway کا مطلوبہ استعمال',
+  'journey.gateway.body':
+    '{{gateway}} چیک آؤٹ پر کورٹ فائلز کی پیشگی سبسکرپشن ادائیگی قبول کرنے والا پیمنٹ گیٹ وے ہے۔\n\nجب گاہک /checkout پر Pay دباتا ہے تو {{gateway}} سے ڈیجیٹل والیٹ ادائیگی مکمل ہوتی ہے۔ کامیابی پر آرڈر ریکارڈ ہوتا ہے؛ ناکامی/منسوخی پر رسائی نہیں ملتی۔',
+
+  'site.footer.contactHeading': 'رابطہ',
+  'site.footer.gatewayNote':
+    'ادائیگیاں RapidGateway سے تمام ڈیجیٹل والیٹ کنیکٹیویٹی پر آسان ادائیگی کے لیے۔',
 
   'nav.dashboard': 'ڈیش بورڈ',
   'nav.addCase': 'نیا مقدمہ شامل کریں',
@@ -1072,14 +1217,15 @@ export const ur: Record<TranslationKey, string> = {
   'profile.passwordUpdated': 'پاس ورڈ تبدیل ہو گیا۔',
 
   'plans.title': 'پلان خریدیں',
-  'plans.lede': 'پلان منتخب کریں، پھر EasyPaisa سے ادائیگی کریں۔',
+  'plans.lede': 'ماہانہ یا سالانہ منتخب کریں، پھر RapidGateway سے ادا کریں۔',
   'plans.loading': 'پلانز لوڈ ہو رہے ہیں…',
   'plans.purchase': 'پلان خریدیں',
   'plans.back': 'پلانز پر واپس',
   'plans.payTitle': 'ادائیگی کا طریقہ',
   'plans.payLede': '{{plan}} کے لیے Rs {{amount}} ادا کریں',
-  'plans.easypaisa': 'EasyPaisa',
-  'plans.easypaisaHint': 'اپنے EasyPaisa والیٹ یا اکاؤنٹ سے محفوظ ادائیگی',
+  'plans.easypaisa': 'RapidGateway',
+  'plans.easypaisaHint':
+    'RapidGateway کے ذریعے تمام ڈیجیٹل والیٹ کنیکٹیویٹی پر آسان ادائیگی',
 
   'payments.title': 'ادائیگیاں',
   'payments.lede': 'چیک آؤٹ مکمل کریں اور اپنی ادائیگی کی تاریخ دیکھیں۔',
@@ -1087,18 +1233,18 @@ export const ur: Record<TranslationKey, string> = {
   'payments.checkoutLede': '{{plan}} — Rs {{amount}}',
   'payments.status': 'حالت',
   'payments.orderId': 'آرڈر آئی ڈی',
-  'payments.redirecting': 'EasyPaisa چیک آؤٹ شروع ہو رہا ہے…',
+  'payments.redirecting': 'RapidGateway چیک آؤٹ شروع ہو رہا ہے…',
   'payments.demoReady':
-    'ڈیمو موڈ: EasyPaisa مرچنٹ کیز سیٹ نہیں۔ کامیاب ادائیگی کی نقل کے لیے نیچے تصدیق کریں۔',
+    'ڈیمو موڈ: RapidGateway مرچنٹ کیز سیٹ نہیں۔ کامیاب ادائیگی کی نقل کے لیے نیچے تصدیق کریں۔',
   'payments.demoHint':
-    'EasyPaisa کریڈنشلز کنفیگر نہیں۔ یہ بٹن صرف ٹیسٹنگ کے لیے ادائیگی کو کامیاب نشان زد کرتا ہے۔',
+    'RapidGateway کریڈنشلز کنفیگر نہیں۔ یہ بٹن صرف ٹیسٹنگ کے لیے ادائیگی کو کامیاب نشان زد کرتا ہے۔',
   'payments.demoConfirm': 'کامیاب ادائیگی کی نقل کریں',
   'payments.paidSuccess': 'ادائیگی کامیاب۔ شکریہ!',
   'payments.callbackError':
     'ادائیگی تصدیق نہیں ہو سکی۔ دوبارہ کوشش کریں یا سپورٹ سے رابطہ کریں۔',
   'payments.choosePlan': 'پلان منتخب کریں',
   'payments.historyTitle': 'ادائیگی کی تاریخ',
-  'payments.historyLede': 'آپ کی حالیہ EasyPaisa لین دین۔',
+  'payments.historyLede': 'آپ کی حالیہ RapidGateway لین دین۔',
   'payments.empty': 'ابھی کوئی ادائیگی نہیں۔',
 
   'hover.title': 'تفصیلِ مقدمہ',

@@ -30,7 +30,10 @@ interface AuthContextValue {
   ) => Promise<Result<{ otp?: string }>>;
   verifyOtp: (otp: string) => Promise<Result>;
   resendOtp: () => Promise<Result<{ otp?: string }>>;
-  login: (emailOrPhone: string, password: string) => Promise<Result>;
+  login: (
+    emailOrPhone: string,
+    password: string
+  ) => Promise<Result<{ mustChangePassword?: boolean }>>;
   logout: () => void;
   pendingPhone: string | null;
   pendingEmail: string | null;
@@ -109,7 +112,11 @@ function toError(err: unknown): { ok: false; error: string } {
 interface AuthResponse {
   ok: true;
   token: string;
-  user: AuthSession & { phone: string; barAddress: string };
+  user: AuthSession & {
+    phone: string;
+    barAddress: string;
+    mustChangePassword?: boolean;
+  };
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -134,6 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       userId: res.user.userId,
       email: res.user.email,
       name: res.user.name,
+      mustChangePassword: Boolean(res.user.mustChangePassword),
     };
     setToken(res.token);
     writeSession(session);
@@ -232,7 +240,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             body: { emailOrPhone, password },
           });
           applyAuth(res);
-          return { ok: true as const };
+          return {
+            ok: true as const,
+            mustChangePassword: Boolean(res.user.mustChangePassword),
+          };
         });
       } catch (err) {
         return toError(err);
@@ -255,13 +266,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const res = await apiFetch<{
           ok: true;
-          user: AuthSession & { phone: string; barAddress: string };
+          user: AuthSession & {
+            phone: string;
+            barAddress: string;
+            mustChangePassword?: boolean;
+          };
         }>('/auth/me');
         if (!alive) return;
         const session: AuthSession = {
           userId: res.user.userId,
           email: res.user.email,
           name: res.user.name,
+          mustChangePassword: Boolean(res.user.mustChangePassword),
         };
         writeSession(session);
         setUser(session);

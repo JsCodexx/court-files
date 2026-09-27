@@ -68,6 +68,27 @@ export function ContactPage() {
             </div>
             <div>
               <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t('contact.phone')}
+              </dt>
+              <dd className="mt-1" dir="ltr">
+                <a
+                  className="font-medium text-primary hover:underline"
+                  href="tel:+923027857887"
+                >
+                  {t('site.company.phone')}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t('contact.address')}
+              </dt>
+              <dd className="mt-1 text-muted-foreground" dir="ltr">
+                {t('site.company.address')}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {t('contact.hours')}
               </dt>
               <dd className="mt-1 text-muted-foreground">{t('contact.hoursValue')}</dd>
@@ -77,7 +98,7 @@ export function ContactPage() {
 
         <p className="text-sm text-muted-foreground">{t('contact.note')}</p>
         <Button asChild>
-          <Link to="/register">{t('landing.nav.getStarted')}</Link>
+          <Link to="/checkout">{t('landing.nav.buyNow')}</Link>
         </Button>
       </article>
     </SiteShell>
