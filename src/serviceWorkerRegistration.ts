@@ -9,10 +9,53 @@ type Config = {
   onUpdate?: (registration: ServiceWorkerRegistration) => void;
 };
 
+let registerStarted = false;
+let activeRegistration: ServiceWorkerRegistration | null = null;
+const updateListeners = new Set<(registration: ServiceWorkerRegistration) => void>();
+
+function emitUpdate(registration: ServiceWorkerRegistration) {
+  if (!registration.waiting || !navigator.serviceWorker.controller) return;
+  activeRegistration = registration;
+  updateListeners.forEach((cb) => cb(registration));
+}
+
+/** Subscribe to “new version waiting” (e.g. PWA banner). Returns unsubscribe. */
+export function subscribeServiceWorkerUpdates(
+  listener: (registration: ServiceWorkerRegistration) => void
+): () => void {
+  updateListeners.add(listener);
+  if (
+    activeRegistration?.waiting &&
+    navigator.serviceWorker.controller
+  ) {
+    listener(activeRegistration);
+  }
+  return () => {
+    updateListeners.delete(listener);
+  };
+}
+
+function scheduleUpdateChecks(registration: ServiceWorkerRegistration) {
+  const check = () => {
+    void registration.update().catch(() => {});
+  };
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') check();
+  });
+
+  window.addEventListener('focus', check);
+
+  const hourly = window.setInterval(check, 60 * 60 * 1000);
+  window.addEventListener('pagehide', () => window.clearInterval(hourly));
+}
+
 export function register(config?: Config): void {
   if (process.env.NODE_ENV !== 'production' || !('serviceWorker' in navigator)) {
     return;
   }
+  if (registerStarted) return;
+  registerStarted = true;
 
   window.addEventListener('load', () => {
     const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
@@ -30,9 +73,13 @@ function registerValidSW(swUrl: string, config?: Config) {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
+      activeRegistration = registration;
+      scheduleUpdateChecks(registration);
+
       const notify = () => {
         if (registration.waiting && navigator.serviceWorker.controller) {
           config?.onUpdate?.(registration);
+          emitUpdate(registration);
         } else if (!navigator.serviceWorker.controller) {
           config?.onSuccess?.(registration);
         }
@@ -69,6 +116,29 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
     .catch(() => {
       console.warn('No service worker found (dev). PWA works after production build.');
     });
+}
+
+/** Tell the waiting worker to activate; reload once it controls the page. */
+export function applyWaitingServiceWorkerUpdate(
+  waitingWorker: ServiceWorker
+): Promise<void> {
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      navigator.serviceWorker.removeEventListener('controllerchange', onChange);
+      window.clearTimeout(fallback);
+      resolve();
+    };
+
+    const onChange = () => finish();
+    navigator.serviceWorker.addEventListener('controllerchange', onChange);
+
+    waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+
+    const fallback = window.setTimeout(finish, 4000);
+  });
 }
 
 export function unregister(): void {
