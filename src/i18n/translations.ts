@@ -324,6 +324,7 @@ export const en = {
   'nav.tabAdd': 'Add',
   'nav.tabSearch': 'Search',
   'nav.tabProfile': 'Profile',
+  'nav.tabPayments': 'Payments',
 
   'profile.quickPlans': 'Plans & billing',
   'profile.quickPayments': 'Payment history',
@@ -1110,6 +1111,7 @@ export const ur: Record<TranslationKey, string> = {
   'nav.tabAdd': 'شامل',
   'nav.tabSearch': 'تلاش',
   'nav.tabProfile': 'پروفائل',
+  'nav.tabPayments': 'ادائیگیاں',
 
   'profile.quickPlans': 'پلان اور بلنگ',
   'profile.quickPayments': 'ادائیگی کی تاریخ',

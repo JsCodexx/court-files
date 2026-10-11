@@ -9,6 +9,7 @@ import { useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { AppPageHeader } from '../components/AppPage';
+import { useAppShell } from '../hooks/useAppShell';
 import { cn } from '../lib/utils';
 import { CourtCase } from '../types';
 import {
@@ -31,6 +32,7 @@ import {
 export function CalendarPage() {
   const { fetchByDate, fetchHearingDates, version } = useCases();
   const { t } = useLocale();
+  const { showBottomNav } = useAppShell();
   const [cursor, setCursor] = useState<Date>(() => startOfMonth(new Date()));
   const [selectedDate, setSelectedDate] = useState(() => nextWorkingDayISO());
   const [selectedCase, setSelectedCase] = useState<CourtCase | null>(null);
@@ -218,6 +220,7 @@ export function CalendarPage() {
             cases={dayCases}
             title={t('calendar.casesOn', { date: formattedSelected })}
             onSelect={setSelectedCase}
+            mobileStack={showBottomNav}
           />
         )}
       </div>

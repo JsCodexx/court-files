@@ -9,6 +9,7 @@ import {
   formatPersonName,
   nameMatchesQuery,
 } from '../utils/personName';
+import { computePopoverPlacement } from '../lib/popoverPlacement';
 import { cn } from '../lib/utils';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -41,7 +42,13 @@ export function PersonPicker({
   const [query, setQuery] = useState(name);
   const [saving, setSaving] = useState(false);
   const [dupHint, setDupHint] = useState(false);
-  const [pos, setPos] = useState({ top: 0, left: 0, width: 0 });
+  const [pos, setPos] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+    maxHeight: 224,
+    openAbove: false,
+  });
 
   useEffect(() => {
     let alive = true;
@@ -69,7 +76,16 @@ export function PersonPicker({
       const el = wrapRef.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
-      setPos({ top: r.bottom + 4, left: r.left, width: r.width });
+      const placement = computePopoverPlacement(r, {
+        width: Math.max(r.width, 160),
+      });
+      setPos({
+        top: placement.top,
+        left: placement.left,
+        width: placement.width,
+        maxHeight: placement.maxHeight,
+        openAbove: placement.openAbove,
+      });
     };
     place();
     window.addEventListener('resize', place);
@@ -211,11 +227,13 @@ export function PersonPicker({
           <ul
             id={listId}
             role="listbox"
-            className="fixed z-[80] max-h-56 overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
+            className="fixed z-[80] overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
             style={{
               top: pos.top,
               left: pos.left,
-              width: Math.max(pos.width, 160),
+              width: pos.width,
+              maxHeight: pos.maxHeight,
+              transform: pos.openAbove ? 'translateY(-100%)' : undefined,
             }}
           >
             {filtered.map((p) => (

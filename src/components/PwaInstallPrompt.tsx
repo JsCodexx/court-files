@@ -2,6 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Smartphone, X } from './icons';
 import { useAuth } from '../context/AuthContext';
 import { useAppShell } from '../hooks/useAppShell';
+import {
+  pwaPromptBottomClass,
+  useHasShellBottomNav,
+} from '../hooks/useHasShellBottomNav';
 import { useLocale } from '../i18n/LocaleContext';
 import { cn } from '../lib/utils';
 import {
@@ -61,7 +65,8 @@ type PwaInstallPromptProps = {
 export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
   const { t } = useLocale();
   const { user, authReady } = useAuth();
-  const { showBottomNav, isStandalone, isNarrow } = useAppShell();
+  const { isStandalone, isNarrow } = useAppShell();
+  const hasShellTabBar = useHasShellBottomNav();
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(
     () => getDeferredInstallPrompt()
   );
@@ -98,7 +103,7 @@ export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
       return;
     }
 
-    const onMobile = isNarrow || showBottomNav;
+    const onMobile = isNarrow;
     if (!onMobile && guest) {
       setVisible(false);
       return;
@@ -126,7 +131,6 @@ export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
     isStandalone,
     guest,
     isNarrow,
-    showBottomNav,
   ]);
 
   const dismiss = useCallback(() => {
@@ -176,9 +180,7 @@ export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
     <PageEnter
       className={cn(
         'no-print fixed inset-x-3 z-[200] mx-auto max-w-md rounded-lg border border-primary/30 bg-card p-4 shadow-lg',
-        showBottomNav
-          ? 'bottom-[calc(var(--app-tab-bar-clearance)+0.75rem)]'
-          : 'bottom-[max(0.75rem,env(safe-area-inset-bottom))]'
+        pwaPromptBottomClass(hasShellTabBar)
       )}
     >
     <div role="dialog" aria-labelledby="pwa-install-title">

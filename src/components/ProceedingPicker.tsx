@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { ChevronDown, Plus } from './icons';
 import { useLocale } from '../i18n/LocaleContext';
 import { apiFetch } from '../utils/api';
+import { computePopoverPlacement } from '../lib/popoverPlacement';
 import { cn } from '../lib/utils';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -37,7 +38,13 @@ export function ProceedingPicker({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(value);
   const [saving, setSaving] = useState(false);
-  const [pos, setPos] = useState({ top: 0, left: 0, width: 0 });
+  const [pos, setPos] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+    maxHeight: 224,
+    openAbove: false,
+  });
 
   useEffect(() => {
     let alive = true;
@@ -57,7 +64,16 @@ export function ProceedingPicker({
       const el = wrapRef.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
-      setPos({ top: r.bottom + 4, left: r.left, width: r.width });
+      const placement = computePopoverPlacement(r, {
+        width: Math.max(r.width, 160),
+      });
+      setPos({
+        top: placement.top,
+        left: placement.left,
+        width: placement.width,
+        maxHeight: placement.maxHeight,
+        openAbove: placement.openAbove,
+      });
     };
     place();
     window.addEventListener('resize', place);
@@ -179,8 +195,14 @@ export function ProceedingPicker({
           <ul
             id={listId}
             role="listbox"
-            className="fixed z-[80] max-h-56 overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
-            style={{ top: pos.top, left: pos.left, width: Math.max(pos.width, 160) }}
+            className="fixed z-[80] overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
+            style={{
+              top: pos.top,
+              left: pos.left,
+              width: pos.width,
+              maxHeight: pos.maxHeight,
+              transform: pos.openAbove ? 'translateY(-100%)' : undefined,
+            }}
           >
             {filtered.map((item) => (
               <li key={item.id} role="option" aria-selected={item.label === value}>

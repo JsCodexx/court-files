@@ -237,9 +237,20 @@ export function AppLayout() {
                 <BrandLogo variant="appMobileBar" className="h-8 w-8 shrink-0" />
                 <BrandWordmark onDark size="sm" className="min-w-0 truncate" />
               </div>
-              <div className="flex shrink-0 items-center gap-1">
-                <LanguageSwitcher variant="dark" />
+              <div className="flex shrink-0 items-center gap-0.5">
+                <LanguageSwitcher variant="dark" menuAbove />
                 <ThemeToggle className="text-sidebar-foreground hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground" />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 shrink-0 text-sidebar-muted hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground"
+                  onClick={handleLogout}
+                  aria-label={t('nav.signOut')}
+                  title={t('nav.signOut')}
+                >
+                  <LogOut className="h-[1.125rem] w-[1.125rem]" weight="regular" />
+                </Button>
               </div>
             </div>
           </header>

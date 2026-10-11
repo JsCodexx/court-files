@@ -182,7 +182,7 @@
   }
 
   .app-mobile-top-bar {
-    @apply border-b border-sidebar-foreground/10 bg-sidebar text-sidebar-foreground shadow-sm;
+    @apply relative z-50 shrink-0 overflow-visible border-b border-sidebar-foreground/10 bg-sidebar text-sidebar-foreground shadow-sm;
     padding-top: max(0.5rem, env(safe-area-inset-top));
   }
 
@@ -193,6 +193,13 @@
   .app-main-content {
     @apply py-4 sm:py-6 md:py-8;
     padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  html.has-bottom-nav .app-main-content {
+    padding-bottom: max(
+      1.75rem,
+      calc(0.75rem + env(safe-area-inset-bottom, 0px))
+    );
   }
 
   :not(.has-bottom-nav) .app-main-content {
@@ -284,6 +291,21 @@
 
   .public-section-y-tight {
     @apply py-8 sm:py-10;
+  }
+
+  .public-site-header {
+    --public-header-offset: calc(3.5rem + env(safe-area-inset-top, 0px));
+  }
+
+  @media (min-width: 640px) {
+    .public-site-header {
+      --public-header-offset: calc(4rem + env(safe-area-inset-top, 0px));
+    }
+  }
+
+  .public-mobile-menu-panel {
+    top: var(--public-header-offset);
+    max-height: calc(100dvh - var(--public-header-offset));
   }
 
   .public-section-y-hero {
@@ -394,7 +416,11 @@
   }
 
   .app-bottom-nav__icon-wrap--center {
-    @apply -mt-3 h-11 w-11 rounded-full bg-[hsl(var(--brand-fresh))] text-primary-foreground shadow-md;
+    @apply -mt-2 h-11 w-11 rounded-full bg-[hsl(var(--brand-fresh))] text-primary-foreground shadow-md;
+  }
+
+  .app-bottom-nav__inner--billing {
+    @apply max-w-xs grid-cols-2;
   }
 
   .app-bottom-nav__item--center.app-bottom-nav__item--active .app-bottom-nav__icon-wrap--center {
@@ -425,12 +451,24 @@
     scroll-padding-bottom: 1rem;
   }
 
+  html.has-bottom-nav .app-main-scroll {
+    scroll-padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  }
+
   .app-form-actions {
     @apply mt-4 border-t border-border pt-4;
   }
 
+  html.has-bottom-nav .app-form-actions {
+    padding-bottom: 0.5rem;
+  }
+
   .app-list-footer {
     @apply pb-1;
+  }
+
+  html.has-bottom-nav .app-list-footer {
+    @apply pb-3;
   }
 
   /* Global loader — compact Pakistan crescent & star */
