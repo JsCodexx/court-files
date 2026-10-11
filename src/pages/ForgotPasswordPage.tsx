@@ -13,6 +13,7 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { AuthBrandHeader } from '../components/AuthBrandHeader';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { useLoader } from '../context/LoaderContext';
@@ -52,14 +53,15 @@ export function ForgotPasswordPage() {
 
   return (
     <div className="page-shell">
-      <Card className="w-full max-w-md animate-rise-in">
+      <Card className="auth-card max-w-md animate-rise-in">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="page-title">{t('forgot.title')}</CardTitle>
-          <CardDescription>{t('forgot.lede')}</CardDescription>
+          <AuthBrandHeader />
+          <CardTitle className="sr-only">{t('forgot.title')}</CardTitle>
+          <CardDescription className="text-center">{t('forgot.lede')}</CardDescription>
         </CardHeader>
         <CardContent>
           {sent ? (

@@ -14,6 +14,7 @@ import {
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
+import { AuthBrandHeader } from '../components/AuthBrandHeader';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -58,14 +59,15 @@ export function LoginPage() {
 
   return (
     <div className="page-shell">
-      <Card className="w-full max-w-md animate-rise-in">
+      <Card className="auth-card max-w-md animate-rise-in">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="page-title">{t('login.title')}</CardTitle>
-          <CardDescription>{t('login.lede')}</CardDescription>
+          <AuthBrandHeader />
+          <CardTitle className="sr-only">{t('login.title')}</CardTitle>
+          <CardDescription className="text-center">{t('login.lede')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">

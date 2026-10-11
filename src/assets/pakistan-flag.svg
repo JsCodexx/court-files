@@ -2,14 +2,14 @@
   <title>Emerald green field</title>
   <defs>
     <linearGradient id="greenField" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0F6B45"/>
+      <stop offset="0%" stop-color="#0F5132"/>
       <stop offset="40%" stop-color="#0B5336"/>
       <stop offset="75%" stop-color="#083D28"/>
       <stop offset="100%" stop-color="#061F16"/>
     </linearGradient>
     <radialGradient id="vignette" cx="40%" cy="30%" r="75%">
       <stop offset="0%" stop-color="#3DCF8E" stop-opacity="0.28"/>
-      <stop offset="50%" stop-color="#0F6B45" stop-opacity="0.12"/>
+      <stop offset="50%" stop-color="#0F5132" stop-opacity="0.12"/>
       <stop offset="100%" stop-color="#04140E" stop-opacity="0.75"/>
     </radialGradient>
     <linearGradient id="topShade" x1="0%" y1="0%" x2="0%" y2="100%">

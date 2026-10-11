@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../components/ui/card';
+import { AuthBrandHeader } from '../components/AuthBrandHeader';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { ApiError, apiFetch } from '../utils/api';
@@ -49,14 +50,15 @@ export function VerifyEmailPage() {
 
   return (
     <div className="page-shell">
-      <Card className="w-full max-w-md animate-rise-in">
+      <Card className="auth-card max-w-md animate-rise-in">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="page-title">{t('verify.title')}</CardTitle>
-          <CardDescription>{t('verify.lede')}</CardDescription>
+          <AuthBrandHeader />
+          <CardTitle className="sr-only">{t('verify.title')}</CardTitle>
+          <CardDescription className="text-center">{t('verify.lede')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {status === 'loading' && (

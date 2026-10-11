@@ -44,7 +44,7 @@ export function PublicHeader({
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 border-b border-border bg-card shadow-sm',
+        'sticky top-0 z-40 border-b border-border bg-card/95 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-card/90',
         className
       )}
     >
@@ -56,7 +56,7 @@ export function PublicHeader({
         >
           <BrandLogo
             variant="publicHeader"
-            className="h-8 w-auto max-w-[9.5rem] sm:h-9 sm:max-w-[11.5rem]"
+            className="h-8 w-auto max-w-[10rem] sm:h-9 sm:max-w-[12.5rem]"
           />
           <span className="hidden min-w-0 md:block">
             <span className="truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">

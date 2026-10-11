@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { SiteShell } from '../components/SiteShell';
 import { Button } from '../components/ui/button';
+import { BrandWordmark } from '../components/BrandWordmark';
 import { COMPANY } from '../constants/company';
 import { useLocale } from '../i18n/LocaleContext';
 
@@ -20,7 +21,8 @@ export function HowItWorksPage() {
     <SiteShell>
       <article className="min-w-0 space-y-8 sm:space-y-10">
         <header>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+          <BrandWordmark size="md" plate className="mb-2" />
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             {COMPANY.legalName}
           </p>
           <h1 className="page-title mt-2">{t('journey.title')}</h1>

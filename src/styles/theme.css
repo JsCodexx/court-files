@@ -1,54 +1,50 @@
 /**
  * THEME FILE — single source of truth for all colors, fonts and radii.
  *
- * Palette: emerald primary + sage secondary (works in light & dark).
- * Values are HSL channels ("H S% L%") consumed as hsl(var(--token)).
- *
- * Light reference: primary ≈ #0F6B45 · secondary ≈ #D9EEE4 · bg ≈ #F3FAF6
- * Dark reference:  primary ≈ #3DCF8E · secondary ≈ #1B2F27 · bg ≈ #0B1411
+ * Brand accents: forest #0F5132 · fresh #34A853 (buttons, wordmark, logo only)
+ * Light surfaces: warm neutral paper — green is intentional UI, not ambient wash
  */
 
 :root {
-  /* ---------- Light — clean mint paper + deep emerald ---------- */
-  --background: 150 33% 97%;
-  --foreground: 160 42% 10%;
+  /* ---------- Light — ivory paper (brand green on white/neutral, not on mint soup) ---------- */
+  --background: 45 29% 98%;
+  --foreground: 158 32% 11%;
 
   --card: 0 0% 100%;
-  --card-foreground: 160 42% 10%;
+  --card-foreground: 158 32% 11%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 160 42% 10%;
+  --popover-foreground: 158 32% 11%;
 
-  /* Primary: deep emerald (CTAs, links, focus) */
-  --primary: 152 75% 24%;
+  --primary: 152 69% 19%;
   --primary-foreground: 0 0% 100%;
 
-  /* Secondary: soft sage (chips, secondary buttons, panels) */
-  --secondary: 152 38% 90%;
-  --secondary-foreground: 152 48% 18%;
+  --secondary: 45 18% 95%;
+  --secondary-foreground: 158 28% 16%;
 
-  --muted: 150 24% 93%;
-  --muted-foreground: 155 14% 36%;
+  --muted: 45 14% 94%;
+  --muted-foreground: 158 10% 38%;
 
-  /* Accent: slightly richer sage for hover / selected wash */
-  --accent: 154 42% 88%;
-  --accent-foreground: 152 60% 20%;
+  --accent: 148 22% 93%;
+  --accent-foreground: 152 55% 18%;
 
   --destructive: 0 68% 44%;
   --destructive-foreground: 0 0% 100%;
 
-  --success: 152 62% 32%;
+  --success: 135 53% 38%;
   --success-foreground: 0 0% 100%;
 
-  --border: 150 22% 84%;
-  --input: 150 20% 82%;
-  --ring: 152 75% 24%;
+  --border: 45 12% 88%;
+  --input: 45 10% 86%;
+  --ring: 152 69% 19%;
 
-  /* Deep forest chrome */
-  --sidebar: 158 48% 12%;
+  --brand-forest: 152 69% 19%;
+  --brand-fresh: 135 53% 43%;
+
+  --sidebar: 152 52% 11%;
   --sidebar-foreground: 148 35% 96%;
   --sidebar-muted: 150 14% 70%;
-  --sidebar-accent: 152 58% 42%;
+  --sidebar-accent: 135 53% 43%;
 
   --radius: 0.875rem;
 
@@ -58,7 +54,6 @@
 }
 
 .dark {
-  /* ---------- Dark — charcoal forest + luminous emerald ---------- */
   --background: 155 28% 7%;
   --foreground: 148 28% 95%;
 
@@ -68,11 +63,9 @@
   --popover: 155 26% 9%;
   --popover-foreground: 148 28% 95%;
 
-  /* Primary: brighter emerald so buttons pop on dark */
   --primary: 152 58% 52%;
   --primary-foreground: 158 40% 8%;
 
-  /* Secondary: muted forest panel */
   --secondary: 152 22% 16%;
   --secondary-foreground: 148 30% 92%;
 
@@ -96,4 +89,7 @@
   --sidebar-foreground: 148 28% 95%;
   --sidebar-muted: 150 12% 62%;
   --sidebar-accent: 152 58% 52%;
+
+  --brand-forest: 152 58% 52%;
+  --brand-fresh: 135 53% 48%;
 }

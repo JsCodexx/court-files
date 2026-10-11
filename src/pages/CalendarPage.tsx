@@ -7,6 +7,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
+import { AppPageHeader } from '../components/AppPage';
 import { cn } from '../lib/utils';
 import { CourtCase } from '../types';
 import {
@@ -90,12 +91,9 @@ export function CalendarPage() {
 
   return (
     <div className="app-page">
-      <div>
-        <h1 className="page-title">{t('calendar.title')}</h1>
-        <p className="page-lede">{t('calendar.lede')}</p>
-      </div>
+      <AppPageHeader title={t('calendar.title')} lede={t('calendar.lede')} />
 
-      <Card>
+      <Card className="app-panel overflow-hidden shadow-sm">
         <CardContent className="pt-4 sm:pt-6">
           <div className="mb-3 flex items-center justify-between gap-2 sm:mb-4">
             <Button

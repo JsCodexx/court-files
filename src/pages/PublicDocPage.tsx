@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrandWordmark } from '../components/BrandWordmark';
 import { SiteShell } from '../components/SiteShell';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -18,6 +19,7 @@ export function PublicDocPage({
     <SiteShell>
       <article className="min-w-0 space-y-8">
         <header>
+          <BrandWordmark size="md" plate className="mb-3" />
           <h1 className="page-title">{t(titleKey)}</h1>
           {ledeKey ? <p className="page-lede mt-2">{t(ledeKey)}</p> : null}
         </header>

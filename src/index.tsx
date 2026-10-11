@@ -1,4 +1,5 @@
 import { suppressExtensionDevOverlay } from './dev/suppressExtensionDevOverlay';
+import { captureInstallPrompt } from './pwa/captureInstallPrompt';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -7,6 +8,7 @@ import './styles/global.css';
 import reportWebVitals from './reportWebVitals';
 
 suppressExtensionDevOverlay();
+captureInstallPrompt();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

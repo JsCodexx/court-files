@@ -14,6 +14,7 @@ import {
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
+import { AuthBrandHeader } from '../components/AuthBrandHeader';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -72,14 +73,15 @@ export function RegisterPage() {
 
   return (
     <div className="page-shell">
-      <Card className="mx-auto w-full max-w-md animate-rise-in sm:max-w-2xl">
+      <Card className="auth-card mx-auto max-w-md animate-rise-in sm:max-w-2xl">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="page-title">{t('register.title')}</CardTitle>
-          <CardDescription>{t('register.lede')}</CardDescription>
+          <AuthBrandHeader />
+          <CardTitle className="sr-only">{t('register.title')}</CardTitle>
+          <CardDescription className="text-center">{t('register.lede')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">

@@ -4,14 +4,15 @@ import { useAuth } from '../context/AuthContext';
 import { useAppShell } from '../hooks/useAppShell';
 import { useLocale } from '../i18n/LocaleContext';
 import { cn } from '../lib/utils';
+import {
+  clearDeferredInstallPrompt,
+  getDeferredInstallPrompt,
+  subscribeInstallPrompt,
+  type BeforeInstallPromptEvent,
+} from '../pwa/captureInstallPrompt';
 import { Button } from './ui/button';
 
 const SNOOZE_KEY = 'cf_pwa_install_snooze_until';
-
-type BeforeInstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-};
 
 function isSnoozed(): boolean {
   try {
@@ -36,86 +37,144 @@ function snooze(days: number) {
   }
 }
 
-function isIosBrowserNeedingHint(): boolean {
+function isIosDevice(): boolean {
   if (typeof window === 'undefined') return false;
   const nav = window.navigator as Navigator & { standalone?: boolean };
   if (nav.standalone) return false;
   const ua = nav.userAgent || '';
-  const ios = /iPad|iPhone|iPod/.test(ua);
-  if (!ios) return false;
-  // iPadOS desktop UA
-  if (ua.includes('Macintosh') && 'ontouchend' in document) return true;
-  return ios;
+  if (/iPad|iPhone|iPod/.test(ua)) return true;
+  return ua.includes('Macintosh') && 'ontouchend' in document;
 }
 
-/** Prompt install after login (Chromium) or show iOS Add to Home Screen steps. */
-export function PwaInstallPrompt() {
+function isAndroidDevice(): boolean {
+  if (typeof window === 'undefined') return false;
+  return /Android/i.test(window.navigator.userAgent || '');
+}
+
+type PwaInstallPromptProps = {
+  /** Public marketing pages — show mobile hints without login. */
+  guest?: boolean;
+};
+
+/** Prompt install (Chromium) or show Add to Home Screen steps on iOS / Android. */
+export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
   const { t } = useLocale();
   const { user, authReady } = useAuth();
-  const { showBottomNav, isStandalone } = useAppShell();
-  const [deferred, setDeferred] =
-    useState<BeforeInstallPromptEvent | null>(null);
+  const { showBottomNav, isStandalone, isNarrow } = useAppShell();
+  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(
+    () => getDeferredInstallPrompt()
+  );
   const [iosHint, setIosHint] = useState(false);
+  const [androidHint, setAndroidHint] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (isStandalone || isSnoozed()) return;
-
-    const onBip = (e: Event) => {
-      e.preventDefault();
-      setDeferred(e as BeforeInstallPromptEvent);
-      setVisible(true);
-    };
-
-    window.addEventListener('beforeinstallprompt', onBip);
-    return () => window.removeEventListener('beforeinstallprompt', onBip);
-  }, [isStandalone]);
+    return subscribeInstallPrompt(() => {
+      setDeferred(getDeferredInstallPrompt());
+    });
+  }, []);
 
   useEffect(() => {
-    if (!authReady || !user || isStandalone || isSnoozed()) {
+    if (isStandalone || isSnoozed()) {
       setVisible(false);
       return;
     }
+
+    const loggedIn = Boolean(authReady && user);
+    if (guest && loggedIn) {
+      setVisible(false);
+      return;
+    }
+    if (!guest && !loggedIn) {
+      setVisible(false);
+      return;
+    }
+
     if (deferred) {
+      setVisible(true);
+      setIosHint(false);
+      setAndroidHint(false);
+      return;
+    }
+
+    const onMobile = isNarrow || showBottomNav;
+    if (!onMobile && guest) {
+      setVisible(false);
+      return;
+    }
+
+    if (isIosDevice()) {
+      setIosHint(true);
+      setAndroidHint(false);
       setVisible(true);
       return;
     }
-    if (isIosBrowserNeedingHint()) {
-      setIosHint(true);
+
+    if (isAndroidDevice()) {
+      setIosHint(false);
+      setAndroidHint(true);
       setVisible(true);
+      return;
     }
-  }, [authReady, user, deferred, isStandalone]);
+
+    setVisible(false);
+  }, [
+    authReady,
+    user,
+    deferred,
+    isStandalone,
+    guest,
+    isNarrow,
+    showBottomNav,
+  ]);
 
   const dismiss = useCallback(() => {
     snooze(14);
     setVisible(false);
     setDeferred(null);
+    clearDeferredInstallPrompt();
     setIosHint(false);
+    setAndroidHint(false);
   }, []);
 
   const onInstall = useCallback(async () => {
-    if (!deferred) return;
+    const prompt = deferred ?? getDeferredInstallPrompt();
+    if (!prompt) return;
     try {
-      await deferred.prompt();
-      await deferred.userChoice;
+      await prompt.prompt();
+      await prompt.userChoice;
     } catch {
       /* ignore */
     }
+    clearDeferredInstallPrompt();
     setDeferred(null);
     setVisible(false);
   }, [deferred]);
 
   if (!visible || isStandalone) return null;
 
-  const showChromium = Boolean(deferred);
-  const showIos = iosHint && !deferred;
+  const showChromium = Boolean(deferred ?? getDeferredInstallPrompt());
+  const showIos = iosHint && !showChromium;
+  const showAndroid = androidHint && !showChromium;
 
-  if (!showChromium && !showIos) return null;
+  if (!showChromium && !showIos && !showAndroid) return null;
+
+  const title = showIos
+    ? t('pwa.installIosTitle')
+    : showAndroid
+      ? t('pwa.installAndroidTitle')
+      : t('pwa.installTitle');
+
+  const body = showIos
+    ? t('pwa.installIosSteps')
+    : showAndroid
+      ? t('pwa.installAndroidSteps')
+      : t('pwa.installLede');
 
   return (
     <div
       className={cn(
-        'no-print fixed inset-x-3 z-[185] mx-auto max-w-md animate-rise-in rounded-lg border border-primary/30 bg-card p-4 shadow-lg',
+        'no-print fixed inset-x-3 z-[200] mx-auto max-w-md animate-rise-in rounded-lg border border-primary/30 bg-card p-4 shadow-lg',
         showBottomNav
           ? 'bottom-[calc(4.75rem+max(0.75rem,env(safe-area-inset-bottom)))]'
           : 'bottom-[max(0.75rem,env(safe-area-inset-bottom))]'
@@ -133,7 +192,7 @@ export function PwaInstallPrompt() {
               id="pwa-install-title"
               className="font-display text-base font-semibold leading-snug"
             >
-              {showIos ? t('pwa.installIosTitle') : t('pwa.installTitle')}
+              {title}
             </h2>
             <button
               type="button"
@@ -144,12 +203,15 @@ export function PwaInstallPrompt() {
               <X className="h-4 w-4" />
             </button>
           </div>
-          <p className="text-sm text-muted-foreground">
-            {showIos ? t('pwa.installIosSteps') : t('pwa.installLede')}
-          </p>
+          <p className="text-sm text-muted-foreground">{body}</p>
           <div className="flex flex-col gap-2 pt-1 sm:flex-row">
             {showChromium && (
-              <Button type="button" size="sm" className="w-full sm:w-auto" onClick={onInstall}>
+              <Button
+                type="button"
+                size="sm"
+                className="w-full sm:w-auto"
+                onClick={onInstall}
+              >
                 {t('pwa.installCta')}
               </Button>
             )}

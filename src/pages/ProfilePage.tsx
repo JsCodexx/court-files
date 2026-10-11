@@ -16,6 +16,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLoader } from '../context/LoaderContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
+import { AppPageHeader } from '../components/AppPage';
 import { cn } from '../lib/utils';
 import { ApiError, apiFetch } from '../utils/api';
 
@@ -28,11 +29,8 @@ export function ProfilePage() {
   ];
 
   return (
-    <div className="app-page app-page--narrow">
-      <div>
-        <h1 className="page-title">{t('profile.title')}</h1>
-        <p className="page-lede">{t('profile.lede')}</p>
-      </div>
+    <div className="app-page">
+      <AppPageHeader title={t('profile.title')} lede={t('profile.lede')} />
 
       <div
         role="tablist"

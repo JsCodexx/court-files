@@ -33,16 +33,30 @@
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    /* Light mode: soft emerald tint only — UI colors stay crisp */
-    opacity: 0.2;
+    /* Light: barely-there flag texture — brand green lives in logo/UI only */
+    opacity: 0.06;
   }
 
   html.dark body::before {
-    opacity: 0.85;
+    opacity: 0.35;
   }
 
-  /* Soft wash so green stays visible but text/UI remain readable */
-  body::after {
+  /* Page veil — light and dark are separate so dark mode never keeps a white wash */
+  html:not(.dark) body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      168deg,
+      hsl(45 30% 99% / 0.98) 0%,
+      hsl(45 25% 98% / 0.99) 45%,
+      hsl(45 22% 97% / 0.99) 100%
+    );
+  }
+
+  html.dark body::after {
     content: '';
     position: fixed;
     inset: 0;
@@ -50,18 +64,9 @@
     pointer-events: none;
     background: linear-gradient(
       165deg,
-      hsl(var(--background) / 0.92) 0%,
-      hsl(var(--background) / 0.95) 50%,
-      hsl(var(--background) / 0.97) 100%
-    );
-  }
-
-  html.dark body::after {
-    background: linear-gradient(
-      160deg,
-      hsl(var(--background) / 0.62) 0%,
-      hsl(var(--background) / 0.74) 50%,
-      hsl(var(--background) / 0.85) 100%
+      hsl(var(--background) / 0.94) 0%,
+      hsl(var(--background) / 0.97) 55%,
+      hsl(160 30% 5% / 0.98) 100%
     );
   }
 
@@ -128,33 +133,115 @@
   }
 
   /* Page title scale that fits phones without wrapping awkwardly */
+  .page-eyebrow {
+    @apply text-[0.68rem] font-semibold uppercase tracking-[0.18em] sm:text-xs;
+    color: hsl(var(--brand-fresh));
+  }
+
   .page-title {
-    @apply font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl;
+    @apply font-display text-2xl font-semibold tracking-tight sm:text-3xl;
+    color: hsl(var(--brand-forest));
     overflow-wrap: anywhere;
+  }
+
+  html.dark .page-title {
+    @apply text-foreground;
   }
 
   .page-lede {
     @apply mt-1 text-sm text-muted-foreground sm:text-base;
   }
 
-  /* Auth / full-page shells */
+  .app-page-header {
+    @apply min-w-0 space-y-1;
+  }
+
+  .app-page-header .page-title {
+    @apply mt-1;
+  }
+
+  /* Logged-in main canvas — same soft glow as landing hero */
+  .app-main-surface {
+    @apply relative min-w-0 flex-1;
+    background-image: radial-gradient(
+      ellipse 90% 55% at 85% 0%,
+      hsl(var(--brand-fresh) / 0.07),
+      transparent 55%
+    );
+  }
+
+  html.dark .app-main-surface {
+    background-image: radial-gradient(
+      ellipse 90% 55% at 85% 0%,
+      hsl(var(--brand-fresh) / 0.05),
+      transparent 55%
+    );
+  }
+
+  .site-main-surface {
+    @apply relative flex-1;
+    background-image: radial-gradient(
+      ellipse 80% 50% at 50% 0%,
+      hsl(var(--brand-fresh) / 0.06),
+      transparent 60%
+    );
+  }
+
+  /* Panels / tables — landing-style cards */
+  .app-panel {
+    @apply rounded-2xl border border-border bg-card shadow-sm;
+  }
+
+  /* Lift wordmark off tinted pages — Court/Diary stay crisp */
+  .brand-plate {
+    @apply inline-flex rounded-xl border border-border/80 bg-card px-4 py-3 shadow-sm;
+  }
+
+  .brand-plate--hero {
+    @apply rounded-2xl px-5 py-4 shadow-md sm:px-6 sm:py-5;
+  }
+
+  /* Auth / full-page shells — always follow theme tokens (no fixed white gradient) */
   .page-shell {
-    @apply flex min-h-[100dvh] items-center justify-center bg-background px-3 py-6 sm:px-4 sm:py-10;
+    @apply flex min-h-[100dvh] items-center justify-center bg-background text-foreground px-3 py-6 sm:px-4 sm:py-10;
+    background-image:
+      radial-gradient(
+        ellipse 70% 45% at 50% 0%,
+        hsl(var(--brand-fresh) / 0.08),
+        transparent 55%
+      ),
+      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--muted) / 0.55) 100%);
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
     padding-top: max(1.5rem, env(safe-area-inset-top));
   }
 
-  /* In-app pages (logged-in area) */
+  html.dark .page-shell {
+    background-image:
+      radial-gradient(
+        ellipse 70% 45% at 50% 0%,
+        hsl(var(--brand-fresh) / 0.06),
+        transparent 55%
+      ),
+      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
+  }
+
+  .auth-card {
+    @apply w-full rounded-2xl border border-border bg-card shadow-lg shadow-[hsl(var(--brand-forest)/0.06)];
+  }
+
+  /* In-app pages — width is set by AppLayout content column (max-w-6xl) */
   .app-page {
     @apply min-w-0 w-full animate-rise-in space-y-5 sm:space-y-6;
   }
 
-  .app-page--narrow {
-    @apply mx-auto max-w-2xl;
+  /* Legacy props on <AppPage /> — same width everywhere */
+  .app-page--narrow,
+  .app-page--wide {
+    @apply max-w-none;
   }
 
-  .app-page--wide {
-    @apply mx-auto max-w-6xl;
+  .app-content-column {
+    @apply mx-auto w-full min-w-0 max-w-6xl;
   }
 
   /* Long URLs, case IDs, Urdu text on narrow screens */
@@ -179,6 +266,11 @@
 
   .section-title {
     @apply border-b border-border pb-2 font-display text-lg font-semibold tracking-tight sm:text-xl;
+    color: hsl(var(--brand-forest));
+  }
+
+  html.dark .section-title {
+    @apply text-foreground;
   }
 
   .scroll-x-tabs {
@@ -187,7 +279,7 @@
 
   /* Mobile / PWA bottom tab bar */
   .app-bottom-nav {
-    @apply fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card/95 shadow-[0_-4px_24px_hsl(var(--foreground)/0.06)] backdrop-blur-md;
+    @apply fixed inset-x-0 bottom-0 z-50 border-t border-sidebar-foreground/10 bg-sidebar/95 text-sidebar-foreground shadow-[0_-4px_24px_hsl(var(--sidebar)/0.45)] backdrop-blur-md;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
@@ -196,12 +288,12 @@
   }
 
   .app-bottom-nav__item {
-    @apply flex min-h-0 min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg px-0.5 py-1 text-[10px] font-medium leading-tight text-muted-foreground transition-colors;
+    @apply flex min-h-0 min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg px-0.5 py-1 text-[10px] font-medium leading-tight text-sidebar-muted transition-colors;
     min-height: unset;
   }
 
   .app-bottom-nav__item--active {
-    @apply text-primary;
+    @apply text-sidebar-foreground;
   }
 
   .app-bottom-nav__icon-wrap {
@@ -209,11 +301,11 @@
   }
 
   .app-bottom-nav__item--active .app-bottom-nav__icon-wrap {
-    @apply bg-primary/10;
+    @apply bg-sidebar-foreground/15;
   }
 
   .app-bottom-nav__icon-wrap--center {
-    @apply -mt-3 h-11 w-11 rounded-full bg-primary text-primary-foreground shadow-md;
+    @apply -mt-3 h-11 w-11 rounded-full bg-[hsl(var(--brand-fresh))] text-primary-foreground shadow-md;
   }
 
   .app-bottom-nav__item--center.app-bottom-nav__item--active .app-bottom-nav__icon-wrap--center {
@@ -225,7 +317,7 @@
   }
 
   .app-bottom-nav__item--center:not(.app-bottom-nav__item--active) .app-bottom-nav__icon-wrap--center {
-    @apply bg-primary text-primary-foreground;
+    @apply bg-[hsl(var(--brand-fresh))] text-primary-foreground;
   }
 
   .app-bottom-nav__icon {

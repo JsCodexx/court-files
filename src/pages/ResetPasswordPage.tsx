@@ -15,6 +15,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
 import { useAuth } from '../context/AuthContext';
+import { AuthBrandHeader } from '../components/AuthBrandHeader';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { useLoader } from '../context/LoaderContext';
@@ -71,14 +72,15 @@ export function ResetPasswordPage() {
 
   return (
     <div className="page-shell">
-      <Card className="w-full max-w-md animate-rise-in">
+      <Card className="auth-card max-w-md animate-rise-in">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="page-title">{t('forgot.resetTitle')}</CardTitle>
-          <CardDescription>{t('forgot.resetLede')}</CardDescription>
+          <AuthBrandHeader />
+          <CardTitle className="sr-only">{t('forgot.resetTitle')}</CardTitle>
+          <CardDescription className="text-center">{t('forgot.resetLede')}</CardDescription>
         </CardHeader>
         <CardContent>
           {!tokenOk ? (

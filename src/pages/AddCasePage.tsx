@@ -340,7 +340,7 @@ export function AddCasePage() {
 
   if (!isEdit && subscription && !subscription.canAddCase) {
     return (
-      <div className="app-page app-page--narrow space-y-5">
+      <div className="app-page space-y-5">
         <div>
           <h1 className="page-title">{t('subscription.limitTitle')}</h1>
           <p className="page-lede">{t('subscription.limitLede')}</p>
@@ -364,9 +364,10 @@ export function AddCasePage() {
   }
 
   return (
-    <div className="app-page app-page--wide">
+    <div className="app-page">
       <div className="page-header">
-        <div className="page-header__main">
+        <div className="page-header__main app-page-header">
+          <p className="page-eyebrow">{t('brand.sub')}</p>
           <h1 className="page-title">
             {t(isEdit ? 'addCase.editTitle' : 'addCase.title')}
           </h1>

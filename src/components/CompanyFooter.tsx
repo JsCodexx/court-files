@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, MapPin, Phone } from './icons';
 import { BrandLogo } from './BrandLogo';
+import { BrandWordmark } from './BrandWordmark';
 import { COMPANY } from '../constants/company';
 import { useLocale } from '../i18n/LocaleContext';
 
@@ -26,7 +27,10 @@ export function CompanyFooter() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr]">
           <div>
             <div className="flex flex-col gap-2">
-              <BrandLogo variant="footer" className="h-8 w-auto max-w-[10rem]" />
+              <div className="flex items-center gap-2.5">
+                <BrandLogo variant="appSidebar" className="h-9 w-9 shrink-0" />
+                <BrandWordmark onDark size="sm" />
+              </div>
               <span className="font-display text-sm font-semibold text-sidebar-foreground">
                 {COMPANY.legalName}
               </span>

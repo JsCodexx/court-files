@@ -1,6 +1,7 @@
 import React from 'react';
 import { CompanyFooter } from './CompanyFooter';
 import { PublicHeader } from './PublicHeader';
+import { PwaInstallPrompt } from './PwaInstallPrompt';
 import { useLocale } from '../i18n/LocaleContext';
 
 export function SiteShell({
@@ -19,13 +20,14 @@ export function SiteShell({
       <main
         className={
           wide
-            ? 'mx-auto w-full min-w-0 max-w-6xl flex-1 px-3 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6 sm:py-14'
-            : 'mx-auto w-full min-w-0 max-w-3xl flex-1 px-3 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6 sm:py-14'
+            ? 'site-main-surface mx-auto w-full min-w-0 max-w-6xl flex-1 px-3 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6 sm:py-14'
+            : 'site-main-surface mx-auto w-full min-w-0 max-w-3xl flex-1 px-3 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6 sm:py-14'
         }
       >
         {children}
       </main>
 
+      <PwaInstallPrompt guest />
       <CompanyFooter />
     </div>
   );
