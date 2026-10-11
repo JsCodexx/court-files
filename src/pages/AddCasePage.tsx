@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Scale } from 'lucide-react';
+import { Scale } from '../components/icons';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ChangeJudgeDialog } from '../components/ChangeJudgeDialog';
 import { CityPicker } from '../components/CityPicker';
@@ -19,7 +19,9 @@ import {
 import { Textarea } from '../components/ui/textarea';
 import { ADVOCATE_FOR_OPTIONS, COURT_CATEGORIES } from '../constants';
 import { useCases } from '../context/CasesContext';
+import { useSubscription } from '../hooks/useSubscription';
 import { useLocale } from '../i18n/LocaleContext';
+import { translateApiError } from '../utils/api';
 import { TranslationKey } from '../i18n/translations';
 import { AdvocateFor, CourtCase, CourtCategory } from '../types';
 import { isSunday, nextWorkingDayISO, todayISO } from '../utils/dates';
@@ -118,7 +120,8 @@ function fromCase(c: CourtCase): CaseFormState {
 export function AddCasePage() {
   const { id } = useParams<{ id?: string }>();
   const isEdit = Boolean(id);
-  const { addCase, updateCase, getCase } = useCases();
+  const { addCase, updateCase, peekCase, getCase, version } = useCases();
+  const { status: subscription, loading: subLoading } = useSubscription(version);
   const { t } = useLocale();
   const navigate = useNavigate();
   const [form, setForm] = useState<CaseFormState>(empty);
@@ -142,6 +145,15 @@ export function AddCasePage() {
       setNotFound(false);
       return;
     }
+    const cached = peekCase(id);
+    if (cached) {
+      setForm(fromCase(cached));
+      setEditingCase(cached);
+      setOriginalNextDate(cached.nextDate);
+      setNotFound(false);
+      setLoading(false);
+      return;
+    }
     let alive = true;
     setLoading(true);
     getCase(id)
@@ -161,7 +173,7 @@ export function AddCasePage() {
     return () => {
       alive = false;
     };
-  }, [id, getCase]);
+  }, [id, peekCase, getCase, version]);
 
   const setValue = (key: keyof CaseFormState, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -289,8 +301,8 @@ export function AddCasePage() {
         setFieldErrors({});
         setTimeout(() => navigate('/dashboard'), 700);
       }
-    } catch {
-      setError(t('errors.saveFailed'));
+    } catch (err) {
+      setError(translateApiError(err, t));
     } finally {
       setSubmitting(false);
     }
@@ -304,7 +316,7 @@ export function AddCasePage() {
   const req = <span className="text-destructive">*</span>;
 
   const sectionTitle = (text: string) => (
-    <h2 className="border-b pb-2 font-display text-xl font-semibold">{text}</h2>
+    <h2 className="section-title">{text}</h2>
   );
 
   if (notFound) {
@@ -318,7 +330,7 @@ export function AddCasePage() {
     );
   }
 
-  if (loading) {
+  if (loading || (!isEdit && subLoading)) {
     return (
       <div className="p-10 text-center text-sm text-muted-foreground">
         {t('common.dash')}
@@ -326,28 +338,63 @@ export function AddCasePage() {
     );
   }
 
-  return (
-    <div className="animate-rise-in space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+  if (!isEdit && subscription && !subscription.canAddCase) {
+    return (
+      <div className="app-page app-page--narrow space-y-5">
         <div>
+          <h1 className="page-title">{t('subscription.limitTitle')}</h1>
+          <p className="page-lede">{t('subscription.limitLede')}</p>
+        </div>
+        <Alert>
+          {t('subscription.casesUsed', {
+            count: subscription.caseCount,
+            limit: subscription.freeCaseLimit,
+          })}
+        </Alert>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Button asChild className="w-full sm:w-auto">
+            <Link to="/plans">{t('subscription.upgradeCta')}</Link>
+          </Button>
+          <Button asChild variant="outline" className="w-full sm:w-auto">
+            <Link to="/dashboard">{t('history.back')}</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app-page app-page--wide">
+      <div className="page-header">
+        <div className="page-header__main">
           <h1 className="page-title">
             {t(isEdit ? 'addCase.editTitle' : 'addCase.title')}
           </h1>
           <p className="page-lede">
             {t(isEdit ? 'addCase.editLede' : 'addCase.lede')}
           </p>
+          {!isEdit && subscription && !subscription.hasActiveSubscription && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              {t('subscription.casesUsed', {
+                count: subscription.caseCount,
+                limit: subscription.freeCaseLimit,
+              })}
+            </p>
+          )}
         </div>
         {isEdit && editingCase ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="shrink-0"
-            onClick={() => setChangeJudgeOpen(true)}
-          >
-            <Scale className="h-4 w-4" />
-            {t('judge.change')}
-          </Button>
+          <div className="page-actions">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-full sm:w-auto"
+              onClick={() => setChangeJudgeOpen(true)}
+            >
+              <Scale className="h-4 w-4" />
+              {t('judge.change')}
+            </Button>
+          </div>
         ) : null}
       </div>
 
@@ -698,13 +745,18 @@ export function AddCasePage() {
               </div>
             </div>
 
-            <div className="flex gap-2 border-t pt-4">
-              <Button type="submit" disabled={submitting}>
+            <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row">
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="w-full sm:w-auto"
+              >
                 {t(isEdit ? 'addCase.update' : 'addCase.save')}
               </Button>
               <Button
                 type="button"
                 variant="secondary"
+                className="w-full sm:w-auto"
                 onClick={() =>
                   navigate(isEdit && id ? `/cases/${id}/detail` : '/dashboard')
                 }

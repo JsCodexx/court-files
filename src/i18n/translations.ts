@@ -87,7 +87,7 @@ export const en = {
 
   'pricing.title': 'Pricing & subscriptions',
   'pricing.lede':
-    'Only two prepaid services: Monthly and Yearly. Pay with RapidGateway — no account required before checkout.',
+    'Register up to 10 cases free. After that, choose Monthly or Yearly prepaid access for unlimited cases. Pay with RapidGateway — no account required before checkout.',
   'pricing.cta': 'Checkout without account',
   'pricing.fallbackNote':
     'Showing published plan prices. Live amounts match our catalog even if the API is temporarily unavailable.',
@@ -187,6 +187,15 @@ export const en = {
   'checkout.demoConfirm': 'Confirm {{gateway}} payment',
   'checkout.paidSuccess':
     'Payment successful. Check your email for a welcome message and a temporary password, then sign in.',
+  'checkout.paymentFailed':
+    'Payment was not completed. You can try again with the same details.',
+  'checkout.gatewayUnavailable':
+    'RapidGateway is temporarily unavailable. Please try again in a moment.',
+  'checkout.startFailed':
+    'Could not start checkout. Check your connection and try again.',
+  'checkout.detailsRequired': 'Name, email and mobile number are required.',
+  'checkout.phoneInUse':
+    'This phone is already registered with another email. Sign in or use a different phone.',
   'checkout.afterPay':
     'We emailed a payment welcome message and a one-time temporary password to your checkout email. Sign in with that password — you will be asked to set a new password, then sign in again.',
   'checkout.createAccount': 'Sign in with email from checkout',
@@ -234,9 +243,19 @@ export const en = {
   'nav.profile': 'Profile',
   'nav.signOut': 'Sign out',
   'nav.menu': 'Menu',
+  'nav.closeMenu': 'Close menu',
   'nav.language': 'Language',
   'nav.collapse': 'Collapse sidebar',
   'nav.expand': 'Expand sidebar',
+  'nav.main': 'Main navigation',
+  'nav.tabHome': 'Home',
+  'nav.tabCalendar': 'Calendar',
+  'nav.tabAdd': 'Add',
+  'nav.tabSearch': 'Search',
+  'nav.tabProfile': 'Profile',
+
+  'profile.quickPlans': 'Plans & billing',
+  'profile.quickPayments': 'Payment history',
 
   'lang.en': 'English',
   'lang.ur': 'اردو',
@@ -247,6 +266,17 @@ export const en = {
   'common.dash': '—',
   'common.required': '*',
   'common.loading': 'Loading…',
+
+  'pwa.updateAvailable': 'A new version of Court Files is ready.',
+  'pwa.reload': 'Update now',
+  'pwa.installTitle': 'Install Court Files on your device',
+  'pwa.installLede':
+    'Add the app to your home screen for faster access, full-screen view, and offline-ready updates.',
+  'pwa.installCta': 'Install app',
+  'pwa.installDismiss': 'Not now',
+  'pwa.installIosTitle': 'Add Court Files to your home screen',
+  'pwa.installIosSteps':
+    'In Safari, tap the Share button, then choose “Add to Home Screen”. Open Court Files from that icon like a native app.',
 
   'category.Civil Courts': 'Civil Courts',
   'category.Session Courts': 'Session Courts',
@@ -313,6 +343,10 @@ export const en = {
   'dashboard.allCourts': 'All courts',
   'dashboard.print': 'Print',
   'dashboard.printHint': 'Print proceeding history for listed cases',
+  'dashboard.pageOf': 'Page {{page}} of {{total}}',
+  'dashboard.pageTotal': '{{count}} case(s)',
+  'dashboard.prevPage': 'Previous',
+  'dashboard.nextPage': 'Next',
 
   'print.proceedingHistory': 'Proceeding History',
   'print.sr': 'Sr. #',
@@ -495,6 +529,32 @@ export const en = {
   'errors.otpExpired': 'OTP has expired. Please register again.',
   'errors.network': 'Cannot reach the server. Check your connection.',
   'errors.saveFailed': 'Failed to save. Please try again.',
+  'errors.caseLimitReached':
+    'You have used all 10 free cases. Purchase a plan to add more cases.',
+
+  'subscription.freeTier': 'Free plan: up to 10 cases',
+  'subscription.casesUsed': '{{count}} of {{limit}} free cases used',
+  'subscription.activeUntil': 'Paid access until {{date}}',
+  'subscription.limitTitle': 'Upgrade to add more cases',
+  'subscription.limitLede':
+    'Court Files includes 10 cases at no charge. Subscribe to register unlimited cases for your practice.',
+  'subscription.upgradeCta': 'View plans & pay',
+  'subscription.expiredLede':
+    'Your monthly or yearly access has ended. Renew to open the dashboard and your cases again.',
+  'subscription.graceTitle': 'Renew to keep premium access',
+  'subscription.graceLede':
+    'Your paid period has ended. You still have full access for a few days — renew now to avoid losing your cases and premium features.',
+  'subscription.graceCountdown':
+    'About {{days}} day(s) left before access is restricted. You will see this reminder once per day until you renew or the grace period ends.',
+  'subscription.graceDismiss': 'Remind me tomorrow',
+  'subscription.graceBanner':
+    'Grace period: {{days}} day(s) left — renew to keep unlimited cases.',
+  'subscription.lockoutTitle': 'Renew to continue',
+  'subscription.lockoutLede':
+    'Your paid access and grace period have ended. Choose a plan and complete payment to open your cases again.',
+
+  'errors.subscriptionExpired':
+    'Your subscription has expired. Renew your plan to continue using Court Files.',
   'errors.phoneNotFound': 'No account found for this phone number.',
   'errors.noReset': 'No password reset in progress.',
   'errors.resetInvalid': 'This reset link is invalid or has expired.',
@@ -572,8 +632,8 @@ export const en = {
   'plans.back': 'Back to plans',
   'plans.payTitle': 'Payment method',
   'plans.payLede': 'Pay Rs {{amount}} for {{plan}}',
-  'plans.easypaisa': 'RapidGateway',
-  'plans.easypaisaHint':
+  'plans.rapidgateway': 'RapidGateway',
+  'plans.rapidgatewayHint':
     'Smooth payment across all digital wallet connectivity via RapidGateway',
 
   'payments.title': 'Payments',
@@ -735,7 +795,7 @@ export const ur: Record<TranslationKey, string> = {
 
   'pricing.title': 'قیمتیں اور سبسکرپشن',
   'pricing.lede':
-    'صرف دو پیشگی سروسز: ماہانہ اور سالانہ۔ RapidGateway سے ادا کریں — چیک آؤٹ سے پہلے اکاؤنٹ ضروری نہیں۔',
+    '10 مقدمے مفت درج کریں۔ اس کے بعد لامحدود مقدموں کے لیے ماہانہ یا سالانہ پلان۔ RapidGateway سے ادا کریں — چیک آؤٹ سے پہلے اکاؤنٹ ضروری نہیں۔',
   'pricing.cta': 'بغیر اکاؤنٹ چیک آؤٹ',
   'pricing.fallbackNote':
     'شائع شدہ پلان قیمتیں دکھائی جا رہی ہیں۔ اگر API عارضی طور پر دستیاب نہ ہو تب بھی یہی کیٹلاگ لاگو رہتی ہے۔',
@@ -835,6 +895,15 @@ export const ur: Record<TranslationKey, string> = {
   'checkout.demoConfirm': '{{gateway}} ادائیگی کی تصدیق',
   'checkout.paidSuccess':
     'ادائیگی کامیاب۔ خوش آمدید اور عارضی پاس ورڈ کے لیے اپنا ای میل چیک کریں، پھر سائن اِن کریں۔',
+  'checkout.paymentFailed':
+    'ادائیگی مکمل نہیں ہوئی۔ آپ وہی تفصیلات دے کر دوبارہ کوشش کر سکتے ہیں۔',
+  'checkout.gatewayUnavailable':
+    'RapidGateway عارضی طور پر دستیاب نہیں۔ کچھ دیر بعد دوبارہ کوشش کریں۔',
+  'checkout.startFailed':
+    'چیک آؤٹ شروع نہیں ہو سکا۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔',
+  'checkout.detailsRequired': 'نام، ای میل اور موبائل نمبر لازمی ہیں۔',
+  'checkout.phoneInUse':
+    'یہ فون نمبر کسی اور ای میل سے رجسٹرڈ ہے۔ سائن اِن کریں یا دوسرا نمبر استعمال کریں۔',
   'checkout.afterPay':
     'ہم نے آپ کے چیک آؤٹ ای میل پر ادائیگی کی خوش آمدید اور ایک وقتی عارضی پاس ورڈ بھیجا ہے۔ اس پاس ورڈ سے سائن اِن کریں — نیا پاس ورڈ سیٹ کرنے کے بعد دوبارہ سائن اِن کریں۔',
   'checkout.createAccount': 'چیک آؤٹ والی ای میل سے سائن اِن کریں',
@@ -886,9 +955,19 @@ export const ur: Record<TranslationKey, string> = {
   'nav.profile': 'پروفائل',
   'nav.signOut': 'ساائن آؤٹ',
   'nav.menu': 'مینو',
+  'nav.closeMenu': 'مینو بند کریں',
   'nav.language': 'زبان',
   'nav.collapse': 'سائڈ بار بند کریں',
   'nav.expand': 'سائڈ بار کھولیں',
+  'nav.main': 'مرکزی نیویگیشن',
+  'nav.tabHome': 'ہوم',
+  'nav.tabCalendar': 'کیلنڈر',
+  'nav.tabAdd': 'شامل',
+  'nav.tabSearch': 'تلاش',
+  'nav.tabProfile': 'پروفائل',
+
+  'profile.quickPlans': 'پلان اور بلنگ',
+  'profile.quickPayments': 'ادائیگی کی تاریخ',
 
   'lang.en': 'English',
   'lang.ur': 'اردو',
@@ -899,6 +978,17 @@ export const ur: Record<TranslationKey, string> = {
   'common.dash': '—',
   'common.required': '*',
   'common.loading': 'لوڈ ہو رہا ہے…',
+
+  'pwa.updateAvailable': 'Court Files کا نیا ورژن تیار ہے۔',
+  'pwa.reload': 'ابھی اپ ڈیٹ کریں',
+  'pwa.installTitle': 'Court Files اپنے فون پر انسٹال کریں',
+  'pwa.installLede':
+    'ہوم اسکرین پر شامل کریں تاکہ تیز رسائی، فل سکرین اور PWA اپ ڈیٹس مل سکیں۔',
+  'pwa.installCta': 'انسٹال کریں',
+  'pwa.installDismiss': 'ابھی نہیں',
+  'pwa.installIosTitle': 'ہوم اسکرین پر شامل کریں',
+  'pwa.installIosSteps':
+    'Safari میں Share بٹن دبائیں، پھر “Add to Home Screen” منتخب کریں۔ اس آئیکن سے ایپ کھولیں۔',
 
   'category.Civil Courts': 'دیوانی عدالتیں',
   'category.Session Courts': 'سیشن عدالتیں',
@@ -965,6 +1055,10 @@ export const ur: Record<TranslationKey, string> = {
   'dashboard.allCourts': 'تمام عدالتیں',
   'dashboard.print': 'پرنٹ',
   'dashboard.printHint': 'فہرست شدہ مقدمات کی کارروائی کی تاریخ پرنٹ کریں',
+  'dashboard.pageOf': 'صفحہ {{page}} / {{total}}',
+  'dashboard.pageTotal': '{{count}} مقدمے',
+  'dashboard.prevPage': 'پچھلا',
+  'dashboard.nextPage': 'اگلا',
 
   'print.proceedingHistory': 'کارروائی کی تاریخ',
   'print.sr': 'نمبر',
@@ -1147,6 +1241,32 @@ export const ur: Record<TranslationKey, string> = {
   'errors.otpExpired': 'او ٹی پی کی مدت ختم ہو گئی۔ دوبارہ رجسٹر کریں۔',
   'errors.network': 'سرور سے رابطہ نہیں ہو سکا۔ اپنا کنکشن چیک کریں۔',
   'errors.saveFailed': 'محفوظ نہیں ہو سکا۔ دوبارہ کوشش کریں۔',
+  'errors.caseLimitReached':
+    'آپ نے 10 مفت مقدمے استعمال کر لیے ہیں۔ مزید مقدموں کے لیے پلان خریدیں۔',
+
+  'subscription.freeTier': 'مفت: زیادہ سے زیادہ 10 مقدمے',
+  'subscription.casesUsed': '{{limit}} میں سے {{count}} مفت مقدمے استعمال',
+  'subscription.activeUntil': 'ادائیگی تک رسائی {{date}}',
+  'subscription.limitTitle': 'مزید مقدموں کے لیے اپ گریڈ کریں',
+  'subscription.limitLede':
+    'Court Files میں 10 مقدمے مفت ہیں۔ لامحدود مقدموں کے لیے سبسکرائب کریں۔',
+  'subscription.upgradeCta': 'پلان دیکھیں اور ادائیگی کریں',
+  'subscription.expiredLede':
+    'آپ کی ماہانہ یا سالانہ رسائی ختم ہو گئی ہے۔ ڈیش بورڈ کے لیے دوبارہ سبسکرائب کریں۔',
+  'subscription.graceTitle': 'پریمیم رسائی برقرار رکھنے کے لیے تجدید کریں',
+  'subscription.graceLede':
+    'آپ کی ادائیگی کی مدت ختم ہو گئی ہے۔ چند دنوں تک مکمل رسائی ہے — تجدید کریں تاکہ مقدمے اور پریمیم فیچرز محفوظ رہیں۔',
+  'subscription.graceCountdown':
+    'تقریباً {{days}} دن باقی ہیں، پھر رسائی محدود ہو سکتی ہے۔ تجدید یا گریس ختم ہونے تک یہ یاد دہانی روزانہ ایک بار دکھائی جائے گی۔',
+  'subscription.graceDismiss': 'کل یاد دلائیں',
+  'subscription.graceBanner':
+    'گریس پیریڈ: {{days}} دن باقی — لامحدود مقدموں کے لیے تجدید کریں۔',
+  'subscription.lockoutTitle': 'جاری رکھنے کے لیے تجدید کریں',
+  'subscription.lockoutLede':
+    'آپ کی ادائیگی اور گریس پیریڈ ختم ہو گیا ہے۔ مقدمے دوبارہ کھولنے کے لیے پلان منتخب کریں اور ادائیگی مکمل کریں۔',
+
+  'errors.subscriptionExpired':
+    'آپ کی سبسکرپشن ختم ہو گئی ہے۔ Court Files استعمال جاری رکھنے کے لیے پلان تجدید کریں۔',
   'errors.phoneNotFound': 'اس فون نمبر پر کوئی اکاؤنٹ نہیں ملا۔',
   'errors.noReset': 'کوئی جاری پاس ورڈ ری سیٹ نہیں۔',
   'errors.resetInvalid': 'یہ ری سیٹ لنک غلط ہے یا اس کی مدت ختم ہو گئی ہے۔',
@@ -1223,8 +1343,8 @@ export const ur: Record<TranslationKey, string> = {
   'plans.back': 'پلانز پر واپس',
   'plans.payTitle': 'ادائیگی کا طریقہ',
   'plans.payLede': '{{plan}} کے لیے Rs {{amount}} ادا کریں',
-  'plans.easypaisa': 'RapidGateway',
-  'plans.easypaisaHint':
+  'plans.rapidgateway': 'RapidGateway',
+  'plans.rapidgatewayHint':
     'RapidGateway کے ذریعے تمام ڈیجیٹل والیٹ کنیکٹیویٹی پر آسان ادائیگی',
 
   'payments.title': 'ادائیگیاں',

@@ -1,15 +1,21 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from './components/AppLayout';
+import { SubscriptionGate } from './components/SubscriptionGate';
+import { SubscriptionBillingGuard } from './components/SubscriptionBillingGuard';
+import { SubscriptionRenewalDialog } from './components/SubscriptionRenewalDialog';
 import {
   ProtectedRoute,
   PublicOnlyRoute,
 } from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
+import { SubscriptionProvider } from './context/SubscriptionContext';
 import { CasesProvider } from './context/CasesContext';
 import { LoaderProvider } from './context/LoaderContext';
 import { LocaleProvider } from './i18n/LocaleContext';
 import { ThemeProvider } from './theme/ThemeContext';
+import { ToastProvider } from './context/ToastContext';
+import { PwaUpdatePrompt } from './components/PwaUpdatePrompt';
 import { AddCasePage } from './pages/AddCasePage';
 import { CalendarPage } from './pages/CalendarPage';
 import { CaseDetailPage } from './pages/CaseDetailPage';
@@ -43,7 +49,11 @@ function App() {
     <ThemeProvider>
       <LocaleProvider>
         <LoaderProvider>
-          <AuthProvider>
+          <ToastProvider>
+            <PwaUpdatePrompt />
+            <AuthProvider>
+            <SubscriptionProvider>
+            <SubscriptionRenewalDialog />
             <CasesProvider>
               <Routes>
                 <Route element={<PublicOnlyRoute />}>
@@ -61,18 +71,22 @@ function App() {
                     element={<ForceChangePasswordPage />}
                   />
                   <Route element={<AppLayout />}>
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/cases/new" element={<AddCasePage />} />
-                    <Route path="/cases/:id/edit" element={<AddCasePage />} />
-                    <Route path="/cases/:id/history" element={<CaseHistoryPage />} />
-                    <Route path="/cases/:id/detail" element={<CaseDetailPage />} />
-                    <Route path="/calendar" element={<CalendarPage />} />
-                    <Route path="/search" element={<SearchPage />} />
+                    <Route element={<SubscriptionBillingGuard />}>
                     <Route path="/plans" element={<PlansPage />} />
                     <Route path="/payments" element={<PaymentsPage />} />
                     <Route path="/profile" element={<ProfilePage />}>
                       <Route index element={<ProfileOverview />} />
                       <Route path="settings" element={<ProfileSettings />} />
+                    </Route>
+                    <Route element={<SubscriptionGate />}>
+                      <Route path="/dashboard" element={<DashboardPage />} />
+                      <Route path="/cases/new" element={<AddCasePage />} />
+                      <Route path="/cases/:id/edit" element={<AddCasePage />} />
+                      <Route path="/cases/:id/history" element={<CaseHistoryPage />} />
+                      <Route path="/cases/:id/detail" element={<CaseDetailPage />} />
+                      <Route path="/calendar" element={<CalendarPage />} />
+                      <Route path="/search" element={<SearchPage />} />
+                    </Route>
                     </Route>
                   </Route>
                 </Route>
@@ -89,7 +103,9 @@ function App() {
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </CasesProvider>
+            </SubscriptionProvider>
           </AuthProvider>
+          </ToastProvider>
         </LoaderProvider>
       </LocaleProvider>
     </ThemeProvider>

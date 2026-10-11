@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { X } from 'lucide-react';
+import { X } from '../icons';
 import { cn } from '../../lib/utils';
 
 const Dialog = DialogPrimitive.Root;
@@ -32,7 +32,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-1/2 top-1/2 z-50 grid max-h-[min(90vh,90dvh)] w-[min(640px,calc(100vw-1.25rem))] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-lg border border-border bg-card p-4 shadow-lg data-[state=open]:animate-rise-in sm:p-6',
+        'fixed left-1/2 top-1/2 z-50 grid max-h-[min(calc(90dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom)),90vh)] w-[min(640px,calc(100vw-1.25rem))] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-lg border border-border bg-card p-4 shadow-lg data-[state=open]:animate-rise-in sm:p-6',
         className
       )}
       {...props}

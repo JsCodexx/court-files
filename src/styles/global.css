@@ -70,6 +70,26 @@
     z-index: 1;
     min-height: 100vh;
     min-height: 100dvh;
+    max-width: 100vw;
+    overflow-x: clip;
+  }
+
+  /* Prevent iOS zoom on focus; keep tap targets readable */
+  @media (max-width: 640px) {
+    input,
+    select,
+    textarea,
+    .urdu-input {
+      font-size: 16px;
+    }
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+    height: auto;
   }
 
   /* Urdu locale uses Naskh — slightly taller line height for readability */
@@ -83,15 +103,19 @@
     @apply font-urdu;
   }
 
-  /* Comfortable tap targets on touch devices */
+  /* Comfortable tap targets (exclude compact calendar cells) */
   @media (pointer: coarse) {
-    button,
-    a,
-    [role='button'],
+    button:not(.calendar-day):not(.app-bottom-nav__item),
+    a[role='button']:not(.app-bottom-nav__item),
+    [role='tab'],
     input,
     select,
     textarea {
-      min-height: 2.5rem;
+      min-height: 2.75rem;
+    }
+
+    .app-bottom-nav__item {
+      min-height: unset;
     }
   }
 }
@@ -105,16 +129,128 @@
 
   /* Page title scale that fits phones without wrapping awkwardly */
   .page-title {
-    @apply font-display text-2xl font-semibold tracking-tight sm:text-3xl;
+    @apply font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl;
+    overflow-wrap: anywhere;
   }
 
   .page-lede {
-    @apply mt-1 text-sm text-muted-foreground;
+    @apply mt-1 text-sm text-muted-foreground sm:text-base;
   }
 
   /* Auth / full-page shells */
   .page-shell {
     @apply flex min-h-[100dvh] items-center justify-center bg-background px-3 py-6 sm:px-4 sm:py-10;
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    padding-top: max(1.5rem, env(safe-area-inset-top));
+  }
+
+  /* In-app pages (logged-in area) */
+  .app-page {
+    @apply min-w-0 w-full animate-rise-in space-y-5 sm:space-y-6;
+  }
+
+  .app-page--narrow {
+    @apply mx-auto max-w-2xl;
+  }
+
+  .app-page--wide {
+    @apply mx-auto max-w-6xl;
+  }
+
+  /* Long URLs, case IDs, Urdu text on narrow screens */
+  .app-page,
+  .page-shell,
+  article {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .page-header {
+    @apply flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between;
+  }
+
+  .page-header__main {
+    @apply min-w-0 flex-1;
+  }
+
+  .page-actions {
+    @apply flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap;
+  }
+
+  .section-title {
+    @apply border-b border-border pb-2 font-display text-lg font-semibold tracking-tight sm:text-xl;
+  }
+
+  .scroll-x-tabs {
+    @apply -mx-0.5 flex gap-0.5 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+  }
+
+  /* Mobile / PWA bottom tab bar */
+  .app-bottom-nav {
+    @apply fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card/95 shadow-[0_-4px_24px_hsl(var(--foreground)/0.06)] backdrop-blur-md;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .app-bottom-nav__inner {
+    @apply mx-auto grid h-[3.75rem] max-w-lg grid-cols-5 items-stretch px-1;
+  }
+
+  .app-bottom-nav__item {
+    @apply flex min-h-0 min-w-0 flex-col items-center justify-center gap-0.5 rounded-lg px-0.5 py-1 text-[10px] font-medium leading-tight text-muted-foreground transition-colors;
+    min-height: unset;
+  }
+
+  .app-bottom-nav__item--active {
+    @apply text-primary;
+  }
+
+  .app-bottom-nav__icon-wrap {
+    @apply flex h-8 w-8 items-center justify-center rounded-full;
+  }
+
+  .app-bottom-nav__item--active .app-bottom-nav__icon-wrap {
+    @apply bg-primary/10;
+  }
+
+  .app-bottom-nav__icon-wrap--center {
+    @apply -mt-3 h-11 w-11 rounded-full bg-primary text-primary-foreground shadow-md;
+  }
+
+  .app-bottom-nav__item--center.app-bottom-nav__item--active .app-bottom-nav__icon-wrap--center {
+    @apply bg-primary ring-2 ring-primary/25;
+  }
+
+  .app-bottom-nav__item--center .app-bottom-nav__icon {
+    @apply h-5 w-5 text-primary-foreground;
+  }
+
+  .app-bottom-nav__item--center:not(.app-bottom-nav__item--active) .app-bottom-nav__icon-wrap--center {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .app-bottom-nav__icon {
+    @apply h-[1.25rem] w-[1.25rem] shrink-0 transition-transform duration-200;
+  }
+
+  .app-bottom-nav__item--active:not(.app-bottom-nav__item--center) .app-bottom-nav__icon {
+    transform: scale(1.05);
+  }
+
+  .app-bottom-nav__label {
+    @apply max-w-full truncate px-0.5;
+  }
+
+  .has-bottom-nav .app-main-content {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  }
+
+  :not(.has-bottom-nav) .app-main-content {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+
+  .has-bottom-nav .app-main-content {
+    padding-top: 0.75rem;
   }
 
   /* Global loader — Pakistan crescent & star */

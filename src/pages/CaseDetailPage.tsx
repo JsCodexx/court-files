@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, History, Pencil, Printer, Scale } from 'lucide-react';
+import { ArrowLeft, History, Pencil, Printer, Scale } from '../components/icons';
 import { Link, useParams } from 'react-router-dom';
 import { CaseStatusBadge } from '../components/CaseStatusBadge';
 import { ChangeJudgeDialog } from '../components/ChangeJudgeDialog';
@@ -18,7 +18,7 @@ import { formatDisplayDate } from '../utils/dates';
  */
 export function CaseDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { getCase, version } = useCases();
+  const { peekCase, getCase, version } = useCases();
   const { t } = useLocale();
   const [courtCase, setCourtCase] = useState<CourtCase | null>(null);
   const [notFound, setNotFound] = useState(false);
@@ -26,6 +26,12 @@ export function CaseDetailPage() {
 
   useEffect(() => {
     if (!id) return;
+    const cached = peekCase(id);
+    if (cached) {
+      setCourtCase(cached);
+      setNotFound(false);
+      return;
+    }
     let alive = true;
     getCase(id)
       .then((c) => {
@@ -40,7 +46,13 @@ export function CaseDetailPage() {
     return () => {
       alive = false;
     };
-  }, [id, getCase, version]);
+  }, [id, peekCase, getCase, version]);
+
+  useEffect(() => {
+    if (!id) return;
+    const cached = peekCase(id);
+    if (cached) setCourtCase(cached);
+  }, [id, peekCase, version]);
 
   const monthLabel = (index: number, short?: boolean) =>
     t((short ? `monthShort.${index}` : `month.${index}`) as TranslationKey);
@@ -89,17 +101,17 @@ export function CaseDetailPage() {
   );
 
   return (
-    <div className="animate-rise-in space-y-4">
+    <div className="app-page app-page--wide space-y-4">
       {/* Toolbar (hidden when printing) */}
-      <div className="no-print flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-        <Button asChild variant="secondary" size="sm" className="w-fit">
+      <div className="no-print page-header">
+        <Button asChild variant="secondary" size="sm" className="w-full sm:w-fit">
           <Link to="/dashboard">
             <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
             {t('history.back')}
           </Link>
         </Button>
-        <div className="flex flex-wrap gap-2">
-          <Button asChild variant="outline" size="sm">
+        <div className="page-actions">
+          <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
             <Link to={`/cases/${courtCase.id}/edit`}>
               <Pencil className="h-4 w-4" />
               {t('addCase.edit')}
@@ -109,18 +121,19 @@ export function CaseDetailPage() {
             type="button"
             variant="outline"
             size="sm"
+            className="w-full sm:w-auto"
             onClick={() => setChangeJudgeOpen(true)}
           >
             <Scale className="h-4 w-4" />
             {t('judge.change')}
           </Button>
-          <Button asChild variant="outline" size="sm">
+          <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
             <Link to={`/cases/${courtCase.id}/history`}>
               <History className="h-4 w-4" />
               {t('detail.editHistory')}
             </Link>
           </Button>
-          <Button size="sm" onClick={handlePrint}>
+          <Button size="sm" className="w-full sm:w-auto" onClick={handlePrint}>
             <Printer className="h-4 w-4" />
             {t('detail.print')}
           </Button>
@@ -137,7 +150,7 @@ export function CaseDetailPage() {
       {/* The document sheet */}
       <div
         id="case-print-sheet"
-        className="print-sheet mx-auto w-full max-w-4xl rounded-sm border-2 border-foreground/30 bg-card p-4 shadow-sm sm:p-6 md:p-10 print:border-0 print:p-0 print:shadow-none"
+        className="print-sheet mx-auto w-full min-w-0 max-w-4xl overflow-x-auto rounded-sm border-2 border-foreground/30 bg-card p-3 shadow-sm sm:p-6 md:p-10 print:border-0 print:p-0 print:shadow-none"
       >
         {/* Centered header, like the printed cause list */}
         <div className="space-y-1 border-b-4 border-double border-foreground/40 pb-4 text-center">

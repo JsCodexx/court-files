@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from '../components/icons';
 import { CaseTable } from '../components/CaseTable';
 import { HearingModal } from '../components/HearingModal';
 import { Button } from '../components/ui/button';
@@ -89,7 +89,7 @@ export function CalendarPage() {
   const selectedIsPast = selectedDate < today;
 
   return (
-    <div className="animate-rise-in space-y-6">
+    <div className="app-page">
       <div>
         <h1 className="page-title">{t('calendar.title')}</h1>
         <p className="page-lede">{t('calendar.lede')}</p>
@@ -102,10 +102,11 @@ export function CalendarPage() {
               type="button"
               variant="secondary"
               size="sm"
+              aria-label={t('calendar.prev')}
               onClick={() => setCursor((d: Date) => addMonths(d, -1))}
             >
-              <ChevronLeft className="h-4 w-4 rtl:rotate-180" />
-              <span className="hidden sm:inline">{t('calendar.prev')}</span>
+              <ChevronLeft className="h-4 w-4 shrink-0 rtl:rotate-180" />
+              <span className="text-xs sm:text-sm">{t('calendar.prev')}</span>
             </Button>
             <h2 className="font-display text-base font-semibold sm:text-xl" dir="ltr">
               {formatMonthYear(cursor, monthLabel)}
@@ -114,10 +115,11 @@ export function CalendarPage() {
               type="button"
               variant="secondary"
               size="sm"
+              aria-label={t('calendar.next')}
               onClick={() => setCursor((d: Date) => addMonths(d, 1))}
             >
-              <span className="hidden sm:inline">{t('calendar.next')}</span>
-              <ChevronRight className="h-4 w-4 rtl:rotate-180" />
+              <span className="text-xs sm:text-sm">{t('calendar.next')}</span>
+              <ChevronRight className="h-4 w-4 shrink-0 rtl:rotate-180" />
             </Button>
           </div>
 
@@ -159,7 +161,7 @@ export function CalendarPage() {
                     if (!sunday) setSelectedDate(iso);
                   }}
                   className={cn(
-                    'relative flex aspect-square min-h-[2.25rem] flex-col items-center justify-center rounded-md border text-xs transition-colors sm:min-h-0 sm:text-sm',
+                    'calendar-day relative flex aspect-square min-h-[2.25rem] flex-col items-center justify-center rounded-md border text-xs transition-colors sm:min-h-0 sm:text-sm',
                     sunday
                       ? 'cursor-not-allowed border-dashed bg-muted/40 text-muted-foreground/40 opacity-60'
                       : 'hover:border-primary/60',

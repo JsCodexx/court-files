@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronDown, Plus } from 'lucide-react';
+import { ChevronDown, Plus } from './icons';
 import { useLocale } from '../i18n/LocaleContext';
 import { apiFetch } from '../utils/api';
 import { cn } from '../lib/utils';

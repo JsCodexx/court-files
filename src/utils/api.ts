@@ -1,3 +1,5 @@
+import { TranslationKey, en } from '../i18n/translations';
+
 const API_URL =
   process.env.REACT_APP_API_URL || 'http://localhost:5500/api';
 
@@ -62,7 +64,53 @@ const ERROR_KEY_MAP: Record<string, string> = {
     'errors.resetInvalid',
   'Session expired. Please sign in again.': 'errors.sessionExpired',
   'Internal server error': 'errors.network',
+  'Unable to start RapidGateway checkout. Please try again.':
+    'checkout.gatewayUnavailable',
+  'Name, email and phone are required for checkout.': 'checkout.detailsRequired',
+  'Phone must be a valid Pakistani mobile (03XXXXXXXXX or +923XXXXXXXXX).':
+    'validation.phone',
+  'This phone is already registered with another email. Sign in or use a different phone.':
+    'checkout.phoneInUse',
+  'Email and mobile number are required for RapidGateway checkout.':
+    'checkout.detailsRequired',
+  'Case limit reached. Purchase a plan to add more cases.':
+    'errors.caseLimitReached',
+  'Your subscription has expired. Renew your plan to continue using Court Files.':
+    'errors.subscriptionExpired',
 };
+
+export function isTranslationKey(key: string): key is TranslationKey {
+  return Object.prototype.hasOwnProperty.call(en, key);
+}
+
+/** User-facing copy for API failures (never leave Rapid/raw 500 text untranslated). */
+export function translateApiError(
+  err: unknown,
+  t: (key: TranslationKey) => string
+): string {
+  if (!(err instanceof ApiError)) return t('errors.network');
+  if (isTranslationKey(err.errorKey)) return t(err.errorKey);
+
+  const blob = `${err.message} ${err.errorKey}`.toLowerCase();
+  if (
+    err.status === 502 ||
+    blob.includes('rapid') ||
+    blob.includes('oauth') ||
+    blob.includes('fetch failed')
+  ) {
+    return t('checkout.gatewayUnavailable');
+  }
+  if (err.status === 402 || blob.includes('case limit')) {
+    return t('errors.caseLimitReached');
+  }
+  if (blob.includes('subscription has expired')) {
+    return t('errors.subscriptionExpired');
+  }
+  if (err.status >= 500 || blob.includes('internal server')) {
+    return t('checkout.startFailed');
+  }
+  return err.message || t('errors.network');
+}
 
 export class ApiError extends Error {
   /** i18n key when the server message is recognized, otherwise raw message */

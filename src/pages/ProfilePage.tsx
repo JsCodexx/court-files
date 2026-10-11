@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
+import { ChevronRight, CreditCard, Receipt } from '../components/icons';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import {
@@ -9,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '../components/ui/card';
-import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
 import { useAuth } from '../context/AuthContext';
@@ -28,7 +28,7 @@ export function ProfilePage() {
   ];
 
   return (
-    <div className="animate-rise-in mx-auto w-full max-w-2xl space-y-5">
+    <div className="app-page app-page--narrow">
       <div>
         <h1 className="page-title">{t('profile.title')}</h1>
         <p className="page-lede">{t('profile.lede')}</p>
@@ -37,7 +37,7 @@ export function ProfilePage() {
       <div
         role="tablist"
         aria-label={t('profile.title')}
-        className="flex gap-0.5 border-b"
+        className="scroll-x-tabs border-b"
       >
         {tabs.map((tab) => (
           <NavLink
@@ -123,7 +123,31 @@ export function ProfileOverview() {
     { label: t('register.barAddress'), value: profile.barAddress },
   ];
 
+  const quickLinks = [
+    { to: '/plans', label: t('profile.quickPlans'), icon: CreditCard },
+    { to: '/payments', label: t('profile.quickPayments'), icon: Receipt },
+  ];
+
   return (
+    <div className="space-y-4">
+      <div className="grid gap-2 sm:grid-cols-2">
+        {quickLinks.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="flex min-h-[3rem] items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium shadow-sm transition-colors hover:bg-muted/50"
+            >
+              <span className="flex min-w-0 items-center gap-2">
+                <Icon className="h-4 w-4 shrink-0 text-primary" weight="duotone" />
+                <span className="truncate">{item.label}</span>
+              </span>
+              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground rtl:rotate-180" />
+            </Link>
+          );
+        })}
+      </div>
     <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
       <dl className="divide-y">
         {rows.map((row) => (
@@ -143,6 +167,7 @@ export function ProfileOverview() {
           </div>
         ))}
       </dl>
+    </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Copy, History, Mail, MessageCircle, Pencil } from 'lucide-react';
+import { Copy, History, Mail, MessageCircle, Pencil } from './icons';
 import { Link } from 'react-router-dom';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -73,39 +73,36 @@ export function CaseTable({ cases, title, onSelect, compact = false }: Props) {
 
   return (
     <Card className="overflow-hidden">
-      <div className="flex flex-wrap gap-2 border-b bg-muted/40 px-3 py-2.5 sm:px-4 sm:py-3">
+      <div className="flex flex-col gap-2 border-b bg-muted/40 px-3 py-2.5 sm:flex-row sm:flex-wrap sm:px-4 sm:py-3">
         <Button
           type="button"
           variant="outline"
           size="sm"
-          className="text-xs sm:text-sm"
+          className="h-auto min-h-[2.75rem] w-full justify-center gap-2 py-2 text-xs sm:h-8 sm:w-auto sm:py-0 sm:text-sm"
           onClick={() => shareWhatsApp(text)}
         >
-          <MessageCircle className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">{t('table.shareWhatsApp')}</span>
-          <span className="sm:hidden">WA</span>
+          <MessageCircle className="h-3.5 w-3.5 shrink-0" />
+          <span>{t('table.shareWhatsApp')}</span>
         </Button>
         <Button
           type="button"
           variant="outline"
           size="sm"
-          className="text-xs sm:text-sm"
+          className="h-auto min-h-[2.75rem] w-full justify-center gap-2 py-2 text-xs sm:h-8 sm:w-auto sm:py-0 sm:text-sm"
           onClick={() => shareEmail(title, text)}
         >
-          <Mail className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">{t('table.shareEmail')}</span>
-          <span className="sm:hidden">Email</span>
+          <Mail className="h-3.5 w-3.5 shrink-0" />
+          <span>{t('table.shareEmail')}</span>
         </Button>
         <Button
           type="button"
           variant="outline"
           size="sm"
-          className="text-xs sm:text-sm"
+          className="h-auto min-h-[2.75rem] w-full justify-center gap-2 py-2 text-xs sm:h-8 sm:w-auto sm:py-0 sm:text-sm"
           onClick={() => shareNative(title, text, t('table.copied'))}
         >
-          <Copy className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">{t('table.shareCopy')}</span>
-          <span className="sm:hidden">Copy</span>
+          <Copy className="h-3.5 w-3.5 shrink-0" />
+          <span>{t('table.shareCopy')}</span>
         </Button>
       </div>
       <Table className={compact ? 'min-w-[560px]' : 'min-w-[720px]'}>
