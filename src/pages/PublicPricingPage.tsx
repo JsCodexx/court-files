@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Check } from 'lucide-react';
+import { Check } from '../components/icons';
 import { Link } from 'react-router-dom';
 import { SiteShell } from '../components/SiteShell';
 import { Alert } from '../components/ui/alert';
@@ -56,7 +56,14 @@ export function PublicPricingPage() {
     (async () => {
       try {
         const res = await apiFetch<{ ok: true; plans: Plan[] }>('/payments/plans');
-        if (alive && res.plans?.length) setPlans(res.plans);
+        if (alive && res.plans?.length) {
+          setPlans(
+            res.plans.map((p) => ({
+              ...p,
+              features: Array.isArray(p.features) ? p.features : [],
+            }))
+          );
+        }
       } catch (err) {
         if (alive) {
           setError(
@@ -76,7 +83,7 @@ export function PublicPricingPage() {
 
   return (
     <SiteShell wide>
-      <div className="animate-rise-in space-y-8">
+      <div className="min-w-0 space-y-8">
         <header className="max-w-2xl">
           <h1 className="page-title">{t('pricing.title')}</h1>
           <p className="page-lede mt-2">{t('pricing.lede')}</p>
@@ -110,7 +117,7 @@ export function PublicPricingPage() {
                   </span>
                 </p>
                 <ul className="space-y-1.5 text-sm text-muted-foreground">
-                  {plan.features.map((f) => (
+                  {(plan.features ?? []).map((f) => (
                     <li key={f} className="flex items-start gap-2">
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <span>{f}</span>

@@ -16,17 +16,17 @@ export function PublicDocPage({
 
   return (
     <SiteShell>
-      <article className="animate-rise-in space-y-8">
+      <article className="min-w-0 space-y-8">
         <header>
           <h1 className="page-title">{t(titleKey)}</h1>
           {ledeKey ? <p className="page-lede mt-2">{t(ledeKey)}</p> : null}
         </header>
         {sections.map((section) => (
-          <section key={section.heading} className="space-y-2">
-            <h2 className="font-display text-xl font-semibold tracking-tight">
+          <section key={section.heading} className="min-w-0 space-y-2">
+            <h2 className="section-title border-0 pb-0">
               {t(section.heading)}
             </h2>
-            <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground sm:text-base">
+            <p className="whitespace-pre-line break-words text-sm leading-relaxed text-muted-foreground sm:text-base">
               {t(section.body)}
             </p>
           </section>

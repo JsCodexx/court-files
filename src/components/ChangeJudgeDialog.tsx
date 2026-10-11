@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Scale } from 'lucide-react';
+import { Scale } from './icons';
 import { useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';

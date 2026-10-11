@@ -9,9 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from '../components/ui/card';
+import { useToast } from '../context/ToastContext';
+import { useSubscription } from '../hooks/useSubscription';
 import { useLocale } from '../i18n/LocaleContext';
-import { TranslationKey } from '../i18n/translations';
-import { ApiError, apiFetch } from '../utils/api';
+import { apiFetch, translateApiError } from '../utils/api';
 import type { Plan } from './PlansPage';
 
 interface Payment {
@@ -30,7 +31,6 @@ interface InitiateResponse {
   ok: true;
   payment: Payment;
   checkoutUrl: string;
-  formFields: Record<string, string> | null;
   demoMode: boolean;
 }
 
@@ -38,6 +38,8 @@ type LocState = { planId?: string; plan?: Plan } | null;
 
 export function PaymentsPage() {
   const { t } = useLocale();
+  const toast = useToast();
+  const { reload: reloadSubscription } = useSubscription();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -62,11 +64,9 @@ export function PaymentsPage() {
         await loadHistory();
       } catch (err) {
         if (alive) {
-          setError(
-            err instanceof ApiError
-              ? t(err.errorKey as TranslationKey)
-              : t('errors.network')
-          );
+          const text = translateApiError(err, t);
+          setError(text);
+          toast.error(text);
         }
       }
     })();
@@ -78,12 +78,13 @@ export function PaymentsPage() {
   // Return from gateway or demo redirect
   useEffect(() => {
     const paymentId = searchParams.get('paymentId');
-    const status = searchParams.get('status');
     const demo = searchParams.get('demo');
     const err = searchParams.get('error');
 
     if (err) {
-      setError(t('payments.callbackError'));
+      const text = t('payments.callbackError');
+      setError(text);
+      toast.error(text);
       return;
     }
     if (!paymentId) return;
@@ -97,23 +98,29 @@ export function PaymentsPage() {
         if (!alive) return;
         setActive(res.payment);
         setDemoMode(demo === '1' && res.payment.status !== 'paid');
-        if (status === 'paid' || res.payment.status === 'paid') {
+        if (res.payment.status === 'paid') {
           setInfo(t('payments.paidSuccess'));
+          const sub = await reloadSubscription();
+          if (sub?.canAccessApp) {
+            navigate('/dashboard', { replace: true });
+          }
+        } else if (searchParams.get('failed') === '1') {
+          const text = t('payments.callbackError');
+          setError(text);
+          toast.error(text);
         }
       } catch (e) {
         if (alive) {
-          setError(
-            e instanceof ApiError
-              ? t(e.errorKey as TranslationKey)
-              : t('errors.network')
-          );
+          const text = translateApiError(e, t);
+          setError(text);
+          toast.error(text);
         }
       }
     })();
     return () => {
       alive = false;
     };
-  }, [searchParams, t]);
+  }, [searchParams, t, reloadSubscription, navigate, toast]);
 
   const startCheckout = async (planId: string) => {
     setBusy(true);
@@ -122,7 +129,7 @@ export function PaymentsPage() {
     try {
       const res = await apiFetch<InitiateResponse>('/payments/initiate', {
         method: 'POST',
-        body: { planId, provider: 'easypaisa' },
+        body: { planId, provider: 'rapidgateway' },
       });
       setActive(res.payment);
       setDemoMode(res.demoMode);
@@ -134,32 +141,12 @@ export function PaymentsPage() {
         return;
       }
 
-      // Live EasyPaisa: POST form to hosted checkout
-      if (res.formFields && res.checkoutUrl) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = res.checkoutUrl;
-        form.style.display = 'none';
-        Object.entries(res.formFields).forEach(([key, value]) => {
-          if (value == null || value === '') return;
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = key;
-          input.value = String(value);
-          form.appendChild(input);
-        });
-        document.body.appendChild(form);
-        form.submit();
-        return;
-      }
-
+      // Live RapidGateway: redirect to hosted checkout
       window.location.href = res.checkoutUrl;
     } catch (err) {
-      setError(
-        err instanceof ApiError
-          ? t(err.errorKey as TranslationKey)
-          : t('errors.network')
-      );
+      const text = translateApiError(err, t);
+      setError(text);
+      toast.error(text);
     } finally {
       setBusy(false);
     }
@@ -187,12 +174,14 @@ export function PaymentsPage() {
       setDemoMode(false);
       setInfo(t('payments.paidSuccess'));
       await loadHistory();
+      const sub = await reloadSubscription();
+      if (sub?.canAccessApp) {
+        navigate('/dashboard', { replace: true });
+      }
     } catch (err) {
-      setError(
-        err instanceof ApiError
-          ? t(err.errorKey as TranslationKey)
-          : t('errors.network')
-      );
+      const text = translateApiError(err, t);
+      setError(text);
+      toast.error(text);
     } finally {
       setBusy(false);
     }
@@ -201,7 +190,7 @@ export function PaymentsPage() {
   const plan = state?.plan;
 
   return (
-    <div className="animate-rise-in mx-auto w-full max-w-2xl space-y-5">
+    <div className="app-page app-page--narrow">
       <div>
         <h1 className="page-title">{t('payments.title')}</h1>
         <p className="page-lede">{t('payments.lede')}</p>

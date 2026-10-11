@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, MapPin, Phone, Scale } from 'lucide-react';
+import { Mail, MapPin, Phone } from './icons';
+import { BrandLogo } from './BrandLogo';
 import { COMPANY } from '../constants/company';
 import { useLocale } from '../i18n/LocaleContext';
 
@@ -21,12 +22,12 @@ export function CompanyFooter() {
 
   return (
     <footer className="mt-auto border-t border-border bg-sidebar text-sidebar-foreground">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-        <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr_1fr]">
+      <div className="mx-auto max-w-6xl px-3 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr]">
           <div>
-            <div className="flex items-center gap-2">
-              <Scale className="h-4 w-4 text-sidebar-accent" />
-              <span className="font-display text-sm font-semibold">
+            <div className="flex flex-col gap-2">
+              <BrandLogo variant="footer" className="h-8 w-auto max-w-[10rem]" />
+              <span className="font-display text-sm font-semibold text-sidebar-foreground">
                 {COMPANY.legalName}
               </span>
             </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CreditCard, Smartphone, Check } from 'lucide-react';
+import { CreditCard, Smartphone, Check } from '../components/icons';
 import { useNavigate } from 'react-router-dom';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
@@ -66,13 +66,13 @@ export function PlansPage() {
     setError('');
   };
 
-  const onPayEasyPaisa = () => {
+  const onPayRapidGateway = () => {
     if (!selected) return;
     navigate('/payments', { state: { planId: selected.id, plan: selected } });
   };
 
   return (
-    <div className="animate-rise-in mx-auto w-full max-w-3xl space-y-5">
+    <div className="app-page mx-auto w-full max-w-3xl">
       <div>
         <h1 className="page-title">{t('plans.title')}</h1>
         <p className="page-lede">{t('plans.lede')}</p>
@@ -143,16 +143,16 @@ export function PlansPage() {
             <CardContent className="space-y-3">
               <button
                 type="button"
-                onClick={onPayEasyPaisa}
+                onClick={onPayRapidGateway}
                 className="flex w-full items-center gap-4 rounded-lg border border-border bg-card p-4 text-start transition-colors hover:border-primary hover:bg-accent/40"
               >
                 <span className="flex h-12 w-12 items-center justify-center rounded-md bg-primary/15 text-primary">
                   <Smartphone className="h-6 w-6" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-semibold">{t('plans.easypaisa')}</span>
+                  <span className="block font-semibold">{t('plans.rapidgateway')}</span>
                   <span className="block text-sm text-muted-foreground">
-                    {t('plans.easypaisaHint')}
+                    {t('plans.rapidgatewayHint')}
                   </span>
                 </span>
                 <CreditCard className="h-5 w-5 text-muted-foreground" />

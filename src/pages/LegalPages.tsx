@@ -24,7 +24,7 @@ export function ContactPage() {
 
   return (
     <SiteShell>
-      <article className="animate-rise-in space-y-8">
+      <article className="min-w-0 space-y-8">
         <header>
           <h1 className="page-title">{t('contact.title')}</h1>
           <p className="page-lede mt-2">{t('contact.lede')}</p>

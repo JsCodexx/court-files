@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Pencil, Plus, Scale, Trash2 } from 'lucide-react';
+import { ArrowLeft, Pencil, Plus, Scale, Trash2 } from '../components/icons';
 import { Link, useParams } from 'react-router-dom';
 import { HearingModal } from '../components/HearingModal';
 import { CaseStatusBadge } from '../components/CaseStatusBadge';
@@ -53,7 +53,7 @@ interface EditState {
 
 export function CaseHistoryPage() {
   const { id } = useParams<{ id: string }>();
-  const { getCase, updateHearing, deleteHearing, version } = useCases();
+  const { peekCase, getCase, updateHearing, deleteHearing, version } = useCases();
   const { t } = useLocale();
 
   const [courtCase, setCourtCase] = useState<CourtCase | null>(null);
@@ -69,6 +69,12 @@ export function CaseHistoryPage() {
 
   useEffect(() => {
     if (!id) return;
+    const cached = peekCase(id);
+    if (cached) {
+      setCourtCase(cached);
+      setNotFound(false);
+      return;
+    }
     let alive = true;
     getCase(id)
       .then((c) => {
@@ -83,7 +89,13 @@ export function CaseHistoryPage() {
     return () => {
       alive = false;
     };
-  }, [id, getCase, version]);
+  }, [id, peekCase, getCase, version]);
+
+  useEffect(() => {
+    if (!id) return;
+    const cached = peekCase(id);
+    if (cached) setCourtCase(cached);
+  }, [id, peekCase, version]);
 
   const monthLabel = (index: number, short?: boolean) =>
     t((short ? `monthShort.${index}` : `month.${index}`) as TranslationKey);
@@ -224,14 +236,14 @@ export function CaseHistoryPage() {
   ];
 
   return (
-    <div className="animate-rise-in space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-        <div className="min-w-0">
+    <div className="app-page app-page--wide">
+      <div className="page-header">
+        <div className="page-header__main min-w-0">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <h1 className="page-title">{t('history.title')}</h1>
             <CaseStatusBadge status={courtCase.status} alwaysShow />
           </div>
-          <p className="urdu-text mt-1 text-sm text-muted-foreground">
+          <p className="urdu-text mt-1 break-words text-sm text-muted-foreground">
             <span dir="ltr" className="font-semibold">
               {courtCase.caseId}
             </span>
@@ -241,14 +253,14 @@ export function CaseHistoryPage() {
             {t(`category.${courtCase.category}` as TranslationKey)}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="secondary" size="sm" asChild>
+        <div className="page-actions">
+          <Button variant="secondary" size="sm" className="w-full sm:w-auto" asChild>
             <Link to="/dashboard">
               <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
               {t('history.back')}
             </Link>
           </Button>
-          <Button variant="outline" size="sm" asChild>
+          <Button variant="outline" size="sm" className="w-full sm:w-auto" asChild>
             <Link to={`/cases/${courtCase.id}/edit`}>
               <Pencil className="h-4 w-4" />
               {t('addCase.edit')}
@@ -258,12 +270,17 @@ export function CaseHistoryPage() {
             type="button"
             variant="outline"
             size="sm"
+            className="w-full sm:w-auto"
             onClick={() => setChangeJudgeOpen(true)}
           >
             <Scale className="h-4 w-4" />
             {t('judge.change')}
           </Button>
-          <Button size="sm" onClick={() => setAdding(true)}>
+          <Button
+            size="sm"
+            className="w-full sm:w-auto"
+            onClick={() => setAdding(true)}
+          >
             <Plus className="h-4 w-4" />
             {t('history.addHearing')}
           </Button>
@@ -357,8 +374,8 @@ export function CaseHistoryPage() {
           <CardTitle className="text-lg">{t('history.title')}</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex flex-col gap-3 border-b px-3 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:px-4">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <span>{t('history.show')}</span>
               <Select
                 value={String(pageSize)}
@@ -380,12 +397,12 @@ export function CaseHistoryPage() {
               </Select>
               <span>{t('history.entries')}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Label className="mb-0 whitespace-nowrap">
+            <div className="flex w-full min-w-0 flex-col gap-1.5 sm:w-auto sm:flex-row sm:items-center sm:gap-2">
+              <Label className="mb-0 shrink-0">
                 {t('history.search')}
               </Label>
               <Input
-                className="h-8 w-56"
+                className="h-10 w-full min-w-0 sm:h-8 sm:w-56"
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);

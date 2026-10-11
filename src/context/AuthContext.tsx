@@ -15,6 +15,7 @@ import {
   setToken,
 } from '../utils/api';
 import { useLoader } from './LoaderContext';
+import { clearSubscriptionAccessCache } from './SubscriptionContext';
 
 const SESSION_KEY = 'cf_session';
 const PENDING_PHONE_KEY = 'cf_pending_phone';
@@ -131,10 +132,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const logout = useCallback(() => {
+    const uid = user?.userId ?? readSession()?.userId;
+    if (uid) clearSubscriptionAccessCache(uid);
     setToken(null);
     writeSession(null);
     setUser(null);
-  }, []);
+  }, [user?.userId]);
 
   const applyAuth = useCallback((res: AuthResponse) => {
     const session: AuthSession = {

@@ -18,7 +18,7 @@ export function HowItWorksPage() {
 
   return (
     <SiteShell>
-      <article className="animate-rise-in space-y-10">
+      <article className="min-w-0 space-y-8 sm:space-y-10">
         <header>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
             {COMPANY.legalName}

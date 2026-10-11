@@ -72,7 +72,7 @@ export function RegisterPage() {
 
   return (
     <div className="page-shell">
-      <Card className="w-full max-w-2xl animate-rise-in">
+      <Card className="mx-auto w-full max-w-md animate-rise-in sm:max-w-2xl">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { readSubscriptionAccessCache } from '../context/SubscriptionContext';
+import { useSubscription } from '../hooks/useSubscription';
 
 export function ProtectedRoute() {
   const { user, authReady } = useAuth();
@@ -42,6 +44,26 @@ export function PublicOnlyRoute() {
   if (user?.mustChangePassword) {
     return <Navigate to="/change-password-required" replace />;
   }
-  if (user) return <Navigate to="/dashboard" replace />;
+  if (user) {
+    return <AuthenticatedHomeRedirect />;
+  }
   return <Outlet />;
+}
+
+/** Send paid/active users to the app; locked-out users to plans (not dashboard). */
+function AuthenticatedHomeRedirect() {
+  const { user } = useAuth();
+  const { status } = useSubscription();
+  const cached = readSubscriptionAccessCache(user?.userId);
+
+  const canAccess =
+    status != null
+      ? status.canAccessApp
+      : cached === false
+        ? false
+        : true;
+
+  return (
+    <Navigate to={canAccess ? '/dashboard' : '/plans'} replace />
+  );
 }

@@ -7,10 +7,9 @@ import {
   Languages,
   Scale,
   Share2,
-} from 'lucide-react';
-import { LanguageSwitcher } from '../components/LanguageSwitcher';
+} from '../components/icons';
 import { CompanyFooter } from '../components/CompanyFooter';
-import ThemeToggle from '../components/ThemeToggle';
+import { PublicHeader } from '../components/PublicHeader';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../context/AuthContext';
 import { COMPANY } from '../constants/company';
@@ -89,7 +88,7 @@ function CauseListPreview({ className }: { className?: string }) {
             {t('landing.preview.court')}
           </p>
         </div>
-        <Scale className="h-8 w-8 text-sidebar-accent opacity-90" />
+        <Scale className="h-8 w-8 text-sidebar-accent opacity-90" weight="duotone" />
       </div>
       <ul className="divide-y divide-sidebar-foreground/10">
         {rows.map((row) => (
@@ -129,59 +128,33 @@ export function LandingPage() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-background" dir={dir}>
-      <header className="sticky top-0 z-40 border-b border-border bg-card shadow-sm animate-fade-in">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:h-16 sm:px-6">
-          <Link to="/" className="flex min-w-0 items-center gap-2.5">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-              <Scale className="h-5 w-5" />
-            </span>
-            <span className="min-w-0">
-              <span className="block truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                {COMPANY.legalName}
-              </span>
-              <span className="block truncate font-display text-lg font-semibold tracking-tight text-foreground sm:text-xl">
-                {COMPANY.productName}
-              </span>
-            </span>
-          </Link>
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <LanguageSwitcher />
-            <ThemeToggle />
-            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-              <Link to="/login">{t('landing.nav.signIn')}</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link to="/checkout">{t('landing.nav.buyNow')}</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-[100dvh] bg-background pb-[env(safe-area-inset-bottom)]" dir={dir}>
+      <PublicHeader className="animate-fade-in" />
 
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/50" />
-        <div className="relative mx-auto grid max-w-6xl gap-10 px-4 pb-16 pt-10 sm:px-6 sm:pb-20 sm:pt-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:pt-16">
-          <div className="animate-rise-in">
+        <div className="relative mx-auto grid max-w-6xl gap-8 px-3 pb-12 pt-8 sm:gap-10 sm:px-6 sm:pb-20 sm:pt-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:pt-16">
+          <div className="animate-rise-in min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
               {t('brand.presents', { product: COMPANY.productName })}
             </p>
-            <p className="mt-3 font-display text-4xl font-semibold tracking-tight text-primary sm:text-5xl lg:text-6xl">
+            <p className="mt-3 font-display text-3xl font-semibold tracking-tight text-primary sm:text-5xl lg:text-6xl">
               {COMPANY.productName}
             </p>
             <p className="mt-2 text-sm font-semibold uppercase tracking-[0.16em] text-primary/75">
               {t('brand.sub')}
             </p>
-            <h1 className="mt-6 max-w-xl font-display text-2xl font-semibold leading-snug tracking-tight text-foreground sm:text-3xl lg:text-[2.15rem] lg:leading-tight">
+            <h1 className="mt-6 max-w-xl font-display text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-3xl lg:text-[2.15rem] lg:leading-tight">
               {t('landing.hero.headline')}
             </h1>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-lg">
               {t('landing.hero.lede')}
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg" className="min-w-[10.5rem]">
+            <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+              <Button asChild size="lg" className="w-full sm:w-auto sm:min-w-[10.5rem]">
                 <Link to="/checkout">{t('landing.hero.ctaPrimary')}</Link>
               </Button>
-              <Button asChild variant="outline" size="lg">
+              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
                 <Link to="/how-it-works">{t('landing.hero.ctaSecondary')}</Link>
               </Button>
             </div>
@@ -198,7 +171,7 @@ export function LandingPage() {
       </section>
 
       <section className="border-y border-border bg-card">
-        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+        <div className="mx-auto max-w-6xl px-3 py-12 sm:px-6 sm:py-20">
           <div className="max-w-2xl">
             <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
               {t('landing.features.title')}
@@ -214,7 +187,7 @@ export function LandingPage() {
                 className="min-w-0 rounded-xl border border-border bg-secondary/60 p-5 shadow-sm"
               >
                 <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-                  <Icon className="h-5 w-5" strokeWidth={1.75} />
+                  <Icon className="h-5 w-5" weight="fill" />
                 </div>
                 <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
                   {t(title)}
@@ -229,8 +202,8 @@ export function LandingPage() {
       </section>
 
       <section className="bg-primary text-primary-foreground">
-        <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-14 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-16">
-          <div className="max-w-xl">
+        <div className="mx-auto flex max-w-6xl flex-col items-stretch gap-6 px-3 py-12 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-16">
+          <div className="max-w-xl min-w-0">
             <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
               {t('landing.cta.title')}
             </h2>
@@ -240,7 +213,7 @@ export function LandingPage() {
             asChild
             size="lg"
             variant="secondary"
-            className="shrink-0 border-0 bg-card text-primary hover:bg-card/90"
+            className="w-full shrink-0 border-0 bg-card text-primary hover:bg-card/90 sm:w-auto"
           >
             <Link to="/checkout">{t('landing.cta.button')}</Link>
           </Button>

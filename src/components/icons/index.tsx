@@ -1,0 +1,86 @@
+/**
+ * App icons — Phosphor (https://phosphoricons.com)
+ * Use `weight="fill"` for active nav; `duotone` for marketing highlights.
+ */
+import type { IconProps as PhosphorIconProps } from '@phosphor-icons/react';
+import {
+  ArrowLeft,
+  Calendar,
+  CaretDown,
+  CaretLeft,
+  CaretRight,
+  Check,
+  ClockCounterClockwise,
+  Copy,
+  CreditCard,
+  DeviceMobile,
+  EnvelopeSimple,
+  Eye,
+  EyeSlash,
+  FileMagnifyingGlass,
+  House,
+  List,
+  MagnifyingGlass,
+  MapPin,
+  Moon,
+  PencilSimple,
+  Phone,
+  Plus,
+  PlusCircle,
+  Printer,
+  Receipt,
+  Scales,
+  ShareNetwork,
+  SignOut,
+  Sun,
+  Trash,
+  Translate,
+  UserCircle,
+  Wallet,
+  WhatsappLogo,
+  X,
+} from '@phosphor-icons/react';
+
+export type IconProps = PhosphorIconProps;
+
+/** Default nav / UI icon styling */
+export const iconSm = 'h-4 w-4 shrink-0';
+export const iconNav = 'h-[1.125rem] w-[1.125rem] shrink-0';
+
+export {
+  ArrowLeft,
+  Calendar as CalendarDays,
+  CaretDown as ChevronDown,
+  CaretLeft as ChevronLeft,
+  CaretRight as ChevronRight,
+  Check,
+  ClockCounterClockwise as History,
+  Copy,
+  CreditCard,
+  DeviceMobile as Smartphone,
+  EnvelopeSimple as Mail,
+  Eye,
+  EyeSlash as EyeOff,
+  FileMagnifyingGlass as FileSearch,
+  House as LayoutDashboard,
+  List as Menu,
+  MagnifyingGlass as Search,
+  MapPin,
+  Moon,
+  PencilSimple as Pencil,
+  Phone,
+  Plus,
+  PlusCircle,
+  Printer,
+  Receipt,
+  Scales as Scale,
+  ShareNetwork as Share2,
+  SignOut as LogOut,
+  Sun,
+  Trash as Trash2,
+  Translate as Languages,
+  UserCircle as UserRound,
+  Wallet,
+  WhatsappLogo as MessageCircle,
+  X,
+};

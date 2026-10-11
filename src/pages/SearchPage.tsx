@@ -54,7 +54,7 @@ export function SearchPage() {
   ];
 
   return (
-    <div className="animate-rise-in space-y-6">
+    <div className="app-page app-page--wide">
       <div>
         <h1 className="page-title">
           {t('search.title')}
@@ -64,12 +64,13 @@ export function SearchPage() {
 
       <Card>
         <CardContent className="space-y-4 pt-6">
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
             {modes.map((m) => (
               <Button
                 key={m.key}
                 type="button"
                 size="sm"
+                className="w-full sm:w-auto"
                 variant={mode === m.key ? 'default' : 'outline'}
                 onClick={() => setMode(m.key)}
               >

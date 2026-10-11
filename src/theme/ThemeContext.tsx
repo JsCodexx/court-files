@@ -40,7 +40,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem(THEME_KEY, theme);
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
-      meta.setAttribute('content', theme === 'dark' ? '#0B1411' : '#0F6B45');
+      meta.setAttribute('content', theme === 'dark' ? '#0B1411' : '#0F5132');
     }
   }, [theme]);
 

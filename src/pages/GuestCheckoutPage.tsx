@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Check, Wallet } from 'lucide-react';
+import { Check, Wallet } from '../components/icons';
 import { SiteShell } from '../components/SiteShell';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
@@ -15,10 +15,10 @@ import {
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { COMPANY } from '../constants/company';
+import { useToast } from '../context/ToastContext';
 import { useLocale } from '../i18n/LocaleContext';
-import { TranslationKey } from '../i18n/translations';
 import { cn } from '../lib/utils';
-import { ApiError, apiFetch } from '../utils/api';
+import { apiFetch, translateApiError } from '../utils/api';
 import { isValidPakPhone } from '../utils/validation';
 import type { Plan } from './PlansPage';
 
@@ -59,6 +59,7 @@ interface Payment {
 
 export function GuestCheckoutPage() {
   const { t } = useLocale();
+  const toast = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
   const [planId, setPlanId] = useState(
@@ -114,28 +115,32 @@ export function GuestCheckoutPage() {
         setDemoMode(demo === '1' && res.payment.status !== 'paid');
         if (res.payment.status === 'paid') {
           setInfo(t('checkout.paidSuccess'));
+        } else if (searchParams.get('failed') === '1') {
+          const text = t('checkout.paymentFailed');
+          setError(text);
+          toast.error(text);
         }
       } catch (err) {
         if (alive) {
-          setError(
-            err instanceof ApiError
-              ? t(err.errorKey as TranslationKey)
-              : t('errors.network')
-          );
+          const text = translateApiError(err, t);
+          setError(text);
+          toast.error(text);
         }
       }
     })();
     return () => {
       alive = false;
     };
-  }, [searchParams, t]);
+  }, [searchParams, t, toast]);
 
   const onPay = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setInfo('');
     if (!isValidPakPhone(phone.trim()) && !/^\+923\d{9}$/.test(phone.trim())) {
-      setError(t('validation.phone'));
+      const text = t('validation.phone');
+      setError(text);
+      toast.error(text);
       return;
     }
     setBusy(true);
@@ -144,7 +149,6 @@ export function GuestCheckoutPage() {
         ok: true;
         payment: Payment;
         checkoutUrl: string;
-        formFields: Record<string, string> | null;
         demoMode: boolean;
       }>('/payments/guest-checkout', {
         method: 'POST',
@@ -169,29 +173,12 @@ export function GuestCheckoutPage() {
         return;
       }
 
-      if (res.formFields && res.checkoutUrl) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = res.checkoutUrl;
-        Object.entries(res.formFields).forEach(([k, v]) => {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = k;
-          input.value = v;
-          form.appendChild(input);
-        });
-        document.body.appendChild(form);
-        form.submit();
-        return;
-      }
-
+      // Live RapidGateway: redirect to hosted checkout
       window.location.href = res.checkoutUrl;
     } catch (err) {
-      setError(
-        err instanceof ApiError
-          ? t(err.errorKey as TranslationKey)
-          : t('errors.network')
-      );
+      const text = translateApiError(err, t);
+      setError(text);
+      toast.error(text);
     } finally {
       setBusy(false);
     }
@@ -213,11 +200,9 @@ export function GuestCheckoutPage() {
       setDemoMode(false);
       setInfo(t('checkout.paidSuccess'));
     } catch (err) {
-      setError(
-        err instanceof ApiError
-          ? t(err.errorKey as TranslationKey)
-          : t('errors.network')
-      );
+      const text = translateApiError(err, t);
+      setError(text);
+      toast.error(text);
     } finally {
       setBusy(false);
     }
@@ -225,7 +210,7 @@ export function GuestCheckoutPage() {
 
   return (
     <SiteShell wide>
-      <div className="animate-rise-in mx-auto max-w-4xl space-y-8">
+      <div className="min-w-0 space-y-6 sm:space-y-8">
         <header className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
             {t('brand.presents', { product: COMPANY.productName })}
@@ -237,7 +222,7 @@ export function GuestCheckoutPage() {
         {error && <Alert variant="destructive">{error}</Alert>}
         {info && <Alert variant="success">{info}</Alert>}
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[1fr_1.1fr]">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">{t('checkout.choosePlan')}</CardTitle>
@@ -258,14 +243,17 @@ export function GuestCheckoutPage() {
                         : 'border-border hover:border-primary/40'
                     )}
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
+                    <div className="flex flex-col gap-2 min-[400px]:flex-row min-[400px]:items-center min-[400px]:justify-between min-[400px]:gap-3">
+                      <div className="min-w-0">
                         <p className="font-display font-semibold">{plan.name}</p>
                         <p className="text-sm text-muted-foreground">
                           {plan.description}
                         </p>
                       </div>
-                      <p className="font-display text-xl font-semibold" dir="ltr">
+                      <p
+                        className="shrink-0 font-display text-xl font-semibold min-[400px]:text-end"
+                        dir="ltr"
+                      >
                         Rs {plan.amountPkr.toLocaleString()}
                       </p>
                     </div>

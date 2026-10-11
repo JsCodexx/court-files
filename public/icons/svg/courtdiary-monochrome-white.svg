@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="120" viewBox="0 0 400 120" role="img"><g transform="translate(0,0) scale(1)"><g stroke="none">
+      <path d="M24 20 L72 7 L96 15 L48 29 Z" fill="#FFFFFF"/>
+      <path d="M20 29 L68 16 L68 24 L27 36 L27 97 L20 93 Z" fill="#FFFFFF"/>
+      <path d="M29 34 L78 20 L101 27 L101 91 L51 108 L29 96 Z" fill="#FFFFFF"/>
+      <path d="M36 31 L82 18 L91 21 L44 35 Z" fill="#FFFFFF" opacity="0.96"/>
+      <path d="M51 108 L51 44 L101 27 L101 91 Z" fill="#FFFFFF"/>
+      <g stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M75 46 L75 70 M62 53 L88 45 M75 49 L63 71 M75 49 L87 64"/>
+        <path d="M56 72 Q63 81 70 72 L63 58 Z" fill="#FFFFFF" stroke-width="2.2"/>
+        <path d="M80 65 Q87 74 94 65 L87 52 Z" fill="#FFFFFF" stroke-width="2.2"/>
+        <path d="M55 84 Q75 91 95 81"/>
+      </g>
+    </g></g><text x="135" y="65" font-family="Inter, Arial, sans-serif" font-size="43" font-weight="750" letter-spacing="-1.6" fill="#FFFFFF">Court</text><text x="248" y="65" font-family="Inter, Arial, sans-serif" font-size="43" font-weight="750" letter-spacing="-1.6" fill="#FFFFFF">Diary</text><text x="137" y="91" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="450" fill="#FFFFFF">Your Cases. Organized.</text></svg>
