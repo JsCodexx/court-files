@@ -748,7 +748,7 @@ export function AddCasePage() {
               </div>
             </div>
 
-            <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row">
+            <div className="app-form-actions flex flex-col-reverse gap-2 pt-4 sm:flex-row">
               <Button
                 type="submit"
                 disabled={submitting}

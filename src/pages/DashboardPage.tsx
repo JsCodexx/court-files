@@ -368,7 +368,7 @@ export function DashboardPage() {
           )}
 
           {totalPages > 1 && (
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
+            <div className="app-list-footer flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3 pb-1">
               <p className="text-sm text-muted-foreground tabular-nums">
                 {t('dashboard.pageOf', { page, total: totalPages })}
               </p>

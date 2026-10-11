@@ -275,9 +275,11 @@ export function ProfileSettings() {
               autoComplete="new-password"
             />
           </div>
-          <Button type="submit" disabled={submitting}>
-            {t('profile.changePassword')}
-          </Button>
+          <div className="app-form-actions pt-2">
+            <Button type="submit" disabled={submitting}>
+              {t('profile.changePassword')}
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>
