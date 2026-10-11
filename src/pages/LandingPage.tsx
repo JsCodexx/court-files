@@ -22,11 +22,11 @@ import {
   PublicSection,
   PublicSiteFrame,
 } from '../components/public/PublicLayout';
+import { BrandEmblem } from '../components/BrandEmblem';
 import { BrandWordmark } from '../components/BrandWordmark';
 import { Button } from '../components/ui/button';
 import { AppBootSkeleton, PlanCardsSkeleton } from '../components/skeletons';
 import { useAuth } from '../context/AuthContext';
-import { BRAND_ASSETS, brandAssetUrl } from '../constants/brandAssets';
 import { COMPANY } from '../constants/company';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -498,12 +498,7 @@ export function LandingPage() {
           </div>
         </div>
         <div className="flex justify-center lg:justify-end">
-          <img
-            src={brandAssetUrl(BRAND_ASSETS.symbolSvg)}
-            alt=""
-            className="h-28 w-28 opacity-90 sm:h-36 sm:w-36"
-            aria-hidden
-          />
+          <BrandEmblem size="xl" decorative className="opacity-90" />
         </div>
       </PublicSection>
 

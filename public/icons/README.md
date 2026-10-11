@@ -36,7 +36,7 @@ The SVG wordmarks use a modern sans-serif stack (`Inter`, then `Arial`, then san
 <link rel="apple-touch-icon" href="/app-icons/apple-touch-icon.png">
 ```
 
-For a PWA manifest, use `/app-icons/icon-192.png` and `/app-icons/icon-512.png`.
+For a PWA manifest, use transparent PNGs such as `courtdiary-icon-128x128-transparent.png`, `courtdiary-icon-192x192-transparent.png`, and `courtdiary-icon-512x512-transparent.png` (not the white/light SVG export).
 
 ## Production note
 This is a first-pass production asset kit. PNGs and ICO are exported from the included SVG sources. Always review the mark at 16×16 and on both light and dark surfaces before release; the favicon uses the same core book-and-scales motif with simplified rendering.
