@@ -48,13 +48,13 @@ export function PublicHeader({
     createPortal(
       <>
         <div
-          className="public-mobile-menu-backdrop fixed inset-0 z-[45] bg-foreground/40 backdrop-blur-[1px] lg:hidden"
+          className="public-mobile-menu-backdrop fixed inset-x-0 bottom-0 z-[45] bg-foreground/40 backdrop-blur-[1px] lg:hidden"
           onClick={() => setMenuOpen(false)}
           aria-hidden
         />
         <div
           id="public-mobile-menu"
-          className="public-mobile-menu-panel fixed inset-x-0 z-50 overflow-y-auto border-b border-border bg-card shadow-lg lg:hidden"
+          className="public-mobile-menu-panel fixed inset-x-0 z-[46] overflow-y-auto border-b border-border bg-card text-foreground shadow-lg lg:hidden"
         >
           <LayoutContainer className="flex flex-col gap-3 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
             <div className="flex items-center justify-between gap-2 sm:hidden">
@@ -103,7 +103,8 @@ export function PublicHeader({
   return (
     <header
       className={cn(
-        'public-site-header sticky top-0 z-40 border-b border-border bg-card/95 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-card/90',
+        'public-site-header sticky top-0 z-50 border-b border-border bg-card/95 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-card/90',
+        menuOpen && 'z-[60]',
         className
       )}
     >

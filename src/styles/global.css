@@ -293,14 +293,19 @@
     @apply py-8 sm:py-10;
   }
 
-  .public-site-header {
+  /* Public mobile menu is portaled to body — vars must live on :root, not .public-site-header */
+  :root {
     --public-header-offset: calc(3.5rem + env(safe-area-inset-top, 0px));
   }
 
   @media (min-width: 640px) {
-    .public-site-header {
+    :root {
       --public-header-offset: calc(4rem + env(safe-area-inset-top, 0px));
     }
+  }
+
+  .public-mobile-menu-backdrop {
+    top: var(--public-header-offset);
   }
 
   .public-mobile-menu-panel {

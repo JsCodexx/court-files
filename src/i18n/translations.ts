@@ -14,7 +14,7 @@ export const en = {
   'landing.hero.tagline': 'Your cases. Organized.',
   'landing.hero.headline': 'Manage your court diary with confidence.',
   'landing.hero.lede':
-    'CourtDiary helps advocates register matters, track hearings, search the register, and share cause lists — in English or Urdu, on desktop or phone.',
+    'CourtDiary helps advocates register matters, track hearings, search the register, and share cause lists in English or Urdu, on desktop or phone.',
   'landing.hero.point1': 'Track cases and upcoming hearing dates',
   'landing.hero.point2': 'Keep proceeding history ready to print',
   'landing.hero.point3': 'Search by party name, case ID, or CNIC',
@@ -25,7 +25,7 @@ export const en = {
   'landing.hero.ctaSecondary': 'How it works',
   'landing.banner.slogan': 'Smarter case management for advocates across Pakistan.',
   'landing.pros.title': 'Built for legal professionals',
-  'landing.pros.lede': 'Purpose-built for chambers — not a generic spreadsheet or notebook.',
+  'landing.pros.lede': 'Purpose-built for chambers, not a generic spreadsheet or notebook.',
   'landing.pros.cases': 'Case register',
   'landing.pros.calendar': 'Hearing calendar',
   'landing.pros.search': 'Fast search',
@@ -36,17 +36,18 @@ export const en = {
     'Keep the discipline of a court diary without stacks of paper. One searchable register for your chamber, backed up online and available when court day starts.',
   'landing.split.calendar.title': 'Smart calendar & cause lists',
   'landing.split.calendar.body':
-    'See today, tomorrow, and the week ahead at a glance. Sundays stay closed — the way Pakistani courts work.',
+    'See today, tomorrow, and the week ahead at a glance. Sundays stay closed, the way Pakistani courts work.',
   'landing.split.share.title': 'From desk to WhatsApp in seconds',
   'landing.split.share.body':
-    'Send today’s cause list to colleagues or clients by share sheet, email, or copy — so everyone knows where to be.',
+    'Send today’s cause list to colleagues or clients by share sheet, email, or copy, so everyone knows where to be.',
   'landing.values.title': 'Why chambers choose CourtDiary',
   'landing.values.trust.title': 'Trust & credibility',
   'landing.values.trust.body': 'Clear policies, RapidGateway billing, and support from Digital Dunya.',
   'landing.values.org.title': 'Organization & accuracy',
   'landing.values.org.body': 'Structured case fields and dated proceedings reduce missed dates.',
   'landing.values.tech.title': 'Modern technology',
-  'landing.values.tech.body': 'Install as an app, work offline-friendly where cached, sync when online.',
+  'landing.values.tech.body':
+    'Install as an app on your phone for quick, full-screen access. Your chamber register is stored securely online and stays up to date whenever you are connected.',
   'landing.values.simple.title': 'Simple to use',
   'landing.values.simple.body': 'Clean screens, bilingual UI, and flows made for busy court days.',
   'landing.showcase.statCases': 'Active cases',
@@ -71,7 +72,7 @@ export const en = {
   'landing.preview.case3Meta': 'Order reserved',
   'landing.features.title': 'Everything a chamber needs day to day',
   'landing.features.lede':
-    'From the morning cause list to a printed proceeding history — without scattered notebooks.',
+    'From the morning cause list to a printed proceeding history, without scattered notebooks.',
   'landing.feature.cases.title': 'Case register',
   'landing.feature.cases.body':
     'Parties, judges, advocates, clients, and court categories in one place.',
@@ -89,16 +90,16 @@ export const en = {
     'Send today’s list over WhatsApp, email, or copy for your chamber.',
   'landing.feature.bilingual.title': 'English & Urdu',
   'landing.feature.bilingual.body':
-    'Work in the language your practice uses — switch anytime.',
+    'Work in the language your practice uses. Switch anytime.',
   'landing.cta.title': 'Start keeping your court diary online',
   'landing.cta.lede':
-    'Choose Monthly or Yearly, pay with RapidGateway, then open Court Files — presented by Digital Dunya.',
+    'Choose Monthly or Yearly, pay with RapidGateway, then open Court Files, presented by Digital Dunya.',
   'landing.cta.button': 'Buy now',
   'landing.cta.signIn': 'Already subscribed? Sign in',
-  'landing.footer.rights': 'Digital Dunya presents Court Files — for advocates across Pakistan.',
+  'landing.footer.rights': 'Digital Dunya presents Court Files for advocates across Pakistan.',
   'landing.how.title': 'How it works',
   'landing.how.lede':
-    'From your first case to renewal — prepaid Monthly or Yearly access, guest checkout, and RapidGateway payments in PKR.',
+    'From your first case to renewal: prepaid Monthly or Yearly access, guest checkout, and RapidGateway payments in PKR.',
   'landing.how.more': 'Full customer journey',
   'landing.pricing.viewAll': 'Pricing & refund policy',
   'landing.free.title': 'Start with 10 free cases',
@@ -106,7 +107,7 @@ export const en = {
     'Try the register, calendar, and search at no cost. When your chamber grows, subscribe for unlimited matters.',
   'landing.about.title': 'What Court Files is',
   'landing.about.lede':
-    'A SaaS court diary for practising advocates and chambers in Pakistan — English or Urdu, on web and installable as an app.',
+    'A SaaS court diary for practising advocates and chambers in Pakistan, in English or Urdu, on web and installable as an app.',
   'landing.trust.title': 'Payments & policies',
   'landing.trust.body':
     'Digital Dunya operates Court Files at clerkdiary.com. Subscriptions are prepaid in PKR via RapidGateway. See Terms, Privacy, and Refund policies before checkout.',
@@ -289,7 +290,7 @@ export const en = {
   'journey.step': 'Step {{n}}',
   'journey.s1.heading': 'Discover the service',
   'journey.s1.body':
-    'A visitor opens clerkdiary.com, reads what Court Files does (presented by Digital Dunya), and reviews public pricing, policies, and contact details — without logging in.',
+    'A visitor opens clerkdiary.com, reads what Court Files does (presented by Digital Dunya), and reviews public pricing, policies, and contact details without logging in.',
   'journey.s2.heading': 'Choose Monthly or Yearly',
   'journey.s2.body':
     'On Pricing or Checkout, the customer selects one of the two subscription services and sees the exact PKR price and included features.',
@@ -343,7 +344,7 @@ export const en = {
   'pwa.reload': 'Update now',
   'pwa.installTitle': 'Install Court Files on your device',
   'pwa.installLede':
-    'Add the app to your home screen for faster access, full-screen view, and offline-ready updates.',
+    'Add Court Files to your home screen for faster access and a full-screen app experience. You need an internet connection to sign in and manage cases.',
   'pwa.installCta': 'Install app',
   'pwa.installDismiss': 'Not now',
   'pwa.installIosTitle': 'Add Court Files to your home screen',
@@ -800,7 +801,7 @@ export const ur: Record<TranslationKey, string> = {
   'landing.hero.tagline': 'آپ کے مقدمات۔ منظم۔',
   'landing.hero.headline': 'اعتماد کے ساتھ عدالتی ڈائری سنبھالیں۔',
   'landing.hero.lede':
-    'CourtDiary وکیلوں کو مقدمات درج کرنے، سماعتیں ٹrack کرنے، تلاش، اور وجہ فہرست شیئر کرنے میں مدد دیتا ہے — انگریزی یا اردو، ڈیسک یا فون پر۔',
+    'CourtDiary وکیلوں کو مقدمات درج کرنے، سماعتیں ٹrack کرنے، تلاش، اور وجہ فہرست شیئر کرنے میں مدد دیتا ہے، انگریزی یا اردو میں، ڈیسک یا فون پر۔',
   'landing.hero.point1': 'مقدمات اور آنے والی سماعت کی تاریخیں',
   'landing.hero.point2': 'کارروائی کی تاریخ پرنٹ کے لیے تیار',
   'landing.hero.point3': 'فریق، کیس آئی ڈی، یا CNIC سے تلاش',
@@ -811,7 +812,7 @@ export const ur: Record<TranslationKey, string> = {
   'landing.hero.ctaSecondary': 'کیسے کام کرتا ہے',
   'landing.banner.slogan': 'پاکستان بھر کے وکیلوں کے لیے smarter case management۔',
   'landing.pros.title': 'قانونی پیشہ وران کے لیے',
-  'landing.pros.lede': 'چیمبرز کے لیے — عام spreadsheet یا کاپی نہیں۔',
+  'landing.pros.lede': 'چیمبرز کے لیے، عام spreadsheet یا کاپی نہیں۔',
   'landing.pros.cases': 'مقدمات کا رجسٹر',
   'landing.pros.calendar': 'سماعت کا کیلنڈر',
   'landing.pros.search': 'تیز تلاش',
@@ -822,17 +823,18 @@ export const ur: Record<TranslationKey, string> = {
     'کاغذی ڈائری کا نظم بغیر ڈھیروں کاپیوں کے۔ ایک قابلِ تلاش رجسٹر، آن لائن محفوظ، عدالت کے دن دستیاب۔',
   'landing.split.calendar.title': 'Smart calendar اور cause lists',
   'landing.split.calendar.body':
-    'آج، کل اور آنے والے دن ایک نظر میں۔ اتوار بند — جیسے پاکستانی عدالتیں۔',
+    'آج، کل اور آنے والے دن ایک نظر میں۔ اتوار بند، جیسے پاکستانی عدالتیں۔',
   'landing.split.share.title': 'ڈesk سے WhatsApp تک سیکنڈوں میں',
   'landing.split.share.body':
-    'آج کی وجہ فہرست share sheet، email یا copy سے بھیجیں — سب کو پata ہو کہ کہاں ہونa ہے۔',
+    'آج کی وجہ فہرست share sheet، email یا copy سے بھیجیں، تاکہ سب کو پata ہو کہ کہاں ہونa ہے۔',
   'landing.values.title': 'چیمبرز CourtDiary کیوں چنتے ہیں',
   'landing.values.trust.title': 'اعتماد',
   'landing.values.trust.body': 'واضح policies، RapidGateway billing، Digital Dunya support۔',
   'landing.values.org.title': 'نظم و accuracy',
-  'landing.values.org.body': 'منظم fields اور dated proceedings — تاریخیں miss کم۔',
+  'landing.values.org.body': 'منظم fields اور dated proceedings، تاریخیں miss کم۔',
   'landing.values.tech.title': 'جدید technology',
-  'landing.values.tech.body': 'ایپ کی طرح install، جہاں cache ہو offline-friendly، online sync۔',
+  'landing.values.tech.body':
+    'فون پر ایپ کی طرح انسٹال کریں، تیز رسائی اور فل سکرین۔ آپ کا رجسٹر محفوظ طور پر آن لائن رکھا جاتا ہے؛ سائن ان اور کام کے لیے انٹرنیٹ درکار ہے۔',
   'landing.values.simple.title': 'استعمال میں آسان',
   'landing.values.simple.body': 'صاف screens، دو زبانیں، busy court days کے flows۔',
   'landing.showcase.statCases': 'فعال مقدمے',
@@ -857,7 +859,7 @@ export const ur: Record<TranslationKey, string> = {
   'landing.preview.case3Meta': 'حکم محفوظ',
   'landing.features.title': 'چیمبر کے روزمرہ کام، ایک جگہ',
   'landing.features.lede':
-    'صبح کی وجہ فہرست سے پرنٹ شدہ کارروائی تک — بکھری ہوئی کاپیوں کے بغیر۔',
+    'صبح کی وجہ فہرست سے پرنٹ شدہ کارروائی تک، بکھری ہوئی کاپیوں کے بغیر۔',
   'landing.feature.cases.title': 'مقدمات کا رجسٹر',
   'landing.feature.cases.body':
     'فریقین، جج، وکلاء، کلائنٹ اور عدالت کی اقسام ایک ہی جگہ۔',
@@ -875,16 +877,16 @@ export const ur: Record<TranslationKey, string> = {
     'آج کی فہرست واٹس ایپ، ای میل یا کاپی سے چیمبر تک بھیجیں۔',
   'landing.feature.bilingual.title': 'انگریزی اور اردو',
   'landing.feature.bilingual.body':
-    'جس زبان میں آپ کام کرتے ہیں اسی میں چلائیں — کبھی بھی بدل لیں۔',
+    'جس زبان میں آپ کام کرتے ہیں اسی میں چلائیں۔ کبھی بھی بدل لیں۔',
   'landing.cta.title': 'اپنا عدالتی ڈائری آن لائن رکھنا شروع کریں',
   'landing.cta.lede':
-    'ماہانہ یا سالانہ چنیں، RapidGateway سے ادا کریں، پھر کورٹ فائلز کھولیں — ڈیجیٹل دنیا کی پیشکش۔',
+    'ماہانہ یا سالانہ چنیں، RapidGateway سے ادا کریں، پھر کورٹ فائلز کھولیں، ڈیجیٹل دنیا کی پیشکش۔',
   'landing.cta.button': 'اب خریدیں',
   'landing.cta.signIn': 'پہلے سے سبسکرائب؟ سائن ان',
-  'landing.footer.rights': 'ڈیجیٹل دنیا پیش کرتا ہے کورٹ فائلز — پاکستان بھر کے وکیلوں کے لیے۔',
+  'landing.footer.rights': 'ڈیجیٹل دنیا پیش کرتا ہے کورٹ فائلز پاکستان بھر کے وکیلوں کے لیے۔',
   'landing.how.title': 'کیسے کام کرتا ہے',
   'landing.how.lede':
-    'پہلے مقدمے سے تجدید تک — ماہانہ یا سالانہ prepaid، گیسٹ چیک آؤٹ، اور RapidGateway سے PKR میں ادائیگی۔',
+    'پہلے مقدمے سے تجدید تک: ماہانہ یا سالانہ prepaid، گیسٹ چیک آؤٹ، اور RapidGateway سے PKR میں ادائیگی۔',
   'landing.how.more': 'مکمل گاہک کا سفر',
   'landing.pricing.viewAll': 'قیمتیں اور ریفنڈ پالیسی',
   'landing.free.title': '۱۰ مقدمات مفت سے شروع کریں',
@@ -892,7 +894,7 @@ export const ur: Record<TranslationKey, string> = {
     'رجسٹر، کیلنڈر اور تلاش بغیر چارج آزمائیں۔ چیمبر بڑھے تو لامحدود مقدمات کے لیے سبسکرائب کریں۔',
   'landing.about.title': 'کورٹ فائلز کیا ہے',
   'landing.about.lede':
-    'پاکستان کے practising وکیلوں اور چیمبرز کے لیے SaaS عدالتی ڈائری — انگریزی یا اردو، ویب اور ایپ کی طرح انسٹال۔',
+    'پاکستان کے practising وکیلوں اور چیمبرز کے لیے SaaS عدالتی ڈائری، انگریزی یا اردو میں، ویب اور ایپ کی طرح انسٹال۔',
   'landing.trust.title': 'ادائیگیاں اور پالیسیاں',
   'landing.trust.body':
     'ڈیجیٹل دنیا clerkdiary.com پر کورٹ فائلز چلاتی ہے۔ سبسکرپشن PKR میں RapidGateway سے prepaid ہیں۔ چیک آؤٹ سے پہلے شرائط، رازداری اور ریفنڈ پالیسی دیکھیں۔',
@@ -1130,7 +1132,7 @@ export const ur: Record<TranslationKey, string> = {
   'pwa.reload': 'ابھی اپ ڈیٹ کریں',
   'pwa.installTitle': 'Court Files اپنے فون پر انسٹال کریں',
   'pwa.installLede':
-    'ہوم اسکرین پر شامل کریں تاکہ تیز رسائی، فل سکرین اور PWA اپ ڈیٹس مل سکیں۔',
+    'ہوم اسکرین پر شامل کریں — تیز رسائی اور فل سکرین ایپ۔ سائن ان اور مقدمات کے لیے انٹرنیٹ درکار ہے۔',
   'pwa.installCta': 'انسٹال کریں',
   'pwa.installDismiss': 'ابھی نہیں',
   'pwa.installIosTitle': 'ہوم اسکرین پر شامل کریں',
