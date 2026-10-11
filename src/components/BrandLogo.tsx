@@ -1,7 +1,6 @@
 import React from 'react';
 import { BRAND_ASSETS, brandAssetUrl } from '../constants/brandAssets';
 import { BRAND_WORDMARK as BRAND_WORDMARK_TEXT } from '../constants/brand';
-import { useTheme } from '../theme/ThemeContext';
 import { cn } from '../lib/utils';
 
 export type BrandLogoVariant =
@@ -16,37 +15,30 @@ type BrandLogoProps = {
   className?: string;
 };
 
-export function BrandLogo({ variant, className }: BrandLogoProps) {
-  const { theme } = useTheme();
-  const alt = `${BRAND_WORDMARK_ALT} logo`;
+const alt = `${BRAND_WORDMARK_TEXT.court}${BRAND_WORDMARK_TEXT.diary} logo`;
 
-  let src: string;
-  switch (variant) {
-    case 'publicHeader':
-    case 'auth':
-      src =
-        theme === 'dark'
-          ? BRAND_ASSETS.primaryHorizontalSvg
-          : BRAND_ASSETS.webLogoHeader;
-      break;
-    case 'appSidebar':
-      src = BRAND_ASSETS.symbolWhiteSvg;
-      break;
-    case 'appMobileBar':
-      src = BRAND_ASSETS.symbolWhiteSvg;
-      break;
-    case 'footer':
-      src = BRAND_ASSETS.primaryHorizontalSvg;
-      break;
-    default:
-      src = BRAND_ASSETS.symbolSvg;
-  }
+/** Square app chrome — colored book + scales emblem. */
+const EMBLEM = BRAND_ASSETS.symbolSvg;
+
+/** Horizontal lockup — emblem + CourtDiary wordmark (landing / marketing). */
+const HORIZONTAL = BRAND_ASSETS.primaryHorizontalSvg;
+
+export function BrandLogo({ variant, className }: BrandLogoProps) {
+  const isEmblem =
+    variant === 'appSidebar' ||
+    variant === 'appMobileBar';
+
+  const src = isEmblem ? EMBLEM : HORIZONTAL;
 
   return (
     <img
       src={brandAssetUrl(src)}
       alt={alt}
-      className={cn('object-contain object-left', className)}
+      className={cn(
+        'object-contain object-left',
+        isEmblem ? 'aspect-square' : 'h-full w-auto',
+        className
+      )}
       decoding="async"
       fetchPriority={
         variant === 'publicHeader' || variant === 'auth' ? 'high' : 'auto'
@@ -54,5 +46,3 @@ export function BrandLogo({ variant, className }: BrandLogoProps) {
     />
   );
 }
-
-const BRAND_WORDMARK_ALT = `${BRAND_WORDMARK_TEXT.court}${BRAND_WORDMARK_TEXT.diary}`;

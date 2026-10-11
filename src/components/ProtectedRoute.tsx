@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { readSubscriptionAccessCache } from '../context/SubscriptionContext';
+import { AppBootSkeleton } from './skeletons';
 import { useSubscription } from '../hooks/useSubscription';
 
 export function ProtectedRoute() {
@@ -9,11 +10,7 @@ export function ProtectedRoute() {
   const location = useLocation();
 
   if (!authReady) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">
-        …
-      </div>
-    );
+    return <AppBootSkeleton />;
   }
 
   if (!user) {
@@ -34,11 +31,7 @@ export function PublicOnlyRoute() {
   const { user, authReady } = useAuth();
 
   if (!authReady) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">
-        …
-      </div>
-    );
+    return <AppBootSkeleton />;
   }
 
   if (user?.mustChangePassword) {

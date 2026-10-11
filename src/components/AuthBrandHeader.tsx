@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { BrandEmblem } from './BrandEmblem';
 import { BrandWordmark } from './BrandWordmark';
 import { useLocale } from '../i18n/LocaleContext';
 
@@ -12,6 +13,7 @@ export function AuthBrandHeader() {
       to="/"
       className="mb-4 flex flex-col items-center gap-2 text-center no-underline"
     >
+      <BrandEmblem size="lg" decorative />
       <BrandWordmark size="lg" plate />
       <p className="page-eyebrow">{t('landing.hero.tagline')}</p>
       <p className="text-xs font-medium text-muted-foreground">{t('brand.sub')}</p>

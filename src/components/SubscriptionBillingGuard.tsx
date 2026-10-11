@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { readSubscriptionAccessCache } from '../context/SubscriptionContext';
 import { useSubscription } from '../hooks/useSubscription';
-import { useLocale } from '../i18n/LocaleContext';
+import { AppBootSkeleton } from './skeletons';
 
 /** Paths reachable while subscription lapsed (over free case limit). */
 const BILLING_PREFIXES = ['/plans', '/payments'];
@@ -11,19 +11,6 @@ const BILLING_PREFIXES = ['/plans', '/payments'];
 function isBillingPath(pathname: string): boolean {
   return BILLING_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`)
-  );
-}
-
-function SubscriptionGuardSpinner() {
-  const { t } = useLocale();
-  return (
-    <div
-      className="flex min-h-[50vh] items-center justify-center px-4 text-center text-muted-foreground"
-      role="status"
-      aria-live="polite"
-    >
-      {t('common.loading')}
-    </div>
   );
 }
 
@@ -65,7 +52,7 @@ export function SubscriptionBillingGuard() {
         />
       );
     }
-    return <SubscriptionGuardSpinner />;
+    return <AppBootSkeleton minHeight="min-h-[50vh]" />;
   }
 
   return <Outlet />;

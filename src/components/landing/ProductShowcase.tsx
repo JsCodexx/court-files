@@ -1,5 +1,6 @@
 import React from 'react';
-import { CalendarDays, Scale, Smartphone } from '../icons';
+import { BrandEmblem } from '../BrandEmblem';
+import { CalendarDays, Smartphone } from '../icons';
 import { useLocale } from '../../i18n/LocaleContext';
 import { TranslationKey } from '../../i18n/translations';
 import { cn } from '../../lib/utils';
@@ -77,7 +78,7 @@ export function ProductShowcase({ className }: ProductShowcaseProps) {
                 {t('landing.preview.court')}
               </p>
             </div>
-            <Scale className="h-7 w-7 text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))]" weight="duotone" />
+            <BrandEmblem size="sm" decorative className="h-7 w-7" />
           </div>
           <ul className="divide-y divide-border">
             {DESK_ROWS.map((row) => (
@@ -96,8 +97,7 @@ export function ProductShowcase({ className }: ProductShowcaseProps) {
       </div>
 
       <div
-        className="absolute -bottom-2 start-0 z-10 w-[38%] max-w-[9.5rem] animate-soft-float sm:-bottom-4 sm:-start-4 sm:w-[42%] sm:max-w-[10.5rem]"
-        style={{ animationDelay: '400ms' }}
+        className="absolute -bottom-2 start-0 z-10 w-[38%] max-w-[9.5rem] sm:-bottom-4 sm:-start-4 sm:w-[42%] sm:max-w-[10.5rem]"
         aria-hidden
       >
         <div className="rounded-[1.35rem] border-[3px] border-foreground/10 bg-sidebar p-1.5 shadow-xl">
@@ -200,9 +200,10 @@ export function TraditionContrast({ className }: { className?: string }) {
           ))}
         </ul>
       </div>
-      <Scale
-        className="relative z-10 h-14 w-14 text-[hsl(var(--brand-forest))] opacity-90 dark:text-[hsl(var(--brand-fresh))]"
-        weight="duotone"
+      <BrandEmblem
+        size="lg"
+        decorative
+        className="relative z-10 h-14 w-14 opacity-90"
       />
     </div>
   );

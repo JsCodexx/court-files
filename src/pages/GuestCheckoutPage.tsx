@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Check, Wallet } from '../components/icons';
 import { SiteShell } from '../components/SiteShell';
 import { Alert } from '../components/ui/alert';
@@ -14,14 +14,21 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { PasswordInput } from '../components/ui/password-input';
 import { BrandWordmark } from '../components/BrandWordmark';
 import { COMPANY } from '../constants/company';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useLocale } from '../i18n/LocaleContext';
+import { TranslationKey } from '../i18n/translations';
 import { cn } from '../lib/utils';
 import { apiFetch, translateApiError } from '../utils/api';
 import { isValidPakPhone } from '../utils/validation';
+import { PlanCardsSkeleton } from '../components/skeletons';
 import type { Plan } from './PlansPage';
+
+const CHECKOUT_PHONE_KEY = 'cf_checkout_phone';
+const MIN_PASSWORD_LENGTH = 8;
 
 const FALLBACK_PLANS: Plan[] = [
   {
@@ -61,8 +68,12 @@ interface Payment {
 export function GuestCheckoutPage() {
   const { t } = useLocale();
   const toast = useToast();
+  const navigate = useNavigate();
+  const { registerDraft } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
+  const verified = searchParams.get('verified') === '1';
   const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
+  const [plansLoading, setPlansLoading] = useState(true);
   const [planId, setPlanId] = useState(
     () => searchParams.get('plan') || 'monthly'
   );
@@ -71,6 +82,9 @@ export function GuestCheckoutPage() {
     () => searchParams.get('email') || ''
   );
   const [phone, setPhone] = useState('');
+  const [barAddress, setBarAddress] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [busy, setBusy] = useState(false);
@@ -83,6 +97,14 @@ export function GuestCheckoutPage() {
   );
 
   useEffect(() => {
+    if (verified) {
+      const stored = sessionStorage.getItem(CHECKOUT_PHONE_KEY);
+      if (stored) setPhone(stored);
+      setInfo(t('checkout.verifiedReady'));
+    }
+  }, [verified, t]);
+
+  useEffect(() => {
     let alive = true;
     (async () => {
       try {
@@ -90,6 +112,8 @@ export function GuestCheckoutPage() {
         if (alive && res.plans?.length) setPlans(res.plans);
       } catch {
         /* fallback plans */
+      } finally {
+        if (alive) setPlansLoading(false);
       }
     })();
     return () => {
@@ -97,7 +121,6 @@ export function GuestCheckoutPage() {
     };
   }, []);
 
-  // Resume after demo redirect
   useEffect(() => {
     const paymentId = searchParams.get('paymentId');
     const demo = searchParams.get('demo');
@@ -115,7 +138,11 @@ export function GuestCheckoutPage() {
         setEmail(em);
         setDemoMode(demo === '1' && res.payment.status !== 'paid');
         if (res.payment.status === 'paid') {
-          setInfo(t('checkout.paidSuccess'));
+          sessionStorage.removeItem(CHECKOUT_PHONE_KEY);
+          navigate('/login', {
+            replace: true,
+            state: { paymentComplete: true, email: em },
+          });
         } else if (searchParams.get('failed') === '1') {
           const text = t('checkout.paymentFailed');
           setError(text);
@@ -132,12 +159,61 @@ export function GuestCheckoutPage() {
     return () => {
       alive = false;
     };
-  }, [searchParams, t, toast]);
+  }, [searchParams, t, toast, navigate]);
+
+  const onRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setInfo('');
+    if (!isValidPakPhone(phone.trim())) {
+      const text = t('validation.phone');
+      setError(text);
+      toast.error(text);
+      return;
+    }
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      setError(t('errors.passwordShort'));
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError(t('register.passwordMismatch'));
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await registerDraft({
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        barAddress: barAddress.trim(),
+        password,
+      });
+      if (!result.ok) {
+        const text = t(result.error as TranslationKey);
+        setError(text);
+        toast.error(text);
+        return;
+      }
+      sessionStorage.setItem(CHECKOUT_PHONE_KEY, phone.trim());
+      navigate('/verify-otp', {
+        state: {
+          demoOtp: result.otp,
+          checkoutResume: { planId: selected.id, email: email.trim() },
+        },
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const onPay = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setInfo('');
+    if (!verified) {
+      setError(t('checkout.verifyFirst'));
+      return;
+    }
     if (!isValidPakPhone(phone.trim()) && !/^\+923\d{9}$/.test(phone.trim())) {
       const text = t('validation.phone');
       setError(text);
@@ -155,7 +231,7 @@ export function GuestCheckoutPage() {
         method: 'POST',
         body: {
           planId: selected.id,
-          name: name.trim(),
+          name: name.trim() || email.split('@')[0],
           email: email.trim(),
           phone: phone.trim(),
         },
@@ -166,6 +242,8 @@ export function GuestCheckoutPage() {
 
       if (res.demoMode) {
         setSearchParams({
+          plan: selected.id,
+          verified: '1',
           paymentId: res.payment.id,
           demo: '1',
           email: email.trim(),
@@ -174,7 +252,6 @@ export function GuestCheckoutPage() {
         return;
       }
 
-      // Live RapidGateway: redirect to hosted checkout
       window.location.href = res.checkoutUrl;
     } catch (err) {
       const text = translateApiError(err, t);
@@ -199,7 +276,11 @@ export function GuestCheckoutPage() {
       );
       setActive(res.payment);
       setDemoMode(false);
-      setInfo(t('checkout.paidSuccess'));
+      sessionStorage.removeItem(CHECKOUT_PHONE_KEY);
+      navigate('/login', {
+        replace: true,
+        state: { paymentComplete: true, email: email.trim() },
+      });
     } catch (err) {
       const text = translateApiError(err, t);
       setError(text);
@@ -208,6 +289,8 @@ export function GuestCheckoutPage() {
       setBusy(false);
     }
   };
+
+  const showAccountStep = !verified;
 
   return (
     <SiteShell>
@@ -231,12 +314,17 @@ export function GuestCheckoutPage() {
               <CardDescription>{t('checkout.choosePlanLede')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {plans.map((plan) => {
+              {plansLoading ? (
+                <PlanCardsSkeleton count={2} />
+              ) : null}
+              {!plansLoading &&
+              plans.map((plan) => {
                 const activePlan = selected?.id === plan.id;
                 return (
                   <button
                     key={plan.id}
                     type="button"
+                    disabled={verified && active?.status === 'paid'}
                     onClick={() => setPlanId(plan.id)}
                     className={cn(
                       'w-full rounded-lg border p-4 text-start transition-colors',
@@ -275,20 +363,19 @@ export function GuestCheckoutPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">{t('checkout.detailsTitle')}</CardTitle>
-              <CardDescription>{t('checkout.detailsLede')}</CardDescription>
+              <CardTitle className="text-lg">
+                {showAccountStep
+                  ? t('checkout.accountTitle')
+                  : t('checkout.detailsTitle')}
+              </CardTitle>
+              <CardDescription>
+                {showAccountStep
+                  ? t('checkout.accountLede')
+                  : t('checkout.detailsLede')}
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              {active?.status === 'paid' ? (
-                <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    {t('checkout.afterPay')}
-                  </p>
-                  <Button asChild className="w-full">
-                    <Link to="/login">{t('checkout.createAccount')}</Link>
-                  </Button>
-                </div>
-              ) : demoMode && active ? (
+              {demoMode && active && active.status !== 'paid' ? (
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
                     {t('checkout.demoHint', { gateway: COMPANY.paymentGateway })}
@@ -313,8 +400,8 @@ export function GuestCheckoutPage() {
                     {t('checkout.demoConfirm', { gateway: COMPANY.paymentGateway })}
                   </Button>
                 </div>
-              ) : (
-                <form onSubmit={onPay} className="space-y-4">
+              ) : showAccountStep ? (
+                <form onSubmit={onRegister} className="space-y-4">
                   <div>
                     <Label>{t('register.name')}</Label>
                     <Input
@@ -341,6 +428,67 @@ export function GuestCheckoutPage() {
                       placeholder="03XXXXXXXXX"
                       required
                       dir="ltr"
+                    />
+                  </div>
+                  <div>
+                    <Label>{t('register.barAddress')}</Label>
+                    <Input
+                      value={barAddress}
+                      onChange={(e) => setBarAddress(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label>{t('register.password')}</Label>
+                    <PasswordInput
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      minLength={MIN_PASSWORD_LENGTH}
+                      dir="ltr"
+                    />
+                  </div>
+                  <div>
+                    <Label>{t('register.confirmPassword')}</Label>
+                    <PasswordInput
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      dir="ltr"
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={busy || !selected}>
+                    {busy ? t('common.loading') : t('checkout.registerContinue')}
+                  </Button>
+                  <p className="text-center text-xs text-muted-foreground">
+                    {t('checkout.alreadyAccount')}{' '}
+                    <Link to="/login" className="font-semibold text-primary hover:underline">
+                      {t('login.title')}
+                    </Link>
+                  </p>
+                </form>
+              ) : (
+                <form onSubmit={onPay} className="space-y-4">
+                  <div>
+                    <Label>{t('register.email')}</Label>
+                    <Input type="email" value={email} readOnly dir="ltr" />
+                  </div>
+                  <div>
+                    <Label>{t('register.phone')}</Label>
+                    <Input
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="03XXXXXXXXX"
+                      required
+                      dir="ltr"
+                    />
+                  </div>
+                  <div>
+                    <Label>{t('register.name')}</Label>
+                    <Input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder={t('checkout.nameOptional')}
                     />
                   </div>
 
@@ -370,9 +518,6 @@ export function GuestCheckoutPage() {
                           gateway: COMPANY.paymentGateway,
                         })}
                   </Button>
-                  <p className="text-center text-xs text-muted-foreground">
-                    {t('checkout.noAccountRequired')}
-                  </p>
                 </form>
               )}
             </CardContent>

@@ -22,13 +22,15 @@ import {
   PublicSection,
   PublicSiteFrame,
 } from '../components/public/PublicLayout';
+import { BrandEmblem } from '../components/BrandEmblem';
 import { BrandWordmark } from '../components/BrandWordmark';
 import { Button } from '../components/ui/button';
+import { AppBootSkeleton, PlanCardsSkeleton } from '../components/skeletons';
 import { useAuth } from '../context/AuthContext';
-import { BRAND_ASSETS, brandAssetUrl } from '../constants/brandAssets';
 import { COMPANY } from '../constants/company';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
+import { Stagger, StaggerItem } from '../components/motion';
 import { cn } from '../lib/utils';
 import { apiFetch } from '../utils/api';
 import { Plan } from './PlansPage';
@@ -225,6 +227,7 @@ export function LandingPage() {
   const { user, authReady } = useAuth();
   const { t } = useLocale();
   const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
+  const [plansLoading, setPlansLoading] = useState(true);
 
   useEffect(() => {
     let alive = true;
@@ -241,6 +244,8 @@ export function LandingPage() {
         }
       } catch {
         /* keep fallback catalog */
+      } finally {
+        if (alive) setPlansLoading(false);
       }
     })();
     return () => {
@@ -249,9 +254,7 @@ export function LandingPage() {
   }, []);
 
   if (!authReady) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">…</div>
-    );
+    return <AppBootSkeleton />;
   }
 
   if (user) {
@@ -259,8 +262,9 @@ export function LandingPage() {
   }
 
   return (
-    <PublicSiteFrame headerClassName="animate-fade-in">
+    <PublicSiteFrame>
       <PublicSection
+        reveal={false}
         spacing="hero"
         className="relative overflow-hidden border-b border-border"
         containerClassName="relative grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-12"
@@ -270,49 +274,62 @@ export function LandingPage() {
           aria-hidden
         />
         <>
-          <div className="animate-rise-in min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[hsl(var(--brand-fresh))]">
-              {t('landing.hero.tagline')}
-            </p>
-            <p className="mt-4">
-              <BrandWordmark size="lg" plate />
-            </p>
-            <p className="mt-2 text-xs font-medium text-muted-foreground">
-              {t('brand.presents', { product: COMPANY.productName })}
-            </p>
-            <h1 className="mt-6 max-w-xl font-display text-2xl font-semibold leading-tight tracking-tight text-[hsl(var(--brand-forest))] dark:text-foreground sm:text-4xl lg:text-[2.35rem]">
-              {t('landing.hero.headline')}
-            </h1>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
-              {t('landing.hero.lede')}
-            </p>
-            <ul className="mt-6 space-y-2.5">
+          <Stagger className="min-w-0" inView={false}>
+            <StaggerItem>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[hsl(var(--brand-fresh))]">
+                {t('landing.hero.tagline')}
+              </p>
+            </StaggerItem>
+            <StaggerItem>
+              <p className="mt-4">
+                <BrandWordmark size="lg" plate />
+              </p>
+            </StaggerItem>
+            <StaggerItem>
+              <p className="mt-2 text-xs font-medium text-muted-foreground">
+                {t('brand.presents', { product: COMPANY.productName })}
+              </p>
+            </StaggerItem>
+            <StaggerItem>
+              <h1 className="mt-6 max-w-xl font-display text-2xl font-semibold leading-tight tracking-tight text-[hsl(var(--brand-forest))] dark:text-foreground sm:text-4xl lg:text-[2.35rem]">
+                {t('landing.hero.headline')}
+              </h1>
+            </StaggerItem>
+            <StaggerItem>
+              <p className="mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
+                {t('landing.hero.lede')}
+              </p>
+            </StaggerItem>
+            <Stagger className="mt-6 space-y-2.5" inView={false}>
               {HERO_POINTS.map((key) => (
-                <li key={key} className="flex gap-2.5 text-sm text-foreground sm:text-base">
-                  <Check
-                    className="mt-0.5 h-5 w-5 shrink-0 text-[hsl(var(--brand-fresh))]"
-                    weight="bold"
-                  />
-                  <span>{t(key)}</span>
-                </li>
+                <StaggerItem key={key}>
+                  <p className="flex gap-2.5 text-sm text-foreground sm:text-base">
+                    <Check
+                      className="mt-0.5 h-5 w-5 shrink-0 text-[hsl(var(--brand-fresh))]"
+                      weight="bold"
+                    />
+                    <span>{t(key)}</span>
+                  </p>
+                </StaggerItem>
               ))}
-            </ul>
-            <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
-              <Button asChild size="lg" className="w-full sm:w-auto sm:min-w-[11rem]">
-                <Link to="/register">{t('landing.hero.ctaFree')} →</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
-                <Link to="/how-it-works">{t('landing.hero.ctaLearn')}</Link>
-              </Button>
-            </div>
-          </div>
+            </Stagger>
+            <StaggerItem>
+              <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
+                <Button asChild size="lg" className="w-full sm:w-auto sm:min-w-[11rem]">
+                  <Link to="/register">{t('landing.hero.ctaFree')} →</Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+                  <Link to="/how-it-works">{t('landing.hero.ctaLearn')}</Link>
+                </Button>
+              </div>
+            </StaggerItem>
+          </Stagger>
 
-          <div
-            className="relative animate-rise-in pb-8 ps-4 sm:pb-10 sm:ps-8 lg:pb-12"
-            style={{ animationDelay: '100ms', animationFillMode: 'both' }}
-          >
-            <ProductShowcase />
-          </div>
+          <Stagger className="relative pb-8 ps-4 sm:pb-10 sm:ps-8 lg:pb-12" inView={false}>
+            <StaggerItem>
+              <ProductShowcase />
+            </StaggerItem>
+          </Stagger>
         </>
       </PublicSection>
 
@@ -334,39 +351,40 @@ export function LandingPage() {
           centered
           className="mx-auto max-w-3xl"
         />
-        <ul className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+        <Stagger className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
           {PROS_STRIP.map(({ icon: Icon, label }) => (
-            <li key={label} className="flex flex-col items-center text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
-                <Icon
-                  className="h-7 w-7 text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))]"
-                  weight="duotone"
-                />
+            <StaggerItem key={label}>
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
+                  <Icon
+                    className="h-7 w-7 text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))]"
+                    weight="duotone"
+                  />
+                </div>
+                <p className="mt-3 text-sm font-semibold text-foreground">{t(label)}</p>
               </div>
-              <p className="mt-3 text-sm font-semibold text-foreground">{t(label)}</p>
-            </li>
+            </StaggerItem>
           ))}
-        </ul>
+        </Stagger>
       </PublicSection>
 
       <PublicSection className="border-b border-border bg-card">
         <SectionHeading title={t('landing.features.title')} lede={t('landing.features.lede')} />
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map(({ icon: Icon, title, body }) => (
-            <li
-              key={title}
-              className="min-w-0 rounded-xl border border-border bg-background p-5 shadow-sm transition-shadow hover:shadow-md"
-            >
-              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[hsl(var(--brand-forest))] text-primary-foreground dark:bg-[hsl(var(--brand-fresh))] dark:text-primary-foreground">
-                <Icon className="h-5 w-5" weight="fill" />
-              </div>
-              <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
-                {t(title)}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
-            </li>
+            <StaggerItem key={title}>
+              <article className="min-w-0 rounded-xl border border-border bg-background p-5 shadow-sm transition-shadow hover:shadow-md">
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[hsl(var(--brand-forest))] text-primary-foreground dark:bg-[hsl(var(--brand-fresh))] dark:text-primary-foreground">
+                  <Icon className="h-5 w-5" weight="fill" />
+                </div>
+                <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
+                  {t(title)}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
+              </article>
+            </StaggerItem>
           ))}
-        </ul>
+        </Stagger>
       </PublicSection>
 
       <SplitSection title={t('landing.split.tradition.title')} body={t('landing.split.tradition.body')}>
@@ -387,45 +405,43 @@ export function LandingPage() {
 
       <PublicSection className="border-y border-border bg-muted/30">
         <SectionHeading title={t('landing.values.title')} centered className="mx-auto" />
-        <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <Stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {VALUES.map(({ icon: Icon, title, body }) => (
-            <li
-              key={title}
-              className="rounded-xl border border-border bg-card p-5 text-center sm:text-start"
-            >
-              <Icon
-                className="mx-auto h-8 w-8 text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))] sm:mx-0"
-                weight="duotone"
-              />
-              <h3 className="mt-3 font-display text-base font-semibold text-foreground">
-                {t(title)}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
-            </li>
+            <StaggerItem key={title}>
+              <article className="rounded-xl border border-border bg-card p-5 text-center sm:text-start">
+                <Icon
+                  className="mx-auto h-8 w-8 text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))] sm:mx-0"
+                  weight="duotone"
+                />
+                <h3 className="mt-3 font-display text-base font-semibold text-foreground">
+                  {t(title)}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
+              </article>
+            </StaggerItem>
           ))}
-        </ul>
+        </Stagger>
       </PublicSection>
 
       <PublicSection id="how-it-works" className="border-b border-border bg-background">
         <SectionHeading title={t('landing.how.title')} lede={t('landing.how.lede')} />
-        <ol className="mt-10 grid gap-4 lg:grid-cols-2">
+        <Stagger className="mt-10 grid gap-4 lg:grid-cols-2">
           {JOURNEY_STEPS.map((step, index) => (
-            <li
-              key={step.heading}
-              className="flex gap-4 rounded-xl border border-border bg-card p-5"
-            >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[hsl(var(--brand-forest))] text-sm font-bold text-primary-foreground dark:bg-[hsl(var(--brand-fresh))]">
-                {index + 1}
-              </span>
-              <div>
-                <h3 className="font-semibold text-foreground">{t(step.heading)}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                  {t(step.body)}
-                </p>
-              </div>
-            </li>
+            <StaggerItem key={step.heading}>
+              <article className="flex gap-4 rounded-xl border border-border bg-card p-5">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[hsl(var(--brand-forest))] text-sm font-bold text-primary-foreground dark:bg-[hsl(var(--brand-fresh))]">
+                  {index + 1}
+                </span>
+                <div>
+                  <h3 className="font-semibold text-foreground">{t(step.heading)}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                    {t(step.body)}
+                  </p>
+                </div>
+              </article>
+            </StaggerItem>
           ))}
-        </ol>
+        </Stagger>
         <p className="mt-8">
           <Link
             to="/how-it-works"
@@ -438,20 +454,27 @@ export function LandingPage() {
 
       <PublicSection className="border-b border-border bg-card">
         <SectionHeading title={t('pricing.title')} lede={t('pricing.lede')} />
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {plans.map((plan) => (
-            <PlanOfferCard
-              key={plan.id}
-              plan={plan}
-              periodLabel={plan.durationDays === 365 ? 'year' : '30 days'}
-              footer={
-                <Button asChild className="w-full">
-                  <Link to={`/checkout?plan=${plan.id}`}>{t('pricing.cta')}</Link>
-                </Button>
-              }
-            />
-          ))}
-        </div>
+        {plansLoading ? (
+          <div className="mt-10">
+            <PlanCardsSkeleton />
+          </div>
+        ) : (
+          <Stagger className="mt-10 grid gap-6 sm:grid-cols-2">
+            {plans.map((plan) => (
+              <StaggerItem key={plan.id}>
+                <PlanOfferCard
+                  plan={plan}
+                  periodLabel={plan.durationDays === 365 ? 'year' : '30 days'}
+                  footer={
+                    <Button asChild className="w-full">
+                      <Link to={`/checkout?plan=${plan.id}`}>{t('pricing.cta')}</Link>
+                    </Button>
+                  }
+                />
+              </StaggerItem>
+            ))}
+          </Stagger>
+        )}
         <p className="mt-6 text-sm text-muted-foreground">{t('pricing.paymentNote')}</p>
       </PublicSection>
 
@@ -475,12 +498,7 @@ export function LandingPage() {
           </div>
         </div>
         <div className="flex justify-center lg:justify-end">
-          <img
-            src={brandAssetUrl(BRAND_ASSETS.symbolSvg)}
-            alt=""
-            className="h-28 w-28 opacity-90 sm:h-36 sm:w-36"
-            aria-hidden
-          />
+          <BrandEmblem size="xl" decorative className="opacity-90" />
         </div>
       </PublicSection>
 

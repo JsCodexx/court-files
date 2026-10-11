@@ -14,6 +14,7 @@ import {
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { PageEnter } from '../components/motion';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -23,7 +24,12 @@ export function VerifyOtpPage() {
   const { t } = useLocale();
   const navigate = useNavigate();
   const location = useLocation();
-  const demoOtp = (location.state as { demoOtp?: string } | null)?.demoOtp;
+  const locState = location.state as {
+    demoOtp?: string;
+    checkoutResume?: { planId: string; email: string };
+  } | null;
+  const demoOtp = locState?.demoOtp;
+  const checkoutResume = locState?.checkoutResume;
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [info, setInfo] = useState(
@@ -33,7 +39,8 @@ export function VerifyOtpPage() {
   if (!pendingPhone && !demoOtp) {
     return (
       <div className="page-shell">
-        <Card className="auth-card max-w-md animate-rise-in">
+        <PageEnter className="w-full max-w-md">
+        <Card className="auth-card max-w-md">
           <CardHeader>
             <div className="mb-2 flex items-center justify-between">
               <LanguageSwitcher />
@@ -49,6 +56,7 @@ export function VerifyOtpPage() {
             </Button>
           </CardContent>
         </Card>
+        </PageEnter>
       </div>
     );
   }
@@ -58,6 +66,13 @@ export function VerifyOtpPage() {
     const result = await verifyOtp(otp);
     if (!result.ok) {
       setError(t(result.error as TranslationKey));
+      return;
+    }
+    if (checkoutResume) {
+      navigate(
+        `/checkout?plan=${encodeURIComponent(checkoutResume.planId)}&email=${encodeURIComponent(checkoutResume.email)}&verified=1`,
+        { replace: true }
+      );
       return;
     }
     navigate('/login', { state: { accountReady: true } });
@@ -79,13 +94,14 @@ export function VerifyOtpPage() {
 
   return (
     <div className="page-shell">
-      <Card className="auth-card max-w-md animate-rise-in">
+      <PageEnter className="w-full max-w-md">
+      <Card className="auth-card max-w-md">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <AuthBrandHeader />
+            <AuthBrandHeader />
           <CardTitle className="sr-only">{t('otp.title')}</CardTitle>
           <CardDescription className="text-center">
             {t('otp.lede', {
@@ -133,6 +149,7 @@ export function VerifyOtpPage() {
           </p>
         </CardContent>
       </Card>
+      </PageEnter>
     </div>
   );
 }

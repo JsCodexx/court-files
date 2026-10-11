@@ -7,6 +7,7 @@ import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
+import { PlanCardsSkeleton } from '../components/skeletons';
 import { ApiError, apiFetch } from '../utils/api';
 
 export interface Plan {
@@ -70,9 +71,7 @@ export function PlansPage() {
 
       {error && <Alert variant="destructive">{error}</Alert>}
 
-      {loading && (
-        <p className="text-sm text-muted-foreground">{t('plans.loading')}</p>
-      )}
+      {loading && <PlanCardsSkeleton />}
 
       {!loading && step === 'plans' && (
         <div className="grid gap-5 sm:grid-cols-2">

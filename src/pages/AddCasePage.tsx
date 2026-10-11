@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Scale } from '../components/icons';
+import { AddCaseFormSkeleton } from '../components/skeletons';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ChangeJudgeDialog } from '../components/ChangeJudgeDialog';
 import { CityPicker } from '../components/CityPicker';
@@ -121,7 +122,11 @@ export function AddCasePage() {
   const { id } = useParams<{ id?: string }>();
   const isEdit = Boolean(id);
   const { addCase, updateCase, peekCase, getCase, version } = useCases();
-  const { status: subscription, loading: subLoading } = useSubscription(version);
+  const {
+    status: subscription,
+    loading: subLoading,
+    reload: reloadSubscription,
+  } = useSubscription();
   const { t } = useLocale();
   const navigate = useNavigate();
   const [form, setForm] = useState<CaseFormState>(empty);
@@ -296,6 +301,7 @@ export function AddCasePage() {
         setTimeout(() => navigate(`/cases/${id}/detail`), 700);
       } else {
         await addCase(payload);
+        void reloadSubscription({ silent: true });
         setSuccess(t('addCase.saved'));
         setForm({ ...empty, nextDate: nextWorkingDayISO() });
         setFieldErrors({});
@@ -321,7 +327,7 @@ export function AddCasePage() {
 
   if (notFound) {
     return (
-      <div className="animate-rise-in space-y-4">
+      <div className="space-y-4">
         <Alert variant="destructive">{t('history.notFound')}</Alert>
         <Button asChild variant="secondary">
           <Link to="/dashboard">{t('history.back')}</Link>
@@ -331,11 +337,7 @@ export function AddCasePage() {
   }
 
   if (loading || (!isEdit && subLoading)) {
-    return (
-      <div className="p-10 text-center text-sm text-muted-foreground">
-        {t('common.dash')}
-      </div>
-    );
+    return <AddCaseFormSkeleton />;
   }
 
   if (!isEdit && subscription && !subscription.canAddCase) {

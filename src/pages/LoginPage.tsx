@@ -15,6 +15,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { PageEnter } from '../components/motion';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -33,10 +34,18 @@ export function LoginPage() {
   const accountReady = Boolean(
     (location.state as { accountReady?: boolean } | null)?.accountReady
   );
+  const paymentComplete = Boolean(
+    (location.state as { paymentComplete?: boolean; email?: string } | null)
+      ?.paymentComplete
+  );
+  const paidEmail =
+    (location.state as { email?: string } | null)?.email ?? '';
   const passwordChanged = Boolean(
     (location.state as { passwordChanged?: boolean } | null)?.passwordChanged
   );
-  const [emailOrPhone, setEmailOrPhone] = useState('');
+  const [emailOrPhone, setEmailOrPhone] = useState(() =>
+    paymentComplete && paidEmail ? paidEmail : ''
+  );
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -59,7 +68,8 @@ export function LoginPage() {
 
   return (
     <div className="page-shell">
-      <Card className="auth-card max-w-md animate-rise-in">
+      <PageEnter className="w-full max-w-md">
+      <Card className="auth-card max-w-md">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
@@ -76,6 +86,9 @@ export function LoginPage() {
             )}
             {emailVerification && !error && (
               <Alert variant="info">{t('verify.emailSent')}</Alert>
+            )}
+            {paymentComplete && !error && (
+              <Alert variant="success">{t('checkout.loginAfterPay')}</Alert>
             )}
             {accountReady && !error && (
               <Alert variant="success">{t('otp.accountReady')}</Alert>
@@ -127,6 +140,7 @@ export function LoginPage() {
           </p>
         </CardContent>
       </Card>
+      </PageEnter>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { CompanyFooter } from '../CompanyFooter';
+import { PageEnter, Reveal } from '../motion';
 import { PublicHeader } from '../PublicHeader';
 import { PwaInstallPrompt } from '../PwaInstallPrompt';
 import { useLocale } from '../../i18n/LocaleContext';
@@ -32,21 +33,28 @@ export function PublicSection({
   className,
   containerClassName,
   spacing = 'default',
+  reveal = true,
   children,
 }: {
   id?: string;
   className?: string;
   containerClassName?: string;
   spacing?: SectionSpacing;
+  /** Scroll-triggered section entrance (marketing pages). */
+  reveal?: boolean;
   children: React.ReactNode;
 }) {
+  const inner = (
+    <LayoutContainer
+      className={cn(SECTION_SPACING[spacing], containerClassName)}
+    >
+      {children}
+    </LayoutContainer>
+  );
+
   return (
     <section id={id} className={className}>
-      <LayoutContainer
-        className={cn(SECTION_SPACING[spacing], containerClassName)}
-      >
-        {children}
-      </LayoutContainer>
+      {reveal ? <Reveal className="block">{inner}</Reveal> : inner}
     </section>
   );
 }
@@ -84,7 +92,7 @@ export function PublicPageBody({
 }) {
   return (
     <LayoutContainer className={cn('public-page-y', className)}>
-      <div className="public-page-stack min-w-0">{children}</div>
+      <PageEnter className="public-page-stack min-w-0">{children}</PageEnter>
     </LayoutContainer>
   );
 }

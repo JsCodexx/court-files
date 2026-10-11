@@ -15,32 +15,26 @@
   "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
-      "src": "/icons/svg/courtdiary-app-icon-light.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/app-icons/courtdiary-icon-128x128-transparent.png",
+      "sizes": "128x128",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/app-icons/icon-192.png",
+      "src": "/icons/app-icons/courtdiary-icon-192x192-transparent.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/app-icons/icon-512.png",
+      "src": "/icons/app-icons/courtdiary-icon-512x512-transparent.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/app-icons/courtdiary-icon-512x512-dark.png",
+      "src": "/icons/app-icons/courtdiary-icon-512x512-transparent.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/icons/app-icons/courtdiary-icon-192x192-dark.png",
-      "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     }
@@ -50,19 +44,37 @@
       "name": "Dashboard",
       "short_name": "Dashboard",
       "url": "/dashboard",
-      "icons": [{ "src": "/icons/app-icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/app-icons/courtdiary-icon-192x192-transparent.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Add case",
       "short_name": "Add case",
       "url": "/cases/new",
-      "icons": [{ "src": "/icons/app-icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/app-icons/courtdiary-icon-192x192-transparent.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Checkout",
       "short_name": "Checkout",
       "url": "/checkout",
-      "icons": [{ "src": "/icons/app-icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/app-icons/courtdiary-icon-192x192-transparent.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }

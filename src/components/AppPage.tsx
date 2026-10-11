@@ -1,4 +1,5 @@
 import React from 'react';
+import { PageEnter } from './motion';
 import { useLocale } from '../i18n/LocaleContext';
 import { cn } from '../lib/utils';
 
@@ -19,7 +20,7 @@ export function AppPage({
   wide?: boolean;
 }) {
   return (
-    <div
+    <PageEnter
       className={cn(
         'app-page',
         (narrow || wide) && 'app-page--wide',
@@ -27,7 +28,7 @@ export function AppPage({
       )}
     >
       {children}
-    </div>
+    </PageEnter>
   );
 }
 

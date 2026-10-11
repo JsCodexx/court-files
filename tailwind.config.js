@@ -64,23 +64,13 @@ module.exports = {
         urdu: ['var(--font-urdu)'],
       },
       keyframes: {
-        'rise-in': {
-          from: { opacity: '0', transform: 'translateY(10px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
-        },
         'fade-in': {
           from: { opacity: '0' },
           to: { opacity: '1' },
         },
-        'soft-float': {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-6px)' },
-        },
       },
       animation: {
-        'rise-in': 'rise-in 0.35s ease',
         'fade-in': 'fade-in 0.2s ease',
-        'soft-float': 'soft-float 5.5s ease-in-out infinite',
       },
     },
   },
