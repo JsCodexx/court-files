@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { AuthSession, User } from '../types';
@@ -23,9 +24,28 @@ const PENDING_EMAIL_KEY = 'cf_pending_email';
 
 type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
 
+type MeUser = AuthSession & {
+  phone: string;
+  barAddress: string;
+  mustChangePassword?: boolean;
+};
+
+function sessionFromMe(user: MeUser): AuthSession {
+  return {
+    userId: user.userId,
+    email: user.email,
+    name: user.name,
+    phone: user.phone,
+    barAddress: user.barAddress,
+    mustChangePassword: Boolean(user.mustChangePassword),
+  };
+}
+
 interface AuthContextValue {
   user: AuthSession | null;
   authReady: boolean;
+  /** Refresh profile from `/auth/me` without the global loader (deduped). */
+  refreshUser: (options?: { force?: boolean }) => Promise<void>;
   registerDraft: (
     data: Omit<User, 'id' | 'createdAt'>
   ) => Promise<Result<{ otp?: string }>>;
@@ -130,6 +150,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [pendingEmail, setPendingEmail] = useState<string | null>(() =>
     readPendingEmail()
   );
+  const refreshInFlight = useRef<Promise<void> | null>(null);
+  const lastUserRefreshAt = useRef(0);
 
   const logout = useCallback(() => {
     const uid = user?.userId ?? readSession()?.userId;
@@ -140,16 +162,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user?.userId]);
 
   const applyAuth = useCallback((res: AuthResponse) => {
-    const session: AuthSession = {
-      userId: res.user.userId,
-      email: res.user.email,
-      name: res.user.name,
-      mustChangePassword: Boolean(res.user.mustChangePassword),
-    };
+    const session = sessionFromMe(res.user);
     setToken(res.token);
     writeSession(session);
     setUser(session);
   }, []);
+
+  const refreshUser = useCallback(
+    async (options?: { force?: boolean }): Promise<void> => {
+      if (!getToken()) return;
+
+      const now = Date.now();
+      const staleMs = 30_000;
+      if (
+        !options?.force &&
+        now - lastUserRefreshAt.current < staleMs &&
+        refreshInFlight.current
+      ) {
+        return refreshInFlight.current;
+      }
+      if (!options?.force && now - lastUserRefreshAt.current < staleMs) {
+        return;
+      }
+
+      const run = (async () => {
+        const res = await apiFetch<{ ok: true; user: MeUser }>('/auth/me');
+        const session = sessionFromMe(res.user);
+        writeSession(session);
+        setUser(session);
+        lastUserRefreshAt.current = Date.now();
+      })();
+
+      refreshInFlight.current = run;
+      try {
+        await run;
+      } finally {
+        if (refreshInFlight.current === run) {
+          refreshInFlight.current = null;
+        }
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     setOnUnauthorized(logout);
@@ -255,7 +309,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [applyAuth, withLoader]
   );
 
-  // Validate stored token on startup before showing protected routes.
+  // Validate token on startup; show cached session immediately, refresh in background.
   useEffect(() => {
     const token = getToken();
     if (!token) {
@@ -263,27 +317,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    const cached = readSession();
+    if (cached) {
+      setUser(cached);
+      setAuthReady(true);
+    } else {
+      setAuthReady(false);
+    }
+
     let alive = true;
-    setAuthReady(false);
-    withLoader(async () => {
+    (async () => {
       try {
-        const res = await apiFetch<{
-          ok: true;
-          user: AuthSession & {
-            phone: string;
-            barAddress: string;
-            mustChangePassword?: boolean;
-          };
-        }>('/auth/me');
-        if (!alive) return;
-        const session: AuthSession = {
-          userId: res.user.userId,
-          email: res.user.email,
-          name: res.user.name,
-          mustChangePassword: Boolean(res.user.mustChangePassword),
-        };
-        writeSession(session);
-        setUser(session);
+        await refreshUser();
       } catch (err) {
         if (!alive) return;
         if (
@@ -295,7 +340,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } finally {
         if (alive) setAuthReady(true);
       }
-    });
+    })();
     return () => {
       alive = false;
     };
@@ -306,6 +351,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       user,
       authReady,
+      refreshUser,
       registerDraft,
       verifyOtp,
       resendOtp,
@@ -317,6 +363,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [
       user,
       authReady,
+      refreshUser,
       registerDraft,
       verifyOtp,
       resendOtp,

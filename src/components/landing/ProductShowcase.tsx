@@ -96,8 +96,7 @@ export function ProductShowcase({ className }: ProductShowcaseProps) {
       </div>
 
       <div
-        className="absolute -bottom-2 start-0 z-10 w-[38%] max-w-[9.5rem] animate-soft-float sm:-bottom-4 sm:-start-4 sm:w-[42%] sm:max-w-[10.5rem]"
-        style={{ animationDelay: '400ms' }}
+        className="absolute -bottom-2 start-0 z-10 w-[38%] max-w-[9.5rem] sm:-bottom-4 sm:-start-4 sm:w-[42%] sm:max-w-[10.5rem]"
         aria-hidden
       >
         <div className="rounded-[1.35rem] border-[3px] border-foreground/10 bg-sidebar p-1.5 shadow-xl">

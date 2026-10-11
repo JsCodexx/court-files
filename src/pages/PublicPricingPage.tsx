@@ -4,9 +4,11 @@ import { BrandWordmark } from '../components/BrandWordmark';
 import { SiteShell } from '../components/SiteShell';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
+import { Stagger, StaggerItem } from '../components/motion';
 import { PlanOfferCard } from '../components/pricing/PlanOfferCard';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
+import { PlanCardsSkeleton } from '../components/skeletons';
 import { ApiError, apiFetch } from '../utils/api';
 import { Plan } from './PlansPage';
 
@@ -86,20 +88,25 @@ export function PublicPricingPage() {
           <Alert variant="info">{t('pricing.fallbackNote')}</Alert>
         ) : null}
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          {plans.map((plan) => (
-            <PlanOfferCard
-              key={plan.id}
-              plan={plan}
-              periodLabel={`${plan.durationDays}d`}
-              footer={
-                <Button asChild className="w-full">
-                  <Link to={`/checkout?plan=${plan.id}`}>{t('pricing.cta')}</Link>
-                </Button>
-              }
-            />
-          ))}
-        </div>
+        {loading ? (
+          <PlanCardsSkeleton />
+        ) : (
+          <Stagger className="grid gap-4 sm:grid-cols-2">
+            {plans.map((plan) => (
+              <StaggerItem key={plan.id}>
+                <PlanOfferCard
+                  plan={plan}
+                  periodLabel={`${plan.durationDays}d`}
+                  footer={
+                    <Button asChild className="w-full">
+                      <Link to={`/checkout?plan=${plan.id}`}>{t('pricing.cta')}</Link>
+                    </Button>
+                  }
+                />
+              </StaggerItem>
+            ))}
+          </Stagger>
+        )}
 
         <div className="space-y-3 rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground shadow-sm sm:p-6">
           <p>{t('pricing.paymentNote')}</p>

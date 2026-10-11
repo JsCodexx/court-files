@@ -2,6 +2,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -19,6 +20,8 @@ import {
   DashboardScopeMeta,
   DashboardTabCounts,
   mergeCasesIntoCache,
+  readDashboardListCache,
+  writeDashboardListCachePage,
 } from './casesCache';
 
 type CaseInput = Omit<
@@ -59,9 +62,14 @@ interface CasesContextValue {
     fromCache: boolean;
   }>;
   getCachedDashboardMeta: (scope: DashboardScope) => DashboardScopeMeta | undefined;
+  getCachedDashboardPage: (
+    scope: DashboardScope,
+    category: DashboardCategory,
+    page: number
+  ) => (DashboardPageResult & { fromCache: true }) | undefined;
   getCachedTabCounts: () => DashboardTabCounts | undefined;
   invalidateDashboardCache: () => void;
-  refresh: () => Promise<void>;
+  refresh: () => void;
   addCase: (input: CaseInput) => Promise<CourtCase>;
   updateCase: (id: string, patch: Partial<CaseInput>) => Promise<void>;
   addHearing: (caseId: string, hearing: HearingInput) => Promise<void>;
@@ -107,8 +115,31 @@ export function CasesProvider({ children }: { children: React.ReactNode }) {
     Partial<Record<DashboardScope, DashboardScopeMeta>>
   >({});
   const tabCountsRef = useRef<DashboardTabCounts | null>(null);
+  const userIdRef = useRef<string | undefined>(user?.userId);
+  const dashboardInflightRef = useRef<
+    Map<string, Promise<DashboardPageResult & { fromCache: boolean }>>
+  >(new Map());
 
   const bump = useCallback(() => setVersion((v) => v + 1), []);
+
+  const clearAllCaseCaches = useCallback(() => {
+    caseByIdRef.current = {};
+    dashboardListRef.current = {};
+    scopeMetaRef.current = {};
+    tabCountsRef.current = null;
+  }, []);
+
+  useEffect(() => {
+    const uid = user?.userId;
+    if (userIdRef.current !== uid) {
+      userIdRef.current = uid;
+      clearAllCaseCaches();
+      if (uid) bump();
+    }
+    if (!uid) {
+      clearAllCaseCaches();
+    }
+  }, [user?.userId, bump, clearAllCaseCaches]);
 
   const cacheCases = useCallback((cases: CourtCase[]) => {
     caseByIdRef.current = mergeCasesIntoCache(caseByIdRef.current, cases);
@@ -122,6 +153,24 @@ export function CasesProvider({ children }: { children: React.ReactNode }) {
     dashboardListRef.current = {};
     scopeMetaRef.current = {};
     tabCountsRef.current = null;
+  }, []);
+
+  /** Merge list payloads without dropping fuller case detail already in memory. */
+  const cacheCasesFromList = useCallback((cases: CourtCase[]) => {
+    const next = { ...caseByIdRef.current };
+    for (const incoming of cases) {
+      const existing = next[incoming.id];
+      if (
+        existing &&
+        existing.hearings.length > incoming.hearings.length &&
+        existing.updatedAt === incoming.updatedAt
+      ) {
+        next[incoming.id] = existing;
+      } else {
+        next[incoming.id] = incoming;
+      }
+    }
+    caseByIdRef.current = next;
   }, []);
 
   const applyMutationCase = useCallback(
@@ -144,6 +193,21 @@ export function CasesProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const getCachedDashboardPage = useCallback(
+    (scope: DashboardScope, category: DashboardCategory, page: number) => {
+      const hit = readDashboardListCache(
+        dashboardListRef.current,
+        scopeMetaRef.current,
+        scope,
+        category,
+        page
+      );
+      if (!hit) return undefined;
+      return { ...hit, fromCache: true as const };
+    },
+    []
+  );
+
   const fetchDashboardPage = useCallback(
     async (
       scope: DashboardScope,
@@ -162,85 +226,109 @@ export function CasesProvider({ children }: { children: React.ReactNode }) {
       }
 
       const key = dashboardCacheKey(scope, category);
-      const cached = dashboardListRef.current[key];
-      const needNetwork =
-        !cached?.pages[page] ||
-        options?.includeMeta ||
-        options?.includeTabCounts;
+      const inflightKey = `${key}:${page}:${options?.includeMeta ? 1 : 0}:${
+        options?.includeTabCounts ? 1 : 0
+      }`;
+      const inflight = dashboardInflightRef.current.get(inflightKey);
+      if (inflight) return inflight;
 
-      if (!needNetwork && cached) {
+      const cachedHit = readDashboardListCache(
+        dashboardListRef.current,
+        scopeMetaRef.current,
+        scope,
+        category,
+        page
+      );
+      if (cachedHit) {
+        const directKey = dashboardCacheKey(scope, category);
+        if (!dashboardListRef.current[directKey]?.pages[page]) {
+          dashboardListRef.current = writeDashboardListCachePage(
+            dashboardListRef.current,
+            scope,
+            category,
+            page,
+            cachedHit.cases,
+            cachedHit.total,
+            cachedHit.limit
+          );
+        }
         return {
-          cases: cached.pages[page]!,
-          total: cached.total,
-          page,
-          limit: cached.limit,
-          scopeMeta: scopeMetaRef.current[scope],
-          tabCounts: tabCountsRef.current ?? undefined,
-          fromCache: true,
+          ...cachedHit,
+          fromCache: true as const,
         };
       }
 
-      setLoading(true);
-      setError(null);
-      try {
-        const qs = new URLSearchParams({
-          scope,
-          category,
-          page: String(page),
-          limit: String(DASHBOARD_PAGE_SIZE),
-        });
-        if (options?.includeMeta) qs.set('includeMeta', '1');
-        if (options?.includeTabCounts) qs.set('includeTabCounts', '1');
+      const run = (async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const qs = new URLSearchParams({
+            scope,
+            category,
+            page: String(page),
+            limit: String(DASHBOARD_PAGE_SIZE),
+          });
+          if (options?.includeMeta) qs.set('includeMeta', '1');
+          if (options?.includeTabCounts) qs.set('includeTabCounts', '1');
 
-        const res = await withLoader(async () =>
-          apiFetch<
+          const res = await apiFetch<
             DashboardPageResult & {
               ok: true;
               scopeMeta?: DashboardScopeMeta;
               tabCounts?: DashboardTabCounts;
             }
-          >(`/cases/dashboard?${qs.toString()}`)
-        );
+          >(`/cases/dashboard?${qs.toString()}`);
 
-        cacheCases(res.cases);
+          cacheCasesFromList(res.cases);
 
-        const prev = dashboardListRef.current[key];
-        dashboardListRef.current[key] = {
-          pages: { ...(prev?.pages ?? {}), [page]: res.cases },
-          total: res.total,
-          limit: res.limit,
-        };
+          dashboardListRef.current = writeDashboardListCachePage(
+            dashboardListRef.current,
+            scope,
+            category,
+            page,
+            res.cases,
+            res.total,
+            res.limit
+          );
 
-        if (res.scopeMeta) {
-          scopeMetaRef.current[scope] = res.scopeMeta;
+          if (res.scopeMeta) {
+            scopeMetaRef.current[scope] = res.scopeMeta;
+          }
+          if (res.tabCounts) {
+            tabCountsRef.current = res.tabCounts;
+          }
+
+          return {
+            cases: res.cases,
+            total: res.total,
+            page: res.page,
+            limit: res.limit,
+            scopeMeta: res.scopeMeta,
+            tabCounts: res.tabCounts,
+            fromCache: false,
+          };
+        } catch (err) {
+          setError(toErrorKey(err));
+          throw err;
+        } finally {
+          setLoading(false);
         }
-        if (res.tabCounts) {
-          tabCountsRef.current = res.tabCounts;
-        }
+      })();
 
-        return {
-          cases: res.cases,
-          total: res.total,
-          page: res.page,
-          limit: res.limit,
-          scopeMeta: res.scopeMeta,
-          tabCounts: res.tabCounts,
-          fromCache: false,
-        };
-      } catch (err) {
-        setError(toErrorKey(err));
-        throw err;
+      dashboardInflightRef.current.set(inflightKey, run);
+      try {
+        return await run;
       } finally {
-        setLoading(false);
+        dashboardInflightRef.current.delete(inflightKey);
       }
     },
-    [cacheCases, user, withLoader]
+    [cacheCasesFromList, user]
   );
 
-  const refresh = useCallback(async () => {
+  /** Drop cached dashboard lists/counts so the next load hits the API (no version bump). */
+  const refresh = useCallback(() => {
     invalidateDashboardCache();
-    bump();
-  }, [bump, invalidateDashboardCache]);
+  }, [invalidateDashboardCache]);
 
   const addCase = useCallback(
     async (input: CaseInput) => {
@@ -416,6 +504,7 @@ export function CasesProvider({ children }: { children: React.ReactNode }) {
       peekCase,
       fetchDashboardPage,
       getCachedDashboardMeta,
+      getCachedDashboardPage,
       getCachedTabCounts,
       invalidateDashboardCache,
       refresh,
@@ -440,6 +529,7 @@ export function CasesProvider({ children }: { children: React.ReactNode }) {
       peekCase,
       fetchDashboardPage,
       getCachedDashboardMeta,
+      getCachedDashboardPage,
       getCachedTabCounts,
       invalidateDashboardCache,
       refresh,

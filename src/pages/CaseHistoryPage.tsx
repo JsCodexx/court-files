@@ -38,6 +38,7 @@ import { TranslationKey } from '../i18n/translations';
 import { CourtCase, HearingRecord } from '../types';
 import { formatDisplayDate, isSunday } from '../utils/dates';
 import { isHearingEditable } from '../utils/hearings';
+import { CaseHistorySkeleton } from '../components/skeletons';
 import { ApiError } from '../utils/api';
 
 const PAGE_SIZES = [10, 25, 50];
@@ -190,7 +191,7 @@ export function CaseHistoryPage() {
 
   if (notFound) {
     return (
-      <div className="animate-rise-in space-y-4">
+      <div className="space-y-4">
         <Alert variant="destructive">{t('history.notFound')}</Alert>
         <Button asChild variant="secondary">
           <Link to="/dashboard">
@@ -203,11 +204,7 @@ export function CaseHistoryPage() {
   }
 
   if (!courtCase) {
-    return (
-      <div className="p-10 text-center text-sm text-muted-foreground">
-        {t('common.dash')}
-      </div>
-    );
+    return <CaseHistorySkeleton />;
   }
 
   const parties = [

@@ -17,6 +17,7 @@ import { useLoader } from '../context/LoaderContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { AppPageHeader } from '../components/AppPage';
+import { ProfileOverviewSkeleton } from '../components/skeletons';
 import { cn } from '../lib/utils';
 import { ApiError, apiFetch } from '../utils/api';
 
@@ -72,53 +73,49 @@ export function ProfilePage() {
   );
 }
 
-type ProfileUser = {
-  userId: string;
-  name: string;
-  email: string;
-  phone: string;
-  barAddress: string;
-};
+function ProfileFieldSkeleton() {
+  return (
+    <span className="inline-block h-4 w-32 max-w-full animate-pulse rounded bg-muted" />
+  );
+}
 
 export function ProfileOverview() {
   const { t } = useLocale();
-  const [profile, setProfile] = useState<ProfileUser | null>(null);
+  const { user, refreshUser } = useAuth();
   const [error, setError] = useState('');
 
   useEffect(() => {
     let alive = true;
-    apiFetch<{ ok: true; user: ProfileUser }>('/auth/me')
-      .then((res) => {
-        if (alive) setProfile(res.user);
-      })
-      .catch((err) => {
-        if (!alive) return;
-        setError(
-          err instanceof ApiError
-            ? t((err.errorKey as TranslationKey) || 'errors.network')
-            : t('errors.network')
-        );
-      });
+    refreshUser().catch((err) => {
+      if (!alive) return;
+      setError(
+        err instanceof ApiError
+          ? t((err.errorKey as TranslationKey) || 'errors.network')
+          : t('errors.network')
+      );
+    });
     return () => {
       alive = false;
     };
-  }, [t]);
+  }, [refreshUser, t]);
 
-  if (error) {
+  if (!user) {
+    return <ProfileOverviewSkeleton />;
+  }
+
+  if (error && !user.phone) {
     return <Alert variant="destructive">{error}</Alert>;
   }
 
-  if (!profile) {
-    return (
-      <p className="text-sm text-muted-foreground">{t('common.dash')}</p>
-    );
-  }
-
-  const rows: { label: string; value: string; ltr?: boolean }[] = [
-    { label: t('register.name'), value: profile.name },
-    { label: t('register.email'), value: profile.email, ltr: true },
-    { label: t('register.phone'), value: profile.phone, ltr: true },
-    { label: t('register.barAddress'), value: profile.barAddress },
+  const rows: {
+    label: string;
+    value: string | undefined;
+    ltr?: boolean;
+  }[] = [
+    { label: t('register.name'), value: user.name },
+    { label: t('register.email'), value: user.email, ltr: true },
+    { label: t('register.phone'), value: user.phone, ltr: true },
+    { label: t('register.barAddress'), value: user.barAddress },
   ];
 
   const quickLinks = [
@@ -160,7 +157,13 @@ export function ProfileOverview() {
               className={cn('text-sm font-medium', !row.ltr && 'urdu-text')}
               dir={row.ltr ? 'ltr' : undefined}
             >
-              {row.value || t('common.dash')}
+              {row.value ? (
+                row.value
+              ) : error ? (
+                t('common.dash')
+              ) : (
+                <ProfileFieldSkeleton />
+              )}
             </dd>
           </div>
         ))}

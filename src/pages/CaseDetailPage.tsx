@@ -9,6 +9,7 @@ import { useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { CourtCase } from '../types';
+import { CaseDetailSkeleton } from '../components/skeletons';
 import { formatDisplayDate } from '../utils/dates';
 
 /**
@@ -63,7 +64,7 @@ export function CaseDetailPage() {
 
   if (notFound) {
     return (
-      <div className="animate-rise-in space-y-4">
+      <div className="space-y-4">
         <Alert variant="destructive">{t('history.notFound')}</Alert>
         <Button asChild variant="secondary">
           <Link to="/dashboard">
@@ -76,11 +77,7 @@ export function CaseDetailPage() {
   }
 
   if (!courtCase) {
-    return (
-      <div className="p-10 text-center text-sm text-muted-foreground">
-        {t('common.dash')}
-      </div>
-    );
+    return <CaseDetailSkeleton />;
   }
 
   const dash = t('common.dash');

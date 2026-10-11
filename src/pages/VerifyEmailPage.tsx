@@ -12,6 +12,8 @@ import {
   CardTitle,
 } from '../components/ui/card';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { InlinePanelSkeleton } from '../components/skeletons';
+import { PageEnter } from '../components/motion';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { ApiError, apiFetch } from '../utils/api';
@@ -50,7 +52,8 @@ export function VerifyEmailPage() {
 
   return (
     <div className="page-shell">
-      <Card className="auth-card max-w-md animate-rise-in">
+      <PageEnter className="w-full max-w-md">
+      <Card className="auth-card max-w-md">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
@@ -62,7 +65,7 @@ export function VerifyEmailPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           {status === 'loading' && (
-            <p className="text-sm text-muted-foreground">{t('verify.verifying')}</p>
+            <InlinePanelSkeleton labelKey="verify.verifying" />
           )}
           {status === 'success' && (
             <>
@@ -82,6 +85,7 @@ export function VerifyEmailPage() {
           )}
         </CardContent>
       </Card>
+      </PageEnter>
     </div>
   );
 }

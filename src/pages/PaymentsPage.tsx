@@ -9,6 +9,10 @@ import { useToast } from '../context/ToastContext';
 import { useSubscription } from '../hooks/useSubscription';
 import { useLocale } from '../i18n/LocaleContext';
 import { apiFetch, translateApiError } from '../utils/api';
+import {
+  InlinePanelSkeleton,
+  PaymentsPageSkeleton,
+} from '../components/skeletons';
 import type { Plan } from './PlansPage';
 
 interface Payment {
@@ -73,6 +77,7 @@ export function PaymentsPage() {
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [busy, setBusy] = useState(false);
+  const [historyReady, setHistoryReady] = useState(false);
 
   const loadHistory = useCallback(async () => {
     const res = await apiFetch<{ ok: true; payments: Payment[] }>('/payments');
@@ -81,6 +86,7 @@ export function PaymentsPage() {
 
   useEffect(() => {
     let alive = true;
+    setHistoryReady(false);
     (async () => {
       try {
         await loadHistory();
@@ -90,6 +96,8 @@ export function PaymentsPage() {
           setError(text);
           toast.error(text);
         }
+      } finally {
+        if (alive) setHistoryReady(true);
       }
     })();
     return () => {
@@ -248,6 +256,9 @@ export function PaymentsPage() {
       {error && <Alert variant="destructive">{error}</Alert>}
       {info && <Alert variant="success">{info}</Alert>}
 
+      {!historyReady ? (
+        <PaymentsPageSkeleton />
+      ) : (
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         <section className="app-panel overflow-hidden">
           <div className="flex items-start gap-3 border-b border-border bg-[hsl(var(--brand-forest))] px-5 py-4 text-primary-foreground dark:bg-sidebar">
@@ -279,10 +290,7 @@ export function PaymentsPage() {
             )}
 
             {busy && !active && (
-              <div className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted/30 p-4">
-                <Smartphone className="h-8 w-8 shrink-0 text-[hsl(var(--brand-fresh))]" weight="duotone" />
-                <p className="text-sm text-muted-foreground">{t('payments.redirecting')}</p>
-              </div>
+              <InlinePanelSkeleton labelKey="payments.redirecting" />
             )}
 
             {active && (
@@ -373,6 +381,7 @@ export function PaymentsPage() {
           </div>
         </section>
       </div>
+      )}
 
       <p className="text-xs text-muted-foreground">{t('pricing.paymentNote')}</p>
     </AppPage>

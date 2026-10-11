@@ -147,8 +147,8 @@ export const en = {
 
   'pricing.title': 'Pricing & subscriptions',
   'pricing.lede':
-    'Register up to 10 cases free. After that, choose Monthly or Yearly prepaid access for unlimited cases. Pay with RapidGateway — no account required before checkout.',
-  'pricing.cta': 'Checkout without account',
+    'Register up to 10 cases free. After that, choose Monthly or Yearly prepaid access. Create an account, verify your email, then pay with RapidGateway.',
+  'pricing.cta': 'Get started — choose plan',
   'pricing.fallbackNote':
     'Showing published plan prices. Live amounts match our catalog even if the API is temporarily unavailable.',
   'pricing.paymentNote':
@@ -229,7 +229,18 @@ export const en = {
 
   'checkout.title': 'Checkout',
   'checkout.lede':
-    'Buy Monthly or Yearly Court Files access. No account is required before payment — RapidGateway handles a secure digital-wallet checkout.',
+    'Choose a plan, create your account, verify your email, then pay with RapidGateway. After payment, sign in with the password you chose during registration.',
+  'checkout.accountTitle': 'Create your account',
+  'checkout.accountLede':
+    'We need your advocate details and a password. You will verify your email before payment.',
+  'checkout.registerContinue': 'Continue to email verification',
+  'checkout.alreadyAccount': 'Already have an account?',
+  'checkout.verifiedReady':
+    'Email verified. Confirm your mobile number and complete payment below.',
+  'checkout.verifyFirst': 'Verify your email before paying.',
+  'checkout.nameOptional': 'Optional — uses your registration name if blank',
+  'checkout.loginAfterPay':
+    'Payment received. Sign in with your email and the password you set when registering.',
   'checkout.choosePlan': 'Choose a service',
   'checkout.choosePlanLede': 'Only two services are offered. Each includes full Court Files access for the paid period.',
   'checkout.detailsTitle': 'Your details & payment',
@@ -918,8 +929,8 @@ export const ur: Record<TranslationKey, string> = {
 
   'pricing.title': 'قیمتیں اور سبسکرپشن',
   'pricing.lede':
-    '10 مقدمے مفت درج کریں۔ اس کے بعد لامحدود مقدموں کے لیے ماہانہ یا سالانہ پلان۔ RapidGateway سے ادا کریں — چیک آؤٹ سے پہلے اکاؤنٹ ضروری نہیں۔',
-  'pricing.cta': 'بغیر اکاؤنٹ چیک آؤٹ',
+    '10 مقدمے مفت درج کریں۔ اس کے بعد ماہانہ یا سالانہ پلان۔ اکاؤنٹ بنائیں، ای میل تصدیق کریں، پھر RapidGateway سے ادا کریں۔',
+  'pricing.cta': 'شروع کریں — پلان منتخب کریں',
   'pricing.fallbackNote':
     'شائع شدہ پلان قیمتیں دکھائی جا رہی ہیں۔ اگر API عارضی طور پر دستیاب نہ ہو تب بھی یہی کیٹلاگ لاگو رہتی ہے۔',
   'pricing.paymentNote':
@@ -1000,7 +1011,18 @@ export const ur: Record<TranslationKey, string> = {
 
   'checkout.title': 'چیک آؤٹ',
   'checkout.lede':
-    'ماہانہ یا سالانہ کورٹ فائلز خریدیں۔ ادائیگی سے پہلے اکاؤنٹ ضروری نہیں — RapidGateway ڈیجیٹل والیٹ چیک آؤٹ فراہم کرتا ہے۔',
+    'پلان منتخب کریں، اکاؤنٹ بنائیں، ای میل تصدیق کریں، پھر RapidGateway سے ادا کریں۔ ادائیگی کے بعد رجسٹریشن کے پاس ورڈ سے سائن اِن کریں۔',
+  'checkout.accountTitle': 'اپنا اکاؤنٹ بنائیں',
+  'checkout.accountLede':
+    'وکیل کی تفصیلات اور پاس ورڈ درکار ہیں۔ ادائیگی سے پہلے ای میل کی تصدیق ہوگی۔',
+  'checkout.registerContinue': 'ای میل تصدیق کی طرف جائیں',
+  'checkout.alreadyAccount': 'پہلے سے اکاؤنٹ ہے؟',
+  'checkout.verifiedReady':
+    'ای میل تصدیق ہو گئی۔ موبائل نمبر کی تصدیق کریں اور نیچے ادائیگی مکمل کریں۔',
+  'checkout.verifyFirst': 'ادائیگی سے پہلے ای میل تصدیق کریں۔',
+  'checkout.nameOptional': 'اختیاری',
+  'checkout.loginAfterPay':
+    'ادائیگی موصول ہوئی۔ رجسٹریشن کے پاس ورڈ سے سائن اِن کریں۔',
   'checkout.choosePlan': 'سروس منتخب کریں',
   'checkout.choosePlanLede': 'صرف دو سروسز ہیں۔ ہر ایک ادا شدہ مدت کے لیے مکمل کورٹ فائلز رسائی دیتی ہے۔',
   'checkout.detailsTitle': 'آپ کی تفصیلات اور ادائیگی',

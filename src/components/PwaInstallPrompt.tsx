@@ -10,6 +10,7 @@ import {
   subscribeInstallPrompt,
   type BeforeInstallPromptEvent,
 } from '../pwa/captureInstallPrompt';
+import { PageEnter } from './motion';
 import { Button } from './ui/button';
 
 const SNOOZE_KEY = 'cf_pwa_install_snooze_until';
@@ -172,16 +173,15 @@ export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
       : t('pwa.installLede');
 
   return (
-    <div
+    <PageEnter
       className={cn(
-        'no-print fixed inset-x-3 z-[200] mx-auto max-w-md animate-rise-in rounded-lg border border-primary/30 bg-card p-4 shadow-lg',
+        'no-print fixed inset-x-3 z-[200] mx-auto max-w-md rounded-lg border border-primary/30 bg-card p-4 shadow-lg',
         showBottomNav
           ? 'bottom-[calc(4.75rem+max(0.75rem,env(safe-area-inset-bottom)))]'
           : 'bottom-[max(0.75rem,env(safe-area-inset-bottom))]'
       )}
-      role="dialog"
-      aria-labelledby="pwa-install-title"
     >
+    <div role="dialog" aria-labelledby="pwa-install-title">
       <div className="flex items-start gap-3">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
           <Smartphone className="h-5 w-5" weight="duotone" />
@@ -228,5 +228,6 @@ export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
         </div>
       </div>
     </div>
+    </PageEnter>
   );
 }

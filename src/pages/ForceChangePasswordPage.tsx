@@ -14,6 +14,7 @@ import { PasswordInput } from '../components/ui/password-input';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
 import ThemeToggle from '../components/ThemeToggle';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
+import { PageEnter } from '../components/motion';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -65,7 +66,8 @@ export function ForceChangePasswordPage() {
 
   return (
     <div className="page-shell">
-      <Card className="auth-card max-w-md animate-rise-in">
+      <PageEnter className="w-full max-w-md">
+      <Card className="auth-card max-w-md">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
@@ -114,6 +116,7 @@ export function ForceChangePasswordPage() {
           </form>
         </CardContent>
       </Card>
+      </PageEnter>
     </div>
   );
 }

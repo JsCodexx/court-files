@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { SearchMode, useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
+import { CaseListSkeleton } from '../components/skeletons';
 import { AppPageHeader } from '../components/AppPage';
 import { CourtCase } from '../types';
 
@@ -17,22 +18,28 @@ export function SearchPage() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<CourtCase[]>([]);
   const [selected, setSelected] = useState<CourtCase | null>(null);
+  const [searching, setSearching] = useState(false);
 
   // Debounced server-side search
   useEffect(() => {
     const q = query.trim();
     if (!q) {
       setResults([]);
+      setSearching(false);
       return;
     }
     let alive = true;
     const timer = setTimeout(() => {
+      setSearching(true);
       searchCases(q, mode)
         .then((list) => {
           if (alive) setResults(list);
         })
         .catch(() => {
           if (alive) setResults([]);
+        })
+        .finally(() => {
+          if (alive) setSearching(false);
         });
     }, 300);
     return () => {
@@ -92,13 +99,19 @@ export function SearchPage() {
       {query.trim() ? (
         <div className="space-y-3">
           <h2 className="font-display text-xl font-semibold">
-            {t('search.results', { count: results.length })}
+            {searching
+              ? t('common.loading')
+              : t('search.results', { count: results.length })}
           </h2>
-          <CaseTable
-            cases={results}
-            title={t('search.titlePrefix', { query })}
-            onSelect={setSelected}
-          />
+          {searching ? (
+            <CaseListSkeleton rows={4} />
+          ) : (
+            <CaseTable
+              cases={results}
+              title={t('search.titlePrefix', { query })}
+              onSelect={setSelected}
+            />
+          )}
         </div>
       ) : (
         <Card className="p-10 text-center text-sm text-muted-foreground">

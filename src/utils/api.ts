@@ -73,6 +73,12 @@ const ERROR_KEY_MAP: Record<string, string> = {
     'checkout.phoneInUse',
   'Email and mobile number are required for RapidGateway checkout.':
     'checkout.detailsRequired',
+  'Create an account and verify your email before paying for a plan.':
+    'checkout.verifyFirst',
+  'Please verify your email before completing payment.':
+    'checkout.verifyFirst',
+  'Phone number does not match your registered account.':
+    'validation.phone',
   'Case limit reached. Purchase a plan to add more cases.':
     'errors.caseLimitReached',
   'Your subscription has expired. Renew your plan to continue using Court Files.':
@@ -142,6 +148,7 @@ export async function apiFetch<T>(
     response = await fetch(`${API_URL}${path}`, {
       method: options.method || 'GET',
       headers,
+      cache: 'no-store',
       body:
         options.body !== undefined ? JSON.stringify(options.body) : undefined,
     });

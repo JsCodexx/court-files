@@ -107,5 +107,7 @@ export interface AuthSession {
   userId: string;
   email: string;
   name: string;
+  phone?: string;
+  barAddress?: string;
   mustChangePassword?: boolean;
 }

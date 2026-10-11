@@ -16,6 +16,7 @@ import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
 import { useAuth } from '../context/AuthContext';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { PageEnter } from '../components/motion';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { useLoader } from '../context/LoaderContext';
@@ -72,7 +73,8 @@ export function ResetPasswordPage() {
 
   return (
     <div className="page-shell">
-      <Card className="auth-card max-w-md animate-rise-in">
+      <PageEnter className="w-full max-w-md">
+      <Card className="auth-card max-w-md">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
@@ -137,6 +139,7 @@ export function ResetPasswordPage() {
           </p>
         </CardContent>
       </Card>
+      </PageEnter>
     </div>
   );
 }

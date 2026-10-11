@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus, Printer } from '../components/icons';
 import { Link } from 'react-router-dom';
+import { CaseListSkeleton } from '../components/skeletons';
 import { CaseTable } from '../components/CaseTable';
 import { HearingModal } from '../components/HearingModal';
 import { ProceedingHistoryPrint } from '../components/ProceedingHistoryPrint';
@@ -25,10 +26,12 @@ export function DashboardPage() {
   const {
     fetchDashboardPage,
     getCachedDashboardMeta,
+    getCachedDashboardPage,
     getCachedTabCounts,
+    refresh,
     version,
   } = useCases();
-  const { status: subscription } = useSubscription(version);
+  const { status: subscription } = useSubscription();
   const { t } = useLocale();
   const [scope, setScope] = useState<DashboardScope>('today');
   const [category, setCategory] = useState<CategoryFilter>('all');
@@ -39,14 +42,39 @@ export function DashboardPage() {
   const [scopeMeta, setScopeMeta] = useState(getCachedDashboardMeta(scope));
   const [selected, setSelected] = useState<CourtCase | null>(null);
   const [loadError, setLoadError] = useState(false);
+  const [listLoading, setListLoading] = useState(true);
+  const [listEpoch, setListEpoch] = useState(0);
+  const lastBackgroundRefreshRef = useRef(0);
+  const listRequestRef = useRef(0);
 
   useEffect(() => {
     setPage(1);
   }, [scope, category]);
 
   useEffect(() => {
+    const requestId = ++listRequestRef.current;
     let alive = true;
     setLoadError(false);
+
+    const cached = getCachedDashboardPage(
+      scope,
+      category as DashboardCategory,
+      page
+    );
+    if (cached) {
+      setListed(cached.cases);
+      setTotal(cached.total);
+      setListLoading(false);
+    } else {
+      setListed([]);
+      const meta = getCachedDashboardMeta(scope);
+      const pendingTotal =
+        category === 'all'
+          ? (meta?.total ?? 0)
+          : (meta?.byCategory[category] ?? 0);
+      setTotal(pendingTotal);
+      setListLoading(true);
+    }
 
     const needMeta = !getCachedDashboardMeta(scope);
     const needTabCounts = !getCachedTabCounts();
@@ -56,14 +84,19 @@ export function DashboardPage() {
       includeTabCounts: needTabCounts,
     })
       .then((res) => {
-        if (!alive) return;
+        if (!alive || requestId !== listRequestRef.current) return;
         setListed(res.cases);
         setTotal(res.total);
         if (res.tabCounts) setTabCounts(res.tabCounts);
         if (res.scopeMeta) setScopeMeta(res.scopeMeta);
       })
       .catch(() => {
-        if (alive) setLoadError(true);
+        if (alive && requestId === listRequestRef.current) setLoadError(true);
+      })
+      .finally(() => {
+        if (alive && requestId === listRequestRef.current) {
+          setListLoading(false);
+        }
       });
 
     return () => {
@@ -74,15 +107,33 @@ export function DashboardPage() {
     category,
     page,
     version,
+    listEpoch,
     fetchDashboardPage,
     getCachedDashboardMeta,
+    getCachedDashboardPage,
     getCachedTabCounts,
   ]);
 
   useEffect(() => {
     const meta = getCachedDashboardMeta(scope);
     if (meta) setScopeMeta(meta);
-  }, [scope, getCachedDashboardMeta, version]);
+  }, [scope, getCachedDashboardMeta, version, listEpoch]);
+
+  useEffect(() => {
+    const BACKGROUND_REFRESH_MS = 60_000;
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      const now = Date.now();
+      if (now - lastBackgroundRefreshRef.current < BACKGROUND_REFRESH_MS) {
+        return;
+      }
+      lastBackgroundRefreshRef.current = now;
+      refresh();
+      setListEpoch((e) => e + 1);
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [refresh]);
 
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {
@@ -141,35 +192,41 @@ export function DashboardPage() {
       <div className="no-print space-y-5">
         <PageHeader
           actions={
-            <>
+            <div className="page-actions page-actions--toolbar">
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                className="w-full sm:w-auto"
+                className="page-toolbar-btn"
                 title={t('dashboard.printHint')}
                 disabled={listed.length === 0}
                 onClick={() => window.print()}
               >
-                <Printer className="h-4 w-4" />
-                {t('dashboard.print')}
+                <Printer className="h-4 w-4 shrink-0" />
+                <span className="truncate">{t('dashboard.print')}</span>
               </Button>
               {subscription?.canAddCase !== false ? (
-                <Button asChild size="sm" className="w-full sm:w-auto">
+                <Button asChild size="sm" className="page-toolbar-btn">
                   <Link to="/cases/new">
-                    <Plus className="h-4 w-4" />
-                    {t('dashboard.addCase')}
+                    <Plus className="h-4 w-4 shrink-0" />
+                    <span className="truncate">{t('dashboard.addCase')}</span>
                   </Link>
                 </Button>
               ) : (
-                <Button asChild size="sm" className="w-full sm:w-auto">
-                  <Link to="/plans">{t('subscription.upgradeCta')}</Link>
+                <Button asChild size="sm" className="page-toolbar-btn">
+                  <Link to="/plans">
+                    <span className="truncate">{t('subscription.upgradeCta')}</span>
+                  </Link>
                 </Button>
               )}
-            </>
+            </div>
           }
         >
-          <AppPageHeader title={t('dashboard.title')} lede={t('dashboard.lede')} />
+          <AppPageHeader
+            title={t('dashboard.title')}
+            lede={t('dashboard.lede')}
+            className="[&_.page-lede]:hidden sm:[&_.page-lede]:block"
+          />
         </PageHeader>
 
         {subscription && (
@@ -289,7 +346,7 @@ export function DashboardPage() {
           </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="dashboard-case-list space-y-3">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="font-display text-lg font-semibold tracking-tight">
               {title}
@@ -298,12 +355,17 @@ export function DashboardPage() {
               {t('dashboard.pageTotal', { count: total })}
             </p>
           </div>
-          <CaseTable
-            cases={listed}
-            title={title}
-            compact
-            onSelect={(c) => setSelected(c)}
-          />
+          {listLoading ? (
+            <CaseListSkeleton rows={Math.min(Math.max(total, 3), 8)} />
+          ) : (
+            <CaseTable
+              cases={listed}
+              title={title}
+              compact
+              mobileStack
+              onSelect={(c) => setSelected(c)}
+            />
+          )}
 
           {totalPages > 1 && (
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight } from '../components/icons';
+import { CaseListSkeleton } from '../components/skeletons';
 import { CaseTable } from '../components/CaseTable';
 import { HearingModal } from '../components/HearingModal';
 import { Button } from '../components/ui/button';
@@ -35,6 +36,7 @@ export function CalendarPage() {
   const [selectedCase, setSelectedCase] = useState<CourtCase | null>(null);
   const [hearingDates, setHearingDates] = useState<Set<string>>(new Set());
   const [dayCases, setDayCases] = useState<CourtCase[]>([]);
+  const [dayLoading, setDayLoading] = useState(true);
   const today = todayISO();
 
   // Markers from next dates + full hearing history
@@ -55,12 +57,16 @@ export function CalendarPage() {
   // Cases for the selected day (includes historical hearings)
   useEffect(() => {
     let alive = true;
+    setDayLoading(true);
     fetchByDate(selectedDate)
       .then((list) => {
         if (alive) setDayCases(list);
       })
       .catch(() => {
         if (alive) setDayCases([]);
+      })
+      .finally(() => {
+        if (alive) setDayLoading(false);
       });
     return () => {
       alive = false;
@@ -205,11 +211,15 @@ export function CalendarPage() {
             </span>
           ) : null}
         </h2>
-        <CaseTable
-          cases={dayCases}
-          title={t('calendar.casesOn', { date: formattedSelected })}
-          onSelect={setSelectedCase}
-        />
+        {dayLoading ? (
+          <CaseListSkeleton rows={4} />
+        ) : (
+          <CaseTable
+            cases={dayCases}
+            title={t('calendar.casesOn', { date: formattedSelected })}
+            onSelect={setSelectedCase}
+          />
+        )}
       </div>
 
       {selectedCase && (
