@@ -39,7 +39,8 @@ export function useAppShell() {
     };
   }, []);
 
-  const showBottomNav = isStandalone || isNarrow;
+  /** Bottom tabs only on narrow viewports; wide installed PWA keeps sidebar. */
+  const showBottomNav = isNarrow;
   const showSidebar = !showBottomNav;
 
   return { showBottomNav, showSidebar, isStandalone, isNarrow };

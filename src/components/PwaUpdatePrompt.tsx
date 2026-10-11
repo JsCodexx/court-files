@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from './ui/button';
-import { useAppShell } from '../hooks/useAppShell';
+import {
+  pwaPromptBottomClass,
+  useHasShellBottomNav,
+} from '../hooks/useHasShellBottomNav';
 import { useLocale } from '../i18n/LocaleContext';
 import { cn } from '../lib/utils';
 import {
@@ -11,7 +14,7 @@ import {
 
 export function PwaUpdatePrompt() {
   const { t } = useLocale();
-  const { showBottomNav } = useAppShell();
+  const hasShellTabBar = useHasShellBottomNav();
   const [waiting, setWaiting] = useState<ServiceWorker | null>(null);
   const [applying, setApplying] = useState(false);
 
@@ -44,9 +47,7 @@ export function PwaUpdatePrompt() {
     <div
       className={cn(
         'no-print fixed inset-x-3 z-[190] mx-auto flex max-w-md flex-col gap-2 rounded-lg border border-border bg-card p-3 shadow-lg sm:flex-row sm:items-center sm:justify-between',
-        showBottomNav
-          ? 'bottom-[calc(var(--app-tab-bar-clearance)+0.75rem)]'
-          : 'bottom-[max(0.75rem,env(safe-area-inset-bottom))]'
+        pwaPromptBottomClass(hasShellTabBar)
       )}
       role="status"
       aria-live="polite"

@@ -9,11 +9,13 @@ import { SearchMode, useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { CaseListSkeleton } from '../components/skeletons';
 import { AppPageHeader } from '../components/AppPage';
+import { useAppShell } from '../hooks/useAppShell';
 import { CourtCase } from '../types';
 
 export function SearchPage() {
   const { searchCases, version } = useCases();
   const { t } = useLocale();
+  const { showBottomNav } = useAppShell();
   const [mode, setMode] = useState<SearchMode>('name');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<CourtCase[]>([]);
@@ -88,7 +90,7 @@ export function SearchPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={placeholder}
-              autoFocus
+              autoFocus={!showBottomNav}
               dir={mode === 'name' ? 'auto' : 'ltr'}
               lang={mode === 'name' ? 'ur' : undefined}
             />
@@ -110,6 +112,7 @@ export function SearchPage() {
               cases={results}
               title={t('search.titlePrefix', { query })}
               onSelect={setSelected}
+              mobileStack={showBottomNav}
             />
           )}
         </div>

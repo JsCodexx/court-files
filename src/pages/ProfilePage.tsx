@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
-import { ChevronRight, CreditCard, Receipt } from '../components/icons';
+import { ChevronRight, CreditCard, LogOut, Receipt } from '../components/icons';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import {
@@ -81,7 +81,8 @@ function ProfileFieldSkeleton() {
 
 export function ProfileOverview() {
   const { t } = useLocale();
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, logout } = useAuth();
+  const navigate = useNavigate();
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -169,6 +170,19 @@ export function ProfileOverview() {
         ))}
       </dl>
     </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full gap-2 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+        onClick={() => {
+          logout();
+          navigate('/');
+        }}
+      >
+        <LogOut className="h-4 w-4 shrink-0" weight="regular" />
+        {t('nav.signOut')}
+      </Button>
     </div>
   );
 }

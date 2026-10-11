@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Menu, X } from './icons';
 import { BrandLogo } from './BrandLogo';
@@ -42,14 +43,71 @@ export function PublicHeader({
     };
   }, [menuOpen]);
 
+  const mobileMenu =
+    menuOpen &&
+    createPortal(
+      <>
+        <div
+          className="public-mobile-menu-backdrop fixed inset-0 z-[45] bg-foreground/40 backdrop-blur-[1px] lg:hidden"
+          onClick={() => setMenuOpen(false)}
+          aria-hidden
+        />
+        <div
+          id="public-mobile-menu"
+          className="public-mobile-menu-panel fixed inset-x-0 z-50 overflow-y-auto border-b border-border bg-card shadow-lg lg:hidden"
+        >
+          <LayoutContainer className="flex flex-col gap-3 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+            <div className="flex items-center justify-between gap-2 sm:hidden">
+              <LanguageSwitcher />
+              <ThemeToggle />
+            </div>
+
+            {showSecondary && (
+              <nav className="flex flex-col gap-1">
+                {SECONDARY_LINKS.map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-md px-3 py-2.5 text-sm font-semibold text-foreground hover:bg-accent"
+                  >
+                    {t(link.labelKey)}
+                  </Link>
+                ))}
+              </nav>
+            )}
+
+            <div className="grid grid-cols-2 gap-2 border-t border-border pt-3">
+              <Button asChild variant="outline" className="w-full">
+                <Link to="/login" onClick={() => setMenuOpen(false)}>
+                  {t('landing.nav.signIn')}
+                </Link>
+              </Button>
+              <Button asChild className="w-full">
+                <Link to="/register" onClick={() => setMenuOpen(false)}>
+                  {t('landing.nav.getStarted')}
+                </Link>
+              </Button>
+            </div>
+            <Button asChild className="w-full">
+              <Link to="/checkout" onClick={() => setMenuOpen(false)}>
+                {t('landing.nav.buyNow')}
+              </Link>
+            </Button>
+          </LayoutContainer>
+        </div>
+      </>,
+      document.body
+    );
+
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 border-b border-border bg-card/95 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-card/90',
+        'public-site-header sticky top-0 z-40 border-b border-border bg-card/95 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-card/90',
         className
       )}
     >
-      <LayoutContainer className="flex h-14 items-center justify-between gap-2 pt-[env(safe-area-inset-top)] sm:h-16 sm:gap-3 sm:pt-0">
+      <LayoutContainer className="flex h-14 items-center justify-between gap-2 pt-[env(safe-area-inset-top,0px)] sm:h-16 sm:gap-3">
         <Link
           to="/"
           className="flex min-w-0 items-center gap-2 sm:gap-2.5"
@@ -68,7 +126,7 @@ export function PublicHeader({
 
         <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
           {showSecondary && (
-            <nav className="mr-1 hidden items-center gap-0.5 lg:flex">
+            <nav className="ms-1 hidden items-center gap-0.5 lg:flex">
               {SECONDARY_LINKS.map((link) => (
                 <Button key={link.to} asChild variant="ghost" size="sm">
                   <Link to={link.to}>{t(link.labelKey)}</Link>
@@ -77,9 +135,7 @@ export function PublicHeader({
             </nav>
           )}
 
-          <div className="hidden sm:block">
-            <LanguageSwitcher />
-          </div>
+          <LanguageSwitcher />
           <ThemeToggle className="hidden sm:inline-flex" />
 
           <Button
@@ -113,59 +169,7 @@ export function PublicHeader({
         </div>
       </LayoutContainer>
 
-      {menuOpen && (
-        <>
-          <div
-            className="fixed inset-0 top-14 z-30 bg-foreground/40 backdrop-blur-[1px] sm:top-16 lg:hidden"
-            onClick={() => setMenuOpen(false)}
-            aria-hidden
-          />
-          <div
-            id="public-mobile-menu"
-            className="absolute inset-x-0 top-full z-40 max-h-[min(70dvh,calc(100dvh-3.5rem-env(safe-area-inset-top)))] overflow-y-auto border-b border-border bg-card shadow-lg lg:hidden"
-          >
-            <LayoutContainer className="flex flex-col gap-3 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-              <div className="flex items-center justify-between gap-2 sm:hidden">
-                <LanguageSwitcher />
-                <ThemeToggle />
-              </div>
-
-              {showSecondary && (
-                <nav className="flex flex-col gap-1">
-                  {SECONDARY_LINKS.map((link) => (
-                    <Link
-                      key={link.to}
-                      to={link.to}
-                      onClick={() => setMenuOpen(false)}
-                      className="rounded-md px-3 py-2.5 text-sm font-semibold text-foreground hover:bg-accent"
-                    >
-                      {t(link.labelKey)}
-                    </Link>
-                  ))}
-                </nav>
-              )}
-
-              <div className="grid grid-cols-2 gap-2 border-t border-border pt-3">
-                <Button asChild variant="outline" className="w-full">
-                  <Link to="/login" onClick={() => setMenuOpen(false)}>
-                    {t('landing.nav.signIn')}
-                  </Link>
-                </Button>
-                <Button asChild className="w-full">
-                  <Link to="/register" onClick={() => setMenuOpen(false)}>
-                    {t('landing.nav.getStarted')}
-                  </Link>
-                </Button>
-              </div>
-              <Button asChild className="w-full">
-                <Link to="/checkout" onClick={() => setMenuOpen(false)}>
-                  {t('landing.nav.buyNow')}
-                </Link>
-              </Button>
-            </LayoutContainer>
-          </div>
-        </>
-      )}
+      {mobileMenu}
     </header>
   );
 }
