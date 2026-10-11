@@ -4,7 +4,7 @@ import { useLocale } from '../i18n/LocaleContext';
 import { cn } from '../lib/utils';
 
 /**
- * Standard in-app page shell: spacing and overflow safety (width via AppLayout column).
+ * In-app page block inside AppLayout: centered column (max-w-6xl), scrolls in `.app-main-scroll`.
  */
 export function AppPage({
   children,

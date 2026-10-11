@@ -160,14 +160,43 @@
     @apply mt-1;
   }
 
+  /* Logged-in shell: viewport height, scroll only in .app-main-scroll */
+  html.app-in-shell,
+  html.app-in-shell body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .app-shell-root {
+    @apply w-full;
+  }
+
   /* Logged-in main canvas — same soft glow as landing hero */
   .app-main-surface {
-    @apply relative min-w-0 flex-1;
+    @apply relative min-h-0 min-w-0 flex-1;
     background-image: radial-gradient(
       ellipse 90% 55% at 85% 0%,
       hsl(var(--brand-fresh) / 0.07),
       transparent 55%
     );
+  }
+
+  .app-mobile-top-bar {
+    @apply border-b border-sidebar-foreground/10 bg-sidebar text-sidebar-foreground shadow-sm;
+    padding-top: max(0.5rem, env(safe-area-inset-top));
+  }
+
+  .app-main-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .app-main-content {
+    @apply py-4 sm:py-6 md:py-8;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  :not(.has-bottom-nav) .app-main-content {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
   }
 
   html.dark .app-main-surface {
@@ -324,9 +353,22 @@
     @apply -mx-0.5 flex gap-0.5 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
   }
 
-  /* Mobile / PWA bottom tab bar */
+  /* Mobile / PWA bottom tab bar (in flex shell — not fixed over content) */
+  :root {
+    --app-tab-bar-clearance: 0px;
+    --app-mobile-top-height: 0px;
+  }
+
+  .has-bottom-nav {
+    --app-mobile-top-height: calc(3.25rem + env(safe-area-inset-top, 0px));
+    --app-tab-bar-clearance: calc(
+      4.25rem + env(safe-area-inset-bottom, 0px)
+    );
+  }
+
   .app-bottom-nav {
-    @apply fixed inset-x-0 bottom-0 z-50 border-t border-sidebar-foreground/10 bg-sidebar/95 text-sidebar-foreground shadow-[0_-4px_24px_hsl(var(--sidebar)/0.45)] backdrop-blur-md;
+    @apply relative z-50 shrink-0 border-t border-sidebar-foreground/10 bg-sidebar/95 text-sidebar-foreground shadow-[0_-4px_24px_hsl(var(--sidebar)/0.45)] backdrop-blur-md;
+    padding-top: 0.625rem;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
@@ -379,18 +421,16 @@
     @apply max-w-full truncate px-0.5;
   }
 
-  /* Tab bar + raised center FAB + scroll breathing room */
-  .has-bottom-nav .app-main-content {
-    padding-bottom: calc(6.25rem + env(safe-area-inset-bottom));
+  .app-main-scroll {
+    scroll-padding-bottom: 1rem;
   }
 
-  :not(.has-bottom-nav) .app-main-content {
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
-    padding-top: max(0.75rem, env(safe-area-inset-top));
+  .app-form-actions {
+    @apply mt-4 border-t border-border pt-4;
   }
 
-  .has-bottom-nav .app-main-content {
-    padding-top: 0.75rem;
+  .app-list-footer {
+    @apply pb-1;
   }
 
   /* Global loader — compact Pakistan crescent & star */

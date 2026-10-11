@@ -45,7 +45,7 @@ export function PwaUpdatePrompt() {
       className={cn(
         'no-print fixed inset-x-3 z-[190] mx-auto flex max-w-md flex-col gap-2 rounded-lg border border-border bg-card p-3 shadow-lg sm:flex-row sm:items-center sm:justify-between',
         showBottomNav
-          ? 'bottom-[calc(4.75rem+max(0.75rem,env(safe-area-inset-bottom)))]'
+          ? 'bottom-[calc(var(--app-tab-bar-clearance)+0.75rem)]'
           : 'bottom-[max(0.75rem,env(safe-area-inset-bottom))]'
       )}
       role="status"

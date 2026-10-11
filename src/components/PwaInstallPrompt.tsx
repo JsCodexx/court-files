@@ -177,7 +177,7 @@ export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
       className={cn(
         'no-print fixed inset-x-3 z-[200] mx-auto max-w-md rounded-lg border border-primary/30 bg-card p-4 shadow-lg',
         showBottomNav
-          ? 'bottom-[calc(4.75rem+max(0.75rem,env(safe-area-inset-bottom)))]'
+          ? 'bottom-[calc(var(--app-tab-bar-clearance)+0.75rem)]'
           : 'bottom-[max(0.75rem,env(safe-area-inset-bottom))]'
       )}
     >

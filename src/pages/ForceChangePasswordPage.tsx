@@ -110,9 +110,11 @@ export function ForceChangePasswordPage() {
                 autoComplete="new-password"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={busy}>
-              {busy ? t('common.loading') : t('forcePw.submit')}
-            </Button>
+            <div className="app-form-actions">
+              <Button type="submit" className="w-full" disabled={busy}>
+                {busy ? t('common.loading') : t('forcePw.submit')}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>
