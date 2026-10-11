@@ -92,7 +92,7 @@ export function PlansPage() {
       )}
 
       {!loading && step === 'method' && selected && (
-        <div className="mx-auto max-w-xl space-y-4">
+        <div className="mx-auto max-w-lg space-y-4 lg:max-w-xl">
           <Button type="button" variant="ghost" size="sm" onClick={() => setStep('plans')}>
             ← {t('plans.back')}
           </Button>

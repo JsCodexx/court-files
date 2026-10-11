@@ -4,6 +4,7 @@ import { Mail, MapPin, Phone } from './icons';
 import { BrandLogo } from './BrandLogo';
 import { BrandWordmark } from './BrandWordmark';
 import { COMPANY } from '../constants/company';
+import { LayoutContainer } from './public/PublicLayout';
 import { useLocale } from '../i18n/LocaleContext';
 
 const FOOTER_LINKS = [
@@ -23,7 +24,7 @@ export function CompanyFooter() {
 
   return (
     <footer className="mt-auto border-t border-border bg-sidebar text-sidebar-foreground">
-      <div className="mx-auto max-w-6xl px-3 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6">
+      <LayoutContainer className="py-8 pb-[max(2rem,env(safe-area-inset-bottom))]">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr]">
           <div>
             <div className="flex flex-col gap-2">
@@ -88,7 +89,7 @@ export function CompanyFooter() {
         <p className="mt-6 border-t border-sidebar-foreground/10 pt-4 text-xs text-sidebar-muted">
           {t('site.footer.updated')} · {t('site.footer.gatewayNote')}
         </p>
-      </div>
+      </LayoutContainer>
     </footer>
   );
 }

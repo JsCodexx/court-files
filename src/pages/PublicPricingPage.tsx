@@ -74,9 +74,9 @@ export function PublicPricingPage() {
   }, [t]);
 
   return (
-    <SiteShell wide>
+    <SiteShell>
       <div className="min-w-0 space-y-8">
-        <header className="max-w-2xl">
+        <header>
           <BrandWordmark size="md" plate className="mb-3" />
           <h1 className="page-title">{t('pricing.title')}</h1>
           <p className="page-lede mt-2">{t('pricing.lede')}</p>
