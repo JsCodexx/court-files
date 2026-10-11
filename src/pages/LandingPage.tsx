@@ -119,7 +119,7 @@ const FALLBACK_PLANS: Plan[] = [
   {
     id: 'yearly',
     name: 'Yearly',
-    description: 'Full access for 365 days — best value',
+    description: 'Full access for 365 days, best value',
     amountPkr: 1400,
     currency: 'PKR',
     durationDays: 365,
