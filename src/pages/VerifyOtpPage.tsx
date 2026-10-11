@@ -13,6 +13,7 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { AuthBrandHeader } from '../components/AuthBrandHeader';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -32,14 +33,15 @@ export function VerifyOtpPage() {
   if (!pendingPhone && !demoOtp) {
     return (
       <div className="page-shell">
-        <Card className="w-full max-w-md animate-rise-in">
+        <Card className="auth-card max-w-md animate-rise-in">
           <CardHeader>
             <div className="mb-2 flex items-center justify-between">
               <LanguageSwitcher />
               <ThemeToggle />
             </div>
-            <CardTitle className="page-title">{t('otp.noneTitle')}</CardTitle>
-            <CardDescription>{t('otp.noneLede')}</CardDescription>
+            <AuthBrandHeader />
+            <CardTitle className="sr-only">{t('otp.noneTitle')}</CardTitle>
+            <CardDescription className="text-center">{t('otp.noneLede')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full">
@@ -77,14 +79,15 @@ export function VerifyOtpPage() {
 
   return (
     <div className="page-shell">
-      <Card className="w-full max-w-md animate-rise-in">
+      <Card className="auth-card max-w-md animate-rise-in">
         <CardHeader>
           <div className="mb-2 flex items-center justify-between">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <CardTitle className="page-title">{t('otp.title')}</CardTitle>
-          <CardDescription>
+          <AuthBrandHeader />
+          <CardTitle className="sr-only">{t('otp.title')}</CardTitle>
+          <CardDescription className="text-center">
             {t('otp.lede', {
               email: pendingEmail || t('otp.yourEmail'),
             })}

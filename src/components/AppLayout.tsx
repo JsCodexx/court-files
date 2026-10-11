@@ -21,6 +21,7 @@ import { PwaInstallPrompt } from './PwaInstallPrompt';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import ThemeToggle from './ThemeToggle';
 import { BrandLogo } from './BrandLogo';
+import { BrandWordmark } from './BrandWordmark';
 import { Button } from './ui/button';
 
 const SIDEBAR_KEY = 'cf_sidebar_open';
@@ -109,9 +110,7 @@ export function AppLayout() {
             />
             {expanded && (
               <div className="min-w-0">
-                <p className="truncate font-display text-lg font-semibold tracking-wide">
-                  {t('brand.name')}
-                </p>
+                <BrandWordmark size="md" onDark className="truncate" />
                 <p className="truncate text-[11px] text-sidebar-muted">
                   {t('brand.sub')}
                 </p>
@@ -146,10 +145,10 @@ export function AppLayout() {
                 title={link.label}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center rounded-md text-sm font-medium transition-colors',
+                    'flex items-center rounded-xl text-sm font-medium transition-colors',
                     expanded ? 'gap-3 px-3 py-2.5' : 'justify-center px-2 py-2.5',
                     isActive
-                      ? 'bg-sidebar-accent text-sidebar-foreground'
+                      ? 'bg-sidebar-accent text-sidebar-foreground shadow-sm'
                       : 'text-sidebar-muted hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground'
                   )
                 }
@@ -214,26 +213,24 @@ export function AppLayout() {
       </aside>
       )}
 
-      <main className="flex min-w-0 flex-1 flex-col bg-background">
+      <main className="app-main-surface flex min-w-0 flex-1 flex-col bg-background">
         {showBottomNav && (
-          <div className="no-print sticky top-0 z-20 flex items-center justify-between gap-2 border-b border-border bg-card/95 px-3 py-2.5 shadow-sm backdrop-blur-sm sm:px-4 pt-[max(0.5rem,env(safe-area-inset-top))]">
+          <div className="no-print sticky top-0 z-20 flex items-center justify-between gap-2 border-b border-sidebar-foreground/10 bg-sidebar px-3 py-2.5 text-sidebar-foreground shadow-sm backdrop-blur-sm sm:px-4 pt-[max(0.5rem,env(safe-area-inset-top))]">
             <div className="flex min-w-0 items-center gap-2">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary p-1 shadow-sm">
-                <BrandLogo variant="appMobileBar" className="h-full w-full" />
-              </span>
-              <strong className="min-w-0 truncate font-display text-base">
-                {t('brand.name')}
-              </strong>
+              <BrandLogo variant="appMobileBar" className="h-8 w-8 shrink-0" />
+              <BrandWordmark onDark size="sm" className="min-w-0 truncate" />
             </div>
             <div className="flex shrink-0 items-center gap-1">
-              <LanguageSwitcher variant="light" />
-              <ThemeToggle />
+              <LanguageSwitcher variant="dark" />
+              <ThemeToggle className="text-sidebar-foreground hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground" />
             </div>
           </div>
         )}
         <div className="app-main-content min-w-0 flex-1 px-3 py-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5 sm:py-6 md:px-8 md:py-8">
           <PwaInstallPrompt />
-          <Outlet />
+          <div className="app-content-column">
+            <Outlet />
+          </div>
         </div>
         {showBottomNav && <AppBottomNav />}
       </main>

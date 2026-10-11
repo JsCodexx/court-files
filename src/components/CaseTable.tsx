@@ -72,8 +72,8 @@ export function CaseTable({ cases, title, onSelect, compact = false }: Props) {
     c.hearings[0]?.proceeding || c.proceeding || '';
 
   return (
-    <Card className="overflow-hidden">
-      <div className="flex flex-col gap-2 border-b bg-muted/40 px-3 py-2.5 sm:flex-row sm:flex-wrap sm:px-4 sm:py-3">
+    <Card className="app-panel overflow-hidden shadow-sm">
+      <div className="flex flex-col gap-2 border-b border-border bg-[hsl(var(--brand-forest)/0.04)] px-3 py-2.5 dark:bg-sidebar/40 sm:flex-row sm:flex-wrap sm:px-4 sm:py-3">
         <Button
           type="button"
           variant="outline"

@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { CreditCard, Smartphone, Check } from '../components/icons';
+import { CreditCard, Smartphone } from '../components/icons';
 import { useNavigate } from 'react-router-dom';
+import { AppPage, AppPageHeader } from '../components/AppPage';
+import { PlanOfferCard } from '../components/pricing/PlanOfferCard';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../components/ui/card';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
-import { cn } from '../lib/utils';
 import { ApiError, apiFetch } from '../utils/api';
 
 export interface Plan {
@@ -72,11 +65,8 @@ export function PlansPage() {
   };
 
   return (
-    <div className="app-page mx-auto w-full max-w-3xl">
-      <div>
-        <h1 className="page-title">{t('plans.title')}</h1>
-        <p className="page-lede">{t('plans.lede')}</p>
-      </div>
+    <AppPage>
+      <AppPageHeader title={t('plans.title')} lede={t('plans.lede')} />
 
       {error && <Alert variant="destructive">{error}</Alert>}
 
@@ -85,82 +75,65 @@ export function PlansPage() {
       )}
 
       {!loading && step === 'plans' && (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           {plans.map((plan) => (
-            <Card
+            <PlanOfferCard
               key={plan.id}
-              className={cn(
-                'flex flex-col transition-shadow hover:shadow-md',
-                plan.id === 'yearly' && 'border-primary/40'
-              )}
-            >
-              <CardHeader>
-                <CardTitle className="text-lg">{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-1 space-y-3">
-                <p className="font-display text-3xl font-semibold tracking-tight" dir="ltr">
-                  Rs {plan.amountPkr.toLocaleString()}
-                  <span className="ms-1 text-sm font-normal text-muted-foreground">
-                    / {plan.durationDays}d
-                  </span>
-                </p>
-                <ul className="space-y-1.5 text-sm text-muted-foreground">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-              <CardFooter>
+              plan={plan}
+              periodLabel={`${plan.durationDays}d`}
+              footer={
                 <Button className="w-full" onClick={() => onChoosePlan(plan)}>
                   {t('plans.purchase')}
                 </Button>
-              </CardFooter>
-            </Card>
+              }
+            />
           ))}
         </div>
       )}
 
       {!loading && step === 'method' && selected && (
-        <div className="space-y-4">
+        <div className="mx-auto max-w-xl space-y-4">
           <Button type="button" variant="ghost" size="sm" onClick={() => setStep('plans')}>
-            {t('plans.back')}
+            ← {t('plans.back')}
           </Button>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">{t('plans.payTitle')}</CardTitle>
-              <CardDescription>
+          <section className="app-panel overflow-hidden">
+            <div className="border-b border-border bg-[hsl(var(--brand-forest))] px-5 py-4 text-primary-foreground dark:bg-sidebar">
+              <h2 className="font-display text-lg font-semibold">{t('plans.payTitle')}</h2>
+              <p className="mt-1 text-sm text-primary-foreground/85">
                 {t('plans.payLede', {
                   plan: selected.name,
                   amount: String(selected.amountPkr),
                 })}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
+              </p>
+            </div>
+            <div className="p-5 sm:p-6">
               <button
                 type="button"
                 onClick={onPayRapidGateway}
-                className="flex w-full items-center gap-4 rounded-lg border border-border bg-card p-4 text-start transition-colors hover:border-primary hover:bg-accent/40"
+                className="flex w-full items-center gap-4 rounded-xl border border-border bg-background p-4 text-start transition-colors hover:border-[hsl(var(--brand-fresh)/0.5)] hover:bg-[hsl(var(--brand-fresh)/0.06)]"
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-md bg-primary/15 text-primary">
-                  <Smartphone className="h-6 w-6" />
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[hsl(var(--brand-forest))] text-primary-foreground dark:bg-[hsl(var(--brand-fresh))]">
+                  <Smartphone className="h-6 w-6" weight="fill" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-semibold">{t('plans.rapidgateway')}</span>
+                  <span className="block font-semibold text-foreground">
+                    {t('plans.rapidgateway')}
+                  </span>
                   <span className="block text-sm text-muted-foreground">
                     {t('plans.rapidgatewayHint')}
                   </span>
                 </span>
-                <CreditCard className="h-5 w-5 text-muted-foreground" />
+                <CreditCard className="h-5 w-5 shrink-0 text-muted-foreground" />
               </button>
-            </CardContent>
-          </Card>
+            </div>
+          </section>
         </div>
       )}
-    </div>
+
+      {!loading && step === 'plans' && (
+        <p className="text-xs text-muted-foreground">{t('pricing.paymentNote')}</p>
+      )}
+    </AppPage>
   );
 }

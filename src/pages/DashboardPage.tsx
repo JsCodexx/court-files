@@ -13,7 +13,7 @@ import {
 import type { DashboardCategory } from '../context/casesCache';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
-import { PageHeader } from '../components/AppPage';
+import { AppPageHeader, PageHeader } from '../components/AppPage';
 import { useSubscription } from '../hooks/useSubscription';
 import { Alert } from '../components/ui/alert';
 import { cn } from '../lib/utils';
@@ -137,7 +137,7 @@ export function DashboardPage() {
   const printCases = listed;
 
   return (
-    <div className="app-page app-page--wide">
+    <div className="app-page">
       <div className="no-print space-y-5">
         <PageHeader
           actions={
@@ -169,8 +169,7 @@ export function DashboardPage() {
             </>
           }
         >
-          <h1 className="page-title">{t('dashboard.title')}</h1>
-          <p className="page-lede">{t('dashboard.lede')}</p>
+          <AppPageHeader title={t('dashboard.title')} lede={t('dashboard.lede')} />
         </PageHeader>
 
         {subscription && (
@@ -205,7 +204,7 @@ export function DashboardPage() {
           <Alert variant="destructive">{t('errors.network')}</Alert>
         )}
 
-        <div className="rounded-lg border border-border bg-card px-2.5 py-2.5 shadow-sm sm:px-4 sm:py-3">
+        <div className="app-panel px-2.5 py-2.5 sm:px-4 sm:py-3">
           <div className="flex flex-col gap-3">
             <div
               role="tablist"

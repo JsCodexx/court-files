@@ -101,7 +101,7 @@ export function CaseDetailPage() {
   );
 
   return (
-    <div className="app-page app-page--wide space-y-4">
+    <div className="app-page space-y-4">
       {/* Toolbar (hidden when printing) */}
       <div className="no-print page-header">
         <Button asChild variant="secondary" size="sm" className="w-full sm:w-fit">

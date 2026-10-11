@@ -11,6 +11,9 @@ import {
 } from '../components/ui/card';
 import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
+import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import ThemeToggle from '../components/ThemeToggle';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -62,10 +65,15 @@ export function ForceChangePasswordPage() {
 
   return (
     <div className="page-shell">
-      <Card className="w-full max-w-md animate-rise-in">
+      <Card className="auth-card max-w-md animate-rise-in">
         <CardHeader>
-          <CardTitle className="page-title">{t('forcePw.title')}</CardTitle>
-          <CardDescription>
+          <div className="mb-2 flex items-center justify-between">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
+          <AuthBrandHeader />
+          <CardTitle className="sr-only">{t('forcePw.title')}</CardTitle>
+          <CardDescription className="text-center">
             {t('forcePw.lede', { email: user?.email || '' })}
           </CardDescription>
         </CardHeader>

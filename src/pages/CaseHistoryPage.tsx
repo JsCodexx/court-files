@@ -236,11 +236,12 @@ export function CaseHistoryPage() {
   ];
 
   return (
-    <div className="app-page app-page--wide">
+    <div className="app-page">
       <div className="page-header">
-        <div className="page-header__main min-w-0">
+        <div className="page-header__main min-w-0 app-page-header">
+          <p className="page-eyebrow">{t('brand.sub')}</p>
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <h1 className="page-title">{t('history.title')}</h1>
+            <h1 className="page-title mt-0">{t('history.title')}</h1>
             <CaseStatusBadge status={courtCase.status} alwaysShow />
           </div>
           <p className="urdu-text mt-1 break-words text-sm text-muted-foreground">

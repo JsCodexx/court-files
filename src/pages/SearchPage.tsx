@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { SearchMode, useCases } from '../context/CasesContext';
 import { useLocale } from '../i18n/LocaleContext';
+import { AppPageHeader } from '../components/AppPage';
 import { CourtCase } from '../types';
 
 export function SearchPage() {
@@ -54,15 +55,10 @@ export function SearchPage() {
   ];
 
   return (
-    <div className="app-page app-page--wide">
-      <div>
-        <h1 className="page-title">
-          {t('search.title')}
-        </h1>
-        <p className="page-lede">{t('search.lede')}</p>
-      </div>
+    <div className="app-page">
+      <AppPageHeader title={t('search.title')} lede={t('search.lede')} />
 
-      <Card>
+      <Card className="app-panel shadow-sm">
         <CardContent className="space-y-4 pt-6">
           <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
             {modes.map((m) => (

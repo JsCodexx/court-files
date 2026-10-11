@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PublicDocPage } from './PublicDocPage';
 import { Button } from '../components/ui/button';
+import { BrandWordmark } from '../components/BrandWordmark';
 import { SiteShell } from '../components/SiteShell';
 import { useLocale } from '../i18n/LocaleContext';
 
@@ -26,6 +27,7 @@ export function ContactPage() {
     <SiteShell>
       <article className="min-w-0 space-y-8">
         <header>
+          <BrandWordmark size="md" plate className="mb-3" />
           <h1 className="page-title">{t('contact.title')}</h1>
           <p className="page-lede mt-2">{t('contact.lede')}</p>
         </header>

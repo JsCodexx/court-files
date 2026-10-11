@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Check } from '../components/icons';
 import { Link } from 'react-router-dom';
+import { BrandWordmark } from '../components/BrandWordmark';
 import { SiteShell } from '../components/SiteShell';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../components/ui/card';
+import { PlanOfferCard } from '../components/pricing/PlanOfferCard';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
-import { cn } from '../lib/utils';
 import { ApiError, apiFetch } from '../utils/api';
 import { Plan } from './PlansPage';
 
@@ -85,6 +77,7 @@ export function PublicPricingPage() {
     <SiteShell wide>
       <div className="min-w-0 space-y-8">
         <header className="max-w-2xl">
+          <BrandWordmark size="md" plate className="mb-3" />
           <h1 className="page-title">{t('pricing.title')}</h1>
           <p className="page-lede mt-2">{t('pricing.lede')}</p>
         </header>
@@ -95,42 +88,16 @@ export function PublicPricingPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           {plans.map((plan) => (
-            <Card
+            <PlanOfferCard
               key={plan.id}
-              className={cn(
-                'flex flex-col',
-                plan.id === 'yearly' && 'border-primary/40'
-              )}
-            >
-              <CardHeader>
-                <CardTitle className="text-lg">{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-1 space-y-3">
-                <p
-                  className="font-display text-3xl font-semibold tracking-tight"
-                  dir="ltr"
-                >
-                  Rs {plan.amountPkr.toLocaleString()}
-                  <span className="ms-1 text-sm font-normal text-muted-foreground">
-                    / {plan.durationDays}d
-                  </span>
-                </p>
-                <ul className="space-y-1.5 text-sm text-muted-foreground">
-                  {(plan.features ?? []).map((f) => (
-                    <li key={f} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-              <CardFooter>
+              plan={plan}
+              periodLabel={`${plan.durationDays}d`}
+              footer={
                 <Button asChild className="w-full">
                   <Link to={`/checkout?plan=${plan.id}`}>{t('pricing.cta')}</Link>
                 </Button>
-              </CardFooter>
-            </Card>
+              }
+            />
           ))}
         </div>
 

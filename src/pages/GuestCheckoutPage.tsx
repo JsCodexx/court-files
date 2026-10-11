@@ -14,6 +14,7 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { BrandWordmark } from '../components/BrandWordmark';
 import { COMPANY } from '../constants/company';
 import { useToast } from '../context/ToastContext';
 import { useLocale } from '../i18n/LocaleContext';
@@ -212,7 +213,8 @@ export function GuestCheckoutPage() {
     <SiteShell wide>
       <div className="min-w-0 space-y-6 sm:space-y-8">
         <header className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+          <BrandWordmark size="md" plate className="mb-2" />
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             {t('brand.presents', { product: COMPANY.productName })}
           </p>
           <h1 className="page-title mt-2">{t('checkout.title')}</h1>
