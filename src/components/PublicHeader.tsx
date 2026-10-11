@@ -7,6 +7,7 @@ import ThemeToggle from './ThemeToggle';
 import { Button } from './ui/button';
 import { COMPANY } from '../constants/company';
 import { useLocale } from '../i18n/LocaleContext';
+import { LayoutContainer } from './public/PublicLayout';
 import { cn } from '../lib/utils';
 
 const SECONDARY_LINKS = [
@@ -48,7 +49,7 @@ export function PublicHeader({
         className
       )}
     >
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-3 pt-[env(safe-area-inset-top)] sm:h-16 sm:gap-3 sm:px-6 sm:pt-0">
+      <LayoutContainer className="flex h-14 items-center justify-between gap-2 pt-[env(safe-area-inset-top)] sm:h-16 sm:gap-3 sm:pt-0">
         <Link
           to="/"
           className="flex min-w-0 items-center gap-2 sm:gap-2.5"
@@ -110,7 +111,7 @@ export function PublicHeader({
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
-      </div>
+      </LayoutContainer>
 
       {menuOpen && (
         <>
@@ -123,7 +124,7 @@ export function PublicHeader({
             id="public-mobile-menu"
             className="absolute inset-x-0 top-full z-40 max-h-[min(70dvh,calc(100dvh-3.5rem-env(safe-area-inset-top)))] overflow-y-auto border-b border-border bg-card shadow-lg lg:hidden"
           >
-            <div className="mx-auto flex max-w-6xl flex-col gap-3 px-3 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6">
+            <LayoutContainer className="flex flex-col gap-3 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               <div className="flex items-center justify-between gap-2 sm:hidden">
                 <LanguageSwitcher />
                 <ThemeToggle />
@@ -161,7 +162,7 @@ export function PublicHeader({
                   {t('landing.nav.buyNow')}
                 </Link>
               </Button>
-            </div>
+            </LayoutContainer>
           </div>
         </>
       )}

@@ -17,9 +17,11 @@ import {
   ProductShowcase,
   TraditionContrast,
 } from '../components/landing/ProductShowcase';
-import { CompanyFooter } from '../components/CompanyFooter';
-import { PublicHeader } from '../components/PublicHeader';
-import { PwaInstallPrompt } from '../components/PwaInstallPrompt';
+import { PlanOfferCard } from '../components/pricing/PlanOfferCard';
+import {
+  PublicSection,
+  PublicSiteFrame,
+} from '../components/public/PublicLayout';
 import { BrandWordmark } from '../components/BrandWordmark';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../context/AuthContext';
@@ -128,10 +130,6 @@ const FALLBACK_PLANS: Plan[] = [
   },
 ];
 
-function formatPkr(amount: number) {
-  return `Rs ${amount.toLocaleString('en-PK')}`;
-}
-
 function SectionHeading({
   title,
   lede,
@@ -169,22 +167,22 @@ function SplitSection({
   id?: string;
 }) {
   return (
-    <section id={id} className="border-b border-border bg-background">
-      <div
-        className={cn(
-          'mx-auto grid max-w-6xl items-center gap-10 px-3 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-16',
-          reverse && 'lg:[&>div:first-child]:order-2'
-        )}
-      >
-        <div className="min-w-0">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))] sm:text-3xl">
-            {title}
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">{body}</p>
-        </div>
-        <div className="min-w-0">{children}</div>
+    <PublicSection
+      id={id}
+      className="border-b border-border bg-background"
+      containerClassName={cn(
+        'grid items-center gap-10 lg:grid-cols-2 lg:gap-16',
+        reverse && 'lg:[&>div:first-child]:order-2'
+      )}
+    >
+      <div className="min-w-0">
+        <h2 className="font-display text-2xl font-semibold tracking-tight text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))] sm:text-3xl">
+          {title}
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">{body}</p>
       </div>
-    </section>
+      <div className="min-w-0">{children}</div>
+    </PublicSection>
   );
 }
 
@@ -225,7 +223,7 @@ function ShareShowcase() {
 
 export function LandingPage() {
   const { user, authReady } = useAuth();
-  const { t, dir } = useLocale();
+  const { t } = useLocale();
   const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
 
   useEffect(() => {
@@ -261,16 +259,17 @@ export function LandingPage() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-background pb-[env(safe-area-inset-bottom)]" dir={dir}>
-      <PublicHeader className="animate-fade-in" />
-
-      {/* Hero — showcase layout */}
-      <section className="relative overflow-hidden border-b border-border">
+    <PublicSiteFrame headerClassName="animate-fade-in">
+      <PublicSection
+        spacing="hero"
+        className="relative overflow-hidden border-b border-border"
+        containerClassName="relative grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-12"
+      >
         <div
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_20%,hsl(var(--brand-fresh)/0.08),transparent)] dark:bg-[radial-gradient(ellipse_80%_60%_at_70%_20%,hsl(var(--brand-fresh)/0.06),transparent)]"
           aria-hidden
         />
-        <div className="relative mx-auto grid max-w-6xl gap-10 px-3 pb-16 pt-10 sm:px-6 sm:pb-24 sm:pt-14 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-12 lg:pt-16">
+        <>
           <div className="animate-rise-in min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[hsl(var(--brand-fresh))]">
               {t('landing.hero.tagline')}
@@ -314,66 +313,61 @@ export function LandingPage() {
           >
             <ProductShowcase />
           </div>
-        </div>
-      </section>
+        </>
+      </PublicSection>
 
-      {/* Brand board–style forest band */}
-      <section className="bg-sidebar text-sidebar-foreground">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-3 py-8 sm:flex-row sm:items-center sm:px-6 sm:py-10">
-          <BrandWordmark onDark size="md" />
-          <p className="max-w-xl font-display text-lg font-semibold leading-snug text-sidebar-foreground sm:text-xl">
-            {t('landing.banner.slogan')}
-          </p>
-        </div>
-      </section>
+      <PublicSection
+        spacing="tight"
+        className="bg-sidebar text-sidebar-foreground"
+        containerClassName="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"
+      >
+        <BrandWordmark onDark size="md" />
+        <p className="font-display text-lg font-semibold leading-snug text-sidebar-foreground sm:text-xl">
+          {t('landing.banner.slogan')}
+        </p>
+      </PublicSection>
 
-      {/* Icon strip */}
-      <section className="border-b border-border bg-muted/35">
-        <div className="mx-auto max-w-6xl px-3 py-12 sm:px-6 sm:py-14">
-          <SectionHeading
-            title={t('landing.pros.title')}
-            lede={t('landing.pros.lede')}
-            centered
-            className="max-w-3xl"
-          />
-          <ul className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
-            {PROS_STRIP.map(({ icon: Icon, label }) => (
-              <li key={label} className="flex flex-col items-center text-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
-                  <Icon
-                    className="h-7 w-7 text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))]"
-                    weight="duotone"
-                  />
-                </div>
-                <p className="mt-3 text-sm font-semibold text-foreground">{t(label)}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      <PublicSection className="border-b border-border bg-muted/35">
+        <SectionHeading
+          title={t('landing.pros.title')}
+          lede={t('landing.pros.lede')}
+          centered
+          className="mx-auto max-w-3xl"
+        />
+        <ul className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+          {PROS_STRIP.map(({ icon: Icon, label }) => (
+            <li key={label} className="flex flex-col items-center text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
+                <Icon
+                  className="h-7 w-7 text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))]"
+                  weight="duotone"
+                />
+              </div>
+              <p className="mt-3 text-sm font-semibold text-foreground">{t(label)}</p>
+            </li>
+          ))}
+        </ul>
+      </PublicSection>
 
-      {/* Feature grid */}
-      <section className="border-b border-border bg-card">
-        <div className="mx-auto max-w-6xl px-3 py-14 sm:px-6 sm:py-20">
-          <SectionHeading title={t('landing.features.title')} lede={t('landing.features.lede')} />
-          <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map(({ icon: Icon, title, body }) => (
-              <li
-                key={title}
-                className="min-w-0 rounded-xl border border-border bg-background p-5 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[hsl(var(--brand-forest))] text-primary-foreground dark:bg-[hsl(var(--brand-fresh))] dark:text-primary-foreground">
-                  <Icon className="h-5 w-5" weight="fill" />
-                </div>
-                <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
-                  {t(title)}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      <PublicSection className="border-b border-border bg-card">
+        <SectionHeading title={t('landing.features.title')} lede={t('landing.features.lede')} />
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map(({ icon: Icon, title, body }) => (
+            <li
+              key={title}
+              className="min-w-0 rounded-xl border border-border bg-background p-5 shadow-sm transition-shadow hover:shadow-md"
+            >
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[hsl(var(--brand-forest))] text-primary-foreground dark:bg-[hsl(var(--brand-fresh))] dark:text-primary-foreground">
+                <Icon className="h-5 w-5" weight="fill" />
+              </div>
+              <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
+                {t(title)}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
+            </li>
+          ))}
+        </ul>
+      </PublicSection>
 
       <SplitSection title={t('landing.split.tradition.title')} body={t('landing.split.tradition.body')}>
         <TraditionContrast />
@@ -391,181 +385,149 @@ export function LandingPage() {
         <ShareShowcase />
       </SplitSection>
 
-      {/* Values */}
-      <section className="border-y border-border bg-muted/30">
-        <div className="mx-auto max-w-6xl px-3 py-14 sm:px-6 sm:py-20">
-          <SectionHeading title={t('landing.values.title')} centered className="mx-auto" />
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {VALUES.map(({ icon: Icon, title, body }) => (
-              <li
-                key={title}
-                className="rounded-xl border border-border bg-card p-5 text-center sm:text-start"
-              >
-                <Icon
-                  className="mx-auto h-8 w-8 text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))] sm:mx-0"
-                  weight="duotone"
-                />
-                <h3 className="mt-3 font-display text-base font-semibold text-foreground">
-                  {t(title)}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* How it works — compact */}
-      <section id="how-it-works" className="border-b border-border bg-background">
-        <div className="mx-auto max-w-6xl px-3 py-14 sm:px-6 sm:py-20">
-          <SectionHeading title={t('landing.how.title')} lede={t('landing.how.lede')} />
-          <ol className="mt-10 grid gap-4 lg:grid-cols-2">
-            {JOURNEY_STEPS.map((step, index) => (
-              <li
-                key={step.heading}
-                className="flex gap-4 rounded-xl border border-border bg-card p-5"
-              >
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[hsl(var(--brand-forest))] text-sm font-bold text-primary-foreground dark:bg-[hsl(var(--brand-fresh))]">
-                  {index + 1}
-                </span>
-                <div>
-                  <h3 className="font-semibold text-foreground">{t(step.heading)}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                    {t(step.body)}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-8">
-            <Link
-              to="/how-it-works"
-              className="text-sm font-semibold text-primary underline-offset-4 hover:underline"
+      <PublicSection className="border-y border-border bg-muted/30">
+        <SectionHeading title={t('landing.values.title')} centered className="mx-auto" />
+        <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {VALUES.map(({ icon: Icon, title, body }) => (
+            <li
+              key={title}
+              className="rounded-xl border border-border bg-card p-5 text-center sm:text-start"
             >
-              {t('landing.how.more')} →
-            </Link>
-          </p>
-        </div>
-      </section>
+              <Icon
+                className="mx-auto h-8 w-8 text-[hsl(var(--brand-forest))] dark:text-[hsl(var(--brand-fresh))] sm:mx-0"
+                weight="duotone"
+              />
+              <h3 className="mt-3 font-display text-base font-semibold text-foreground">
+                {t(title)}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
+            </li>
+          ))}
+        </ul>
+      </PublicSection>
 
-      {/* Pricing */}
-      <section className="border-b border-border bg-card">
-        <div className="mx-auto max-w-6xl px-3 py-14 sm:px-6 sm:py-20">
-          <SectionHeading title={t('pricing.title')} lede={t('pricing.lede')} />
-          <div className="mt-10 grid gap-6 sm:grid-cols-2">
-            {plans.map((plan) => (
-              <article
-                key={plan.id}
-                className={cn(
-                  'flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-sm',
-                  plan.id === 'yearly' && 'ring-2 ring-[hsl(var(--brand-fresh)/0.35)]'
-                )}
-              >
-                <div className="bg-[hsl(var(--brand-forest))] px-6 py-4 dark:bg-sidebar">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-primary-foreground/90">
-                    {plan.name}
-                  </p>
-                  <p className="mt-1 font-display text-3xl font-semibold text-primary-foreground">
-                    {formatPkr(plan.amountPkr)}
-                  </p>
-                </div>
-                <div className="flex flex-1 flex-col p-6">
-                  <p className="text-sm text-muted-foreground">{plan.description}</p>
-                  <ul className="mt-4 flex-1 space-y-2 text-sm text-muted-foreground">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex gap-2">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--brand-fresh))]" weight="bold" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button asChild className="mt-6 w-full">
-                    <Link to={`/checkout?plan=${plan.id}`}>{t('pricing.cta')}</Link>
-                  </Button>
-                </div>
-              </article>
-            ))}
-          </div>
-          <p className="mt-6 text-sm text-muted-foreground">{t('pricing.paymentNote')}</p>
-        </div>
-      </section>
+      <PublicSection id="how-it-works" className="border-b border-border bg-background">
+        <SectionHeading title={t('landing.how.title')} lede={t('landing.how.lede')} />
+        <ol className="mt-10 grid gap-4 lg:grid-cols-2">
+          {JOURNEY_STEPS.map((step, index) => (
+            <li
+              key={step.heading}
+              className="flex gap-4 rounded-xl border border-border bg-card p-5"
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[hsl(var(--brand-forest))] text-sm font-bold text-primary-foreground dark:bg-[hsl(var(--brand-fresh))]">
+                {index + 1}
+              </span>
+              <div>
+                <h3 className="font-semibold text-foreground">{t(step.heading)}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {t(step.body)}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-8">
+          <Link
+            to="/how-it-works"
+            className="text-sm font-semibold text-primary underline-offset-4 hover:underline"
+          >
+            {t('landing.how.more')} →
+          </Link>
+        </p>
+      </PublicSection>
 
-      {/* Closing + free tier */}
-      <section className="bg-background">
-        <div className="mx-auto grid max-w-6xl gap-10 px-3 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div>
-            <h2 className="font-display text-2xl font-semibold text-[hsl(var(--brand-forest))] dark:text-foreground sm:text-3xl">
-              {t('landing.closing.title')}
-            </h2>
-            <p className="mt-4 max-w-lg text-muted-foreground">{t('landing.closing.body')}</p>
-            <p className="mt-3 text-sm font-semibold text-foreground">{t('subscription.freeTier')}</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild>
-                <Link to="/register">{t('landing.hero.ctaFree')}</Link>
-              </Button>
-              <Button asChild variant="outline">
-                <Link to="/pricing">{t('site.nav.pricing')}</Link>
-              </Button>
-            </div>
-          </div>
-          <div className="flex justify-center lg:justify-end">
-            <img
-              src={brandAssetUrl(BRAND_ASSETS.symbolSvg)}
-              alt=""
-              className="h-28 w-28 opacity-90 sm:h-36 sm:w-36"
-              aria-hidden
+      <PublicSection className="border-b border-border bg-card">
+        <SectionHeading title={t('pricing.title')} lede={t('pricing.lede')} />
+        <div className="mt-10 grid gap-6 sm:grid-cols-2">
+          {plans.map((plan) => (
+            <PlanOfferCard
+              key={plan.id}
+              plan={plan}
+              periodLabel={plan.durationDays === 365 ? 'year' : '30 days'}
+              footer={
+                <Button asChild className="w-full">
+                  <Link to={`/checkout?plan=${plan.id}`}>{t('pricing.cta')}</Link>
+                </Button>
+              }
             />
-          </div>
+          ))}
         </div>
-      </section>
+        <p className="mt-6 text-sm text-muted-foreground">{t('pricing.paymentNote')}</p>
+      </PublicSection>
 
-      <section className="border-y border-border bg-muted/25">
-        <div className="mx-auto max-w-6xl px-3 py-12 sm:px-6">
-          <SectionHeading title={t('landing.trust.title')} lede={t('landing.trust.body')} />
+      <PublicSection
+        className="bg-background"
+        containerClassName="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center"
+      >
+        <div>
+          <h2 className="font-display text-2xl font-semibold text-[hsl(var(--brand-forest))] dark:text-foreground sm:text-3xl">
+            {t('landing.closing.title')}
+          </h2>
+          <p className="mt-4 text-muted-foreground">{t('landing.closing.body')}</p>
+          <p className="mt-3 text-sm font-semibold text-foreground">{t('subscription.freeTier')}</p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild variant="outline" size="sm">
-              <Link to="/terms">{t('site.nav.terms')}</Link>
+            <Button asChild>
+              <Link to="/register">{t('landing.hero.ctaFree')}</Link>
             </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/privacy">{t('site.nav.privacy')}</Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/refund-policy">{t('site.nav.refund')}</Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/about">{t('site.nav.about')}</Link>
+            <Button asChild variant="outline">
+              <Link to="/pricing">{t('site.nav.pricing')}</Link>
             </Button>
           </div>
         </div>
-      </section>
-
-      <section className="border-t border-sidebar-foreground/10 bg-sidebar text-sidebar-foreground">
-        <div className="mx-auto flex max-w-6xl flex-col items-stretch gap-6 px-3 py-12 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-14">
-          <div className="max-w-xl min-w-0">
-            <BrandWordmark size="md" onDark className="mb-3" />
-            <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
-              {t('landing.cta.title')}
-            </h2>
-            <p className="mt-3 text-sidebar-muted">{t('landing.cta.lede')}</p>
-          </div>
-          <div className="flex w-full shrink-0 flex-col gap-3 sm:w-auto sm:min-w-[12rem]">
-            <Button asChild size="lg" className="w-full">
-              <Link to="/checkout">{t('landing.cta.button')}</Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="w-full border-sidebar-foreground/25 bg-transparent text-sidebar-foreground hover:bg-sidebar-foreground/10"
-            >
-              <Link to="/login">{t('landing.cta.signIn')}</Link>
-            </Button>
-          </div>
+        <div className="flex justify-center lg:justify-end">
+          <img
+            src={brandAssetUrl(BRAND_ASSETS.symbolSvg)}
+            alt=""
+            className="h-28 w-28 opacity-90 sm:h-36 sm:w-36"
+            aria-hidden
+          />
         </div>
-      </section>
+      </PublicSection>
 
-      <PwaInstallPrompt guest />
-      <CompanyFooter />
-    </div>
+      <PublicSection className="border-y border-border bg-muted/25">
+        <SectionHeading title={t('landing.trust.title')} lede={t('landing.trust.body')} />
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Button asChild variant="outline" size="sm">
+            <Link to="/terms">{t('site.nav.terms')}</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/privacy">{t('site.nav.privacy')}</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/refund-policy">{t('site.nav.refund')}</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/about">{t('site.nav.about')}</Link>
+          </Button>
+        </div>
+      </PublicSection>
+
+      <PublicSection
+        spacing="tight"
+        className="border-t border-sidebar-foreground/10 bg-sidebar text-sidebar-foreground"
+        containerClassName="flex flex-col items-stretch gap-6 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div className="min-w-0">
+          <BrandWordmark size="md" onDark className="mb-3" />
+          <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+            {t('landing.cta.title')}
+          </h2>
+          <p className="mt-3 text-sidebar-muted">{t('landing.cta.lede')}</p>
+        </div>
+        <div className="flex w-full shrink-0 flex-col gap-3 sm:w-auto sm:min-w-[12rem]">
+          <Button asChild size="lg" className="w-full">
+            <Link to="/checkout">{t('landing.cta.button')}</Link>
+          </Button>
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="w-full border-sidebar-foreground/25 bg-transparent text-sidebar-foreground hover:bg-sidebar-foreground/10"
+          >
+            <Link to="/login">{t('landing.cta.signIn')}</Link>
+          </Button>
+        </div>
+      </PublicSection>
+    </PublicSiteFrame>
   );
 }

@@ -240,8 +240,33 @@
     @apply max-w-none;
   }
 
+  /* One column width for app + public marketing pages */
+  .layout-container {
+    @apply mx-auto w-full min-w-0 max-w-6xl px-3 sm:px-6;
+  }
+
   .app-content-column {
-    @apply mx-auto w-full min-w-0 max-w-6xl;
+    @apply layout-container;
+  }
+
+  .public-section-y {
+    @apply py-12 sm:py-16;
+  }
+
+  .public-section-y-tight {
+    @apply py-8 sm:py-10;
+  }
+
+  .public-section-y-hero {
+    @apply pb-16 pt-10 sm:pb-24 sm:pt-14 lg:pt-16;
+  }
+
+  .public-page-y {
+    @apply pb-[max(2rem,env(safe-area-inset-bottom))] pt-8 sm:pb-14 sm:pt-12;
+  }
+
+  .public-page-stack {
+    @apply space-y-8 sm:space-y-10;
   }
 
   /* Long URLs, case IDs, Urdu text on narrow screens */

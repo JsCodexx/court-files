@@ -226,7 +226,7 @@ export function AppLayout() {
             </div>
           </div>
         )}
-        <div className="app-main-content min-w-0 flex-1 px-3 py-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5 sm:py-6 md:px-8 md:py-8">
+        <div className="app-main-content min-w-0 flex-1 py-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:py-6 md:py-8">
           <PwaInstallPrompt />
           <div className="app-content-column">
             <Outlet />

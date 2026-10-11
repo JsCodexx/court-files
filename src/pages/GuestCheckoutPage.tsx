@@ -210,9 +210,9 @@ export function GuestCheckoutPage() {
   };
 
   return (
-    <SiteShell wide>
+    <SiteShell>
       <div className="min-w-0 space-y-6 sm:space-y-8">
-        <header className="max-w-2xl">
+        <header>
           <BrandWordmark size="md" plate className="mb-2" />
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             {t('brand.presents', { product: COMPANY.productName })}
