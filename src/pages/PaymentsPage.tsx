@@ -261,7 +261,7 @@ export function PaymentsPage() {
       ) : (
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         <section className="app-panel overflow-hidden">
-          <div className="flex items-start gap-3 border-b border-border bg-[hsl(var(--brand-forest))] px-5 py-4 text-primary-foreground dark:bg-sidebar">
+          <div className="brand-band flex items-start gap-3 border-b border-border px-5 py-4">
             <CreditCard className="mt-0.5 h-6 w-6 shrink-0 opacity-90" weight="duotone" />
             <div className="min-w-0">
               <h2 className="font-display text-lg font-semibold">

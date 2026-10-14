@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   CalendarDays,
   ChevronLeft,
@@ -9,8 +10,11 @@ import {
   PlusCircle,
   Search,
   UserRound,
+  X,
 } from './icons';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { motion } from './motion';
+import { transitionFast } from '../motion/presets';
 import { useAuth } from '../context/AuthContext';
 import { useAppShell } from '../hooks/useAppShell';
 import { useSubscription } from '../hooks/useSubscription';
@@ -33,6 +37,7 @@ export function AppLayout() {
   const { showBottomNav, showSidebar } = useAppShell();
   const { status: subscription } = useSubscription();
   const billingOnly = Boolean(subscription && !subscription.canAccessApp);
+  const [accountDrawerOpen, setAccountDrawerOpen] = useState(false);
   const [open, setOpen] = useState(() => {
     try {
       const stored = localStorage.getItem(SIDEBAR_KEY);
@@ -182,36 +187,68 @@ export function AppLayout() {
 
           <div
             className={cn(
-              'shrink-0 space-y-2 border-t border-sidebar-foreground/10 py-3',
+              'shrink-0 border-t border-sidebar-foreground/10 py-3',
               expanded ? 'px-3' : 'px-2'
             )}
           >
             {expanded ? (
-              <>
-                <div className="flex items-center justify-between gap-2">
-                  <LanguageSwitcher variant="dark" />
-                  <ThemeToggle className="text-sidebar-foreground hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground" />
-                </div>
+              <div className="space-y-2 rounded-xl border border-sidebar-foreground/10 bg-sidebar-foreground/[0.06] p-2">
                 <NavLink
                   to="/profile"
                   title={user?.name}
-                  className="urdu-text block truncate rounded-md bg-sidebar-foreground/10 px-3 py-2 text-sm hover:bg-sidebar-foreground/15"
+                  className="flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-sidebar-foreground/10"
                 >
-                  {user?.name}
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sidebar-accent text-sm font-bold text-sidebar-foreground">
+                    {(user?.name ?? '?').charAt(0).toUpperCase()}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="urdu-text block truncate text-sm font-semibold">
+                      {user?.name}
+                    </span>
+                    {user?.email && (
+                      <span
+                        className="block truncate text-[11px] text-sidebar-muted"
+                        dir="ltr"
+                      >
+                        {user.email}
+                      </span>
+                    )}
+                  </span>
                 </NavLink>
+                <div className="space-y-0.5 border-t border-sidebar-foreground/10 pt-2">
+                  <LanguageSwitcher
+                    variant="dark"
+                    trigger="row"
+                    menuAside
+                  />
+                  <ThemeToggle
+                    variant="dark"
+                    trigger="row"
+                    compactMenu
+                    menuAside
+                  />
+                </div>
                 <Button
                   type="button"
                   variant="ghost"
-                  className="w-full justify-start gap-2 text-sidebar-muted hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground"
+                  className="h-9 w-full justify-start gap-2 rounded-xl text-sidebar-muted hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground"
                   onClick={handleLogout}
                 >
                   <LogOut className="h-4 w-4" weight="regular" />
                   {t('nav.signOut')}
                 </Button>
-              </>
+              </div>
             ) : (
-              <div className="flex flex-col items-center gap-2">
-                <ThemeToggle className="text-sidebar-foreground hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground" />
+              <div className="flex flex-col items-center gap-1.5">
+                <NavLink
+                  to="/profile"
+                  title={user?.name}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-sidebar-accent text-sm font-bold text-sidebar-foreground hover:opacity-90"
+                >
+                  {(user?.name ?? '?').charAt(0).toUpperCase()}
+                </NavLink>
+                <LanguageSwitcher variant="dark" menuAbove />
+                <ThemeToggle variant="dark" menuAbove compactMenu />
                 <Button
                   type="button"
                   variant="ghost"
@@ -237,19 +274,17 @@ export function AppLayout() {
                 <BrandLogo variant="appMobileBar" className="h-8 w-8 shrink-0" />
                 <BrandWordmark onDark size="sm" className="min-w-0 truncate" />
               </div>
-              <div className="flex shrink-0 items-center gap-0.5">
-                <LanguageSwitcher variant="dark" menuAbove />
-                <ThemeToggle className="text-sidebar-foreground hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground" />
+              <div className="flex shrink-0 items-center">
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 shrink-0 text-sidebar-muted hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground"
-                  onClick={handleLogout}
-                  aria-label={t('nav.signOut')}
-                  title={t('nav.signOut')}
+                  onClick={() => setAccountDrawerOpen(true)}
+                  aria-label={t('nav.profile')}
+                  title={t('nav.profile')}
                 >
-                  <LogOut className="h-[1.125rem] w-[1.125rem]" weight="regular" />
+                  <UserRound className="h-[1.125rem] w-[1.125rem]" weight="regular" />
                 </Button>
               </div>
             </div>
@@ -265,8 +300,133 @@ export function AppLayout() {
           </div>
         </div>
 
-        {showBottomNav && <AppBottomNav />}
+        {showBottomNav && (
+          <AppBottomNav onOpenAccountMenu={() => setAccountDrawerOpen(true)} />
+        )}
+        <AppAccountDrawer
+          open={accountDrawerOpen}
+          onOpenChange={setAccountDrawerOpen}
+        />
       </main>
     </div>
+  );
+}
+
+function AppAccountDrawer({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const { t } = useLocale();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onOpenChange(false);
+    };
+    document.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open, onOpenChange]);
+
+  const close = () => onOpenChange(false);
+
+  const onSignOut = () => {
+    close();
+    logout();
+    navigate('/');
+  };
+
+  if (!open) return null;
+
+  return createPortal(
+    <>
+      <div
+        className="fixed inset-0 z-[60] bg-foreground/45 backdrop-blur-[1px]"
+        onClick={close}
+        aria-hidden
+      />
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="app-account-drawer-title"
+        initial={{ y: '100%' }}
+        animate={{ y: 0 }}
+        transition={transitionFast}
+        className={cn(
+          'fixed inset-x-0 bottom-0 z-[61] rounded-t-2xl border-t border-sidebar-foreground/15 bg-sidebar text-sidebar-foreground shadow-2xl',
+          'pb-[max(0.75rem,env(safe-area-inset-bottom))]'
+        )}
+      >
+        <div className="mx-auto max-w-lg px-4 pt-3">
+          <div className="mb-1 flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h2
+                id="app-account-drawer-title"
+                className="urdu-text truncate font-display text-lg font-semibold"
+              >
+                {user?.name ?? t('nav.profile')}
+              </h2>
+              {user?.email && (
+                <p className="truncate text-sm text-sidebar-muted" dir="ltr">
+                  {user.email}
+                </p>
+              )}
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 shrink-0 text-sidebar-muted hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground"
+              onClick={close}
+              aria-label={t('common.cancel')}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="mt-3 space-y-2 pb-2">
+            <div className="space-y-0.5 rounded-xl border border-sidebar-foreground/10 bg-sidebar-foreground/[0.06] p-1.5">
+              <LanguageSwitcher variant="dark" trigger="row" menuAbove />
+              <ThemeToggle
+                variant="dark"
+                trigger="row"
+                compactMenu
+                menuAbove
+              />
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-11 w-full justify-start gap-3 rounded-xl text-sidebar-foreground hover:bg-sidebar-foreground/10"
+              asChild
+            >
+              <Link to="/profile" onClick={close}>
+                <UserRound className="h-5 w-5 shrink-0" weight="duotone" />
+                {t('nav.profile')}
+              </Link>
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-11 w-full justify-start gap-3 rounded-xl text-destructive hover:bg-destructive/10 hover:text-destructive"
+              onClick={onSignOut}
+            >
+              <LogOut className="h-5 w-5 shrink-0" weight="regular" />
+              {t('nav.signOut')}
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+    </>,
+    document.body
   );
 }

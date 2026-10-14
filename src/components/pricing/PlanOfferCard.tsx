@@ -29,13 +29,16 @@ export function PlanOfferCard({
         className
       )}
     >
-      <div className="bg-[hsl(var(--brand-forest))] px-5 py-4 dark:bg-sidebar">
-        <p className="text-xs font-semibold uppercase tracking-wide text-primary-foreground/85">
+      <div className="brand-band px-5 py-4">
+        <p className="text-xs font-semibold uppercase tracking-wide opacity-90">
           {plan.name}
         </p>
-        <p className="mt-1 font-display text-3xl font-semibold tracking-tight text-primary-foreground" dir="ltr">
+        <p
+          className="mt-1 font-display text-3xl font-semibold tracking-tight"
+          dir="ltr"
+        >
           {formatPkr(plan.amountPkr)}
-          <span className="ms-1 text-sm font-normal text-primary-foreground/75">
+          <span className="ms-1 text-sm font-normal opacity-80">
             / {periodLabel}
           </span>
         </p>

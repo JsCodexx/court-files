@@ -97,9 +97,9 @@ export function PlansPage() {
           </Button>
 
           <section className="app-panel overflow-hidden">
-            <div className="border-b border-border bg-[hsl(var(--brand-forest))] px-5 py-4 text-primary-foreground dark:bg-sidebar">
+            <div className="brand-band border-b border-border px-5 py-4">
               <h2 className="font-display text-lg font-semibold">{t('plans.payTitle')}</h2>
-              <p className="mt-1 text-sm text-primary-foreground/85">
+              <p className="mt-1 text-sm opacity-90">
                 {t('plans.payLede', {
                   plan: selected.name,
                   amount: String(selected.amountPkr),

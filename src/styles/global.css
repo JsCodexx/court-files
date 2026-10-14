@@ -42,7 +42,7 @@
   }
 
   /* Page veil — light and dark are separate so dark mode never keeps a white wash */
-  html:not(.dark) body::after {
+  html:not(.dark):not(.theme-ocean) body::after {
     content: '';
     position: fixed;
     inset: 0;
@@ -56,7 +56,25 @@
     );
   }
 
-  html.dark body::after {
+  html.theme-ocean:not(.dark) body::before {
+    opacity: 0.025;
+  }
+
+  html.theme-ocean:not(.dark) body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      168deg,
+      hsl(210 60% 99% / 0.98) 0%,
+      hsl(210 50% 98% / 0.99) 45%,
+      hsl(210 45% 97% / 0.99) 100%
+    );
+  }
+
+  html.dark:not(.theme-ocean) body::after {
     content: '';
     position: fixed;
     inset: 0;
@@ -67,6 +85,24 @@
       hsl(var(--background) / 0.94) 0%,
       hsl(var(--background) / 0.97) 55%,
       hsl(160 30% 5% / 0.98) 100%
+    );
+  }
+
+  html.theme-ocean.dark body::before {
+    opacity: 0.2;
+  }
+
+  html.theme-ocean.dark body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      165deg,
+      hsl(var(--background) / 0.94) 0%,
+      hsl(var(--background) / 0.97) 55%,
+      hsl(214 45% 5% / 0.98) 100%
     );
   }
 
@@ -152,6 +188,15 @@
     @apply mt-1 text-sm text-muted-foreground sm:text-base;
   }
 
+  /* Forest / sidebar header bands — always high-contrast (fixes plan price in dark mode) */
+  .brand-band {
+    @apply bg-[hsl(var(--brand-forest))] text-[hsl(var(--on-brand))];
+  }
+
+  html.dark .brand-band {
+    @apply bg-sidebar text-sidebar-foreground;
+  }
+
   .app-page-header {
     @apply min-w-0 space-y-1;
   }
@@ -182,8 +227,12 @@
   }
 
   .app-mobile-top-bar {
-    @apply relative z-50 shrink-0 overflow-visible border-b border-sidebar-foreground/10 bg-sidebar text-sidebar-foreground shadow-sm;
+    @apply relative z-50 shrink-0 overflow-visible border-b border-sidebar-foreground/10 bg-sidebar/95 text-sidebar-foreground shadow-sm backdrop-blur-md;
     padding-top: max(0.5rem, env(safe-area-inset-top));
+  }
+
+  .app-sidebar-panel {
+    @apply rounded-xl border border-sidebar-foreground/10 bg-sidebar-foreground/[0.06];
   }
 
   .app-main-scroll {

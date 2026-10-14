@@ -333,6 +333,12 @@ export const en = {
   'lang.en': 'English',
   'lang.ur': 'اردو',
 
+  'theme.menuLabel': 'Choose theme',
+  'theme.palette.forest': 'Forest',
+  'theme.palette.ocean': 'Ocean',
+  'theme.mode.light': 'Light',
+  'theme.mode.dark': 'Dark',
+
   'common.cancel': 'Cancel',
   'common.save': 'Save',
   'common.vs': 'Vs',
@@ -353,6 +359,8 @@ export const en = {
   'pwa.installAndroidTitle': 'Install Court Files on your phone',
   'pwa.installAndroidSteps':
     'In Chrome, tap the menu (⋮), then “Install app” or “Add to Home screen”. If you do not see it, try again after signing in or update Chrome.',
+  'pwa.installHintMenu':
+    'If the browser install button is not available (common after you removed a previous shortcut), use the steps above from Chrome’s menu. You can always return here under Profile → Settings.',
 
   'category.Civil Courts': 'Civil Courts',
   'category.Session Courts': 'Session Courts',
@@ -1121,6 +1129,12 @@ export const ur: Record<TranslationKey, string> = {
   'lang.en': 'English',
   'lang.ur': 'اردو',
 
+  'theme.menuLabel': 'تھیم منتخب کریں',
+  'theme.palette.forest': 'سبز (Forest)',
+  'theme.palette.ocean': 'سمندر (Ocean)',
+  'theme.mode.light': 'روشن',
+  'theme.mode.dark': 'تاریک',
+
   'common.cancel': 'منسوخ',
   'common.save': 'محفوظ کریں',
   'common.vs': 'بنام',
@@ -1141,6 +1155,8 @@ export const ur: Record<TranslationKey, string> = {
   'pwa.installAndroidTitle': 'فون پر Court Files انسٹال کریں',
   'pwa.installAndroidSteps':
     'Chrome میں مینو (⋮) دبائیں، پھر “Install app” یا “Add to Home screen”۔ نہ ملے تو سائن اِن کے بعد دوبارہ کوشش کریں۔',
+  'pwa.installHintMenu':
+    'اگر انسٹال بٹن نہ آئے (پہلے ہوم اسکرین سے ہٹانے کے بعد اکثر ہوتا ہے)، Chrome مینو سے اوپر والے مراحل استعمال کریں۔ پروفائل → Settings سے ہمیشہ واپس آ سکتے ہیں۔',
 
   'category.Civil Courts': 'دیوانی عدالتیں',
   'category.Session Courts': 'سیشن عدالتیں',
