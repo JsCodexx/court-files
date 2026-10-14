@@ -63,18 +63,26 @@ export function computePopoverPlacement(
     maxHeight?: number;
     preferAbove?: boolean;
     alignEnd?: boolean;
+    /** Open beside the trigger (e.g. sidebar footer). */
+    alignAside?: boolean;
   } = {}
 ): PopoverPlacement {
   const width = opts.width ?? Math.max(trigger.width, 160);
   const maxHeightCap = opts.maxHeight ?? 224;
   const rtl = document.documentElement.getAttribute('dir') === 'rtl';
   const alignEnd = opts.alignEnd ?? false;
+  const alignAside = opts.alignAside ?? false;
 
-  let left = alignEnd
-    ? rtl
-      ? trigger.left
-      : trigger.right - width
-    : trigger.left;
+  let left: number;
+  if (alignAside) {
+    left = rtl ? trigger.left - width - GAP : trigger.right + GAP;
+  } else {
+    left = alignEnd
+      ? rtl
+        ? trigger.left
+        : trigger.right - width
+      : trigger.left;
+  }
   const maxLeft = window.innerWidth - width - VIEWPORT_PAD;
   left = Math.max(VIEWPORT_PAD, Math.min(left, maxLeft));
 

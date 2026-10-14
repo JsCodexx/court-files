@@ -68,7 +68,11 @@ function isTabActive(pathname: string, key: TabKey): boolean {
   }
 }
 
-export function AppBottomNav() {
+type AppBottomNavProps = {
+  onOpenAccountMenu?: () => void;
+};
+
+export function AppBottomNav({ onOpenAccountMenu }: AppBottomNavProps) {
   const { t, dir } = useLocale();
   const { pathname } = useLocation();
   const { status } = useSubscription();
@@ -120,6 +124,29 @@ export function AppBottomNav() {
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = isTabActive(pathname, tab.key);
+          if (tab.key === 'profile' && onOpenAccountMenu) {
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                className={cn(
+                  'app-bottom-nav__item',
+                  active && 'app-bottom-nav__item--active'
+                )}
+                aria-current={active ? 'page' : undefined}
+                aria-haspopup="dialog"
+                onClick={onOpenAccountMenu}
+              >
+                <span className="app-bottom-nav__icon-wrap">
+                  <Icon
+                    className="app-bottom-nav__icon"
+                    weight={active ? 'fill' : 'regular'}
+                  />
+                </span>
+                <span className="app-bottom-nav__label">{t(tab.labelKey)}</span>
+              </button>
+            );
+          }
           return (
             <NavLink
               key={tab.key}

@@ -40,6 +40,7 @@
 
   --brand-forest: 152 69% 19%;
   --brand-fresh: 135 53% 43%;
+  --on-brand: 0 0% 100%;
 
   --sidebar: 152 52% 11%;
   --sidebar-foreground: 148 35% 96%;
@@ -92,4 +93,93 @@
 
   --brand-forest: 152 58% 52%;
   --brand-fresh: 135 53% 48%;
+  --on-brand: 148 28% 95%;
+}
+
+/**
+ * Ocean — light blue & white with navy sidebar and bright cyan accents.
+ * Applied via `html.theme-ocean` (light + dark below).
+ */
+html.theme-ocean {
+  --background: 210 55% 98%;
+  --foreground: 214 42% 14%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 214 42% 14%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 214 42% 14%;
+
+  --primary: 211 84% 42%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 210 45% 96%;
+  --secondary-foreground: 214 38% 18%;
+
+  --muted: 210 40% 95%;
+  --muted-foreground: 214 14% 40%;
+
+  --accent: 210 100% 96%;
+  --accent-foreground: 211 72% 32%;
+
+  --destructive: 0 68% 44%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 199 76% 40%;
+  --success-foreground: 0 0% 100%;
+
+  --border: 210 32% 88%;
+  --input: 210 28% 86%;
+  --ring: 211 84% 42%;
+
+  --brand-forest: 211 78% 36%;
+  --brand-fresh: 199 89% 48%;
+  --on-brand: 0 0% 100%;
+
+  --sidebar: 214 58% 18%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-muted: 210 22% 72%;
+  --sidebar-accent: 199 89% 52%;
+}
+
+html.theme-ocean.dark {
+  --background: 214 42% 8%;
+  --foreground: 210 40% 96%;
+
+  --card: 214 38% 11%;
+  --card-foreground: 210 40% 96%;
+
+  --popover: 214 40% 10%;
+  --popover-foreground: 210 40% 96%;
+
+  --primary: 205 90% 58%;
+  --primary-foreground: 214 50% 10%;
+
+  --secondary: 214 32% 16%;
+  --secondary-foreground: 210 35% 92%;
+
+  --muted: 214 28% 14%;
+  --muted-foreground: 210 18% 68%;
+
+  --accent: 214 35% 18%;
+  --accent-foreground: 199 75% 72%;
+
+  --destructive: 0 62% 55%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 199 70% 48%;
+  --success-foreground: 214 50% 10%;
+
+  --border: 214 26% 22%;
+  --input: 214 26% 22%;
+  --ring: 205 90% 58%;
+
+  --brand-forest: 205 85% 55%;
+  --brand-fresh: 199 89% 52%;
+  --on-brand: 214 50% 10%;
+
+  --sidebar: 214 48% 6%;
+  --sidebar-foreground: 210 40% 96%;
+  --sidebar-muted: 210 16% 62%;
+  --sidebar-accent: 205 90% 58%;
 }

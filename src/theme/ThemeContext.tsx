@@ -6,53 +6,67 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import {
+  ThemeMode,
+  ThemePalette,
+  ThemePreference,
+  applyThemePreference,
+  readStoredThemePreference,
+  themePreferenceId,
+} from './themes';
 
-export type Theme = 'light' | 'dark';
-
-const THEME_KEY = 'cf_theme';
+export type { ThemeMode, ThemePalette, ThemePreference };
 
 interface ThemeContextValue {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
+  palette: ThemePalette;
+  mode: ThemeMode;
+  preference: ThemePreference;
+  setPreference: (preference: ThemePreference) => void;
+  setPalette: (palette: ThemePalette) => void;
+  setMode: (mode: ThemeMode) => void;
+  activeThemeId: string;
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
-function getInitialTheme(): Theme {
-  const stored = localStorage.getItem(THEME_KEY);
-  if (stored === 'light' || stored === 'dark') return stored;
-  if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
-    return 'dark';
-  }
-  return 'light';
-}
-
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+  const [preference, setPreferenceState] = useState<ThemePreference>(
+    readStoredThemePreference
+  );
 
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.toggle('dark', theme === 'dark');
-    root.style.colorScheme = theme;
-    localStorage.setItem(THEME_KEY, theme);
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) {
-      meta.setAttribute('content', theme === 'dark' ? '#0B1411' : '#0F5132');
-    }
-  }, [theme]);
+    applyThemePreference(preference);
+  }, [preference]);
 
-  const setTheme = useCallback((next: Theme) => setThemeState(next), []);
-  const toggleTheme = useCallback(
-    () => setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark')),
+  const setPreference = useCallback(
+    (next: ThemePreference) => setPreferenceState(next),
+    []
+  );
+
+  const setPalette = useCallback(
+    (palette: ThemePalette) =>
+      setPreferenceState((prev) => ({ ...prev, palette })),
+    []
+  );
+
+  const setMode = useCallback(
+    (mode: ThemeMode) => setPreferenceState((prev) => ({ ...prev, mode })),
     []
   );
 
   const value = useMemo(
-    () => ({ theme, setTheme, toggleTheme }),
-    [theme, setTheme, toggleTheme]
+    () => ({
+      palette: preference.palette,
+      mode: preference.mode,
+      preference,
+      setPreference,
+      setPalette,
+      setMode,
+      activeThemeId: themePreferenceId(preference),
+    }),
+    [preference, setPreference, setPalette, setMode]
   );
 
   return (

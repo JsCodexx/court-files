@@ -56,6 +56,27 @@
         <p>Contact: aliwheed@gmail.com</p>
       </main>
     </noscript>
+    <script>
+      (function () {
+        var r = document.documentElement;
+        var v2 = localStorage.getItem('cf_theme_v2');
+        var legacy = localStorage.getItem('cf_theme');
+        var palette = 'forest';
+        var dark = false;
+        if (v2) {
+          var parts = v2.split('-');
+          if (parts[0] === 'ocean' || parts[0] === 'forest') palette = parts[0];
+          if (parts[1] === 'dark') dark = true;
+        } else if (legacy === 'dark') {
+          dark = true;
+        } else if (legacy === 'ocean') {
+          palette = 'ocean';
+        }
+        if (palette === 'ocean') r.classList.add('theme-ocean');
+        if (dark) r.classList.add('dark');
+        r.style.colorScheme = dark ? 'dark' : 'light';
+      })();
+    </script>
     <div id="root"></div>
   </body>
 </html>

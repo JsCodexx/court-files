@@ -14,47 +14,15 @@ import {
   subscribeInstallPrompt,
   type BeforeInstallPromptEvent,
 } from '../pwa/captureInstallPrompt';
+import {
+  clearInstallBannerSnooze,
+  isInstallBannerSnoozed,
+  snoozeInstallBanner,
+} from '../pwa/installSnooze';
+import { isAndroidDevice, isIosDevice } from '../pwa/platform';
+import { PWA_REQUEST_INSTALL_BANNER } from '../pwa/requestInstallBanner';
 import { PageEnter } from './motion';
 import { Button } from './ui/button';
-
-const SNOOZE_KEY = 'cf_pwa_install_snooze_until';
-
-function isSnoozed(): boolean {
-  try {
-    const raw = localStorage.getItem(SNOOZE_KEY);
-    if (!raw) return false;
-    const until = Number(raw);
-    if (Number.isNaN(until)) return false;
-    return Date.now() < until;
-  } catch {
-    return false;
-  }
-}
-
-function snooze(days: number) {
-  try {
-    localStorage.setItem(
-      SNOOZE_KEY,
-      String(Date.now() + days * 24 * 60 * 60 * 1000)
-    );
-  } catch {
-    /* ignore */
-  }
-}
-
-function isIosDevice(): boolean {
-  if (typeof window === 'undefined') return false;
-  const nav = window.navigator as Navigator & { standalone?: boolean };
-  if (nav.standalone) return false;
-  const ua = nav.userAgent || '';
-  if (/iPad|iPhone|iPod/.test(ua)) return true;
-  return ua.includes('Macintosh') && 'ontouchend' in document;
-}
-
-function isAndroidDevice(): boolean {
-  if (typeof window === 'undefined') return false;
-  return /Android/i.test(window.navigator.userAgent || '');
-}
 
 type PwaInstallPromptProps = {
   /** Public marketing pages — show mobile hints without login. */
@@ -73,6 +41,7 @@ export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
   const [iosHint, setIosHint] = useState(false);
   const [androidHint, setAndroidHint] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [forceShow, setForceShow] = useState(false);
 
   useEffect(() => {
     return subscribeInstallPrompt(() => {
@@ -81,7 +50,21 @@ export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
   }, []);
 
   useEffect(() => {
-    if (isStandalone || isSnoozed()) {
+    const onRequest = () => {
+      clearInstallBannerSnooze();
+      setForceShow(true);
+    };
+    window.addEventListener(PWA_REQUEST_INSTALL_BANNER, onRequest);
+    return () =>
+      window.removeEventListener(PWA_REQUEST_INSTALL_BANNER, onRequest);
+  }, []);
+
+  useEffect(() => {
+    if (isStandalone) {
+      setVisible(false);
+      return;
+    }
+    if (!forceShow && isInstallBannerSnoozed()) {
       setVisible(false);
       return;
     }
@@ -131,13 +114,13 @@ export function PwaInstallPrompt({ guest = false }: PwaInstallPromptProps) {
     isStandalone,
     guest,
     isNarrow,
+    forceShow,
   ]);
 
   const dismiss = useCallback(() => {
-    snooze(14);
+    snoozeInstallBanner(14);
+    setForceShow(false);
     setVisible(false);
-    setDeferred(null);
-    clearDeferredInstallPrompt();
     setIosHint(false);
     setAndroidHint(false);
   }, []);
