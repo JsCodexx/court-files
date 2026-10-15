@@ -133,10 +133,12 @@ export function ProfileOverview() {
             <Link
               key={item.to}
               to={item.to}
-              className="flex min-h-[3rem] items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium shadow-sm transition-colors hover:bg-muted/50"
+              className="app-panel shadow-brand-hover flex min-h-[3rem] items-center justify-between gap-3 px-4 py-3 text-sm font-medium transition-shadow"
             >
-              <span className="flex min-w-0 items-center gap-2">
-                <Icon className="h-4 w-4 shrink-0 text-primary" weight="duotone" />
+              <span className="flex min-w-0 items-center gap-3">
+                <span className="icon-tile-brand h-9 w-9">
+                  <Icon className="h-4 w-4" weight="duotone" />
+                </span>
                 <span className="truncate">{item.label}</span>
               </span>
               <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground rtl:rotate-180" />
@@ -144,8 +146,13 @@ export function ProfileOverview() {
           );
         })}
       </div>
-    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-      <dl className="divide-y">
+    <div className="app-panel overflow-hidden">
+      <div className="brand-band px-4 py-3 sm:px-5">
+        <p className="page-eyebrow !text-[hsl(var(--brand-fresh))]">
+          {t('profile.tabProfile')}
+        </p>
+      </div>
+      <dl className="divide-y divide-border/70">
         {rows.map((row) => (
           <div
             key={row.label}

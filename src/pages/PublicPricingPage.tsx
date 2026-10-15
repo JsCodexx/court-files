@@ -108,7 +108,7 @@ export function PublicPricingPage() {
           </Stagger>
         )}
 
-        <div className="space-y-3 rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground shadow-sm sm:p-6">
+        <div className="app-panel space-y-3 p-5 text-sm text-muted-foreground sm:p-6">
           <p>{t('pricing.paymentNote')}</p>
           <p>
             {t('pricing.refundLink')}{' '}

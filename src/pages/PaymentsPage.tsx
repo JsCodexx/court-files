@@ -245,7 +245,7 @@ export function PaymentsPage() {
       <AppPageHeader title={t('payments.title')} lede={t('payments.lede')} />
 
       {subscriptionSummary && (
-        <div className="app-panel flex flex-col gap-3 border-[hsl(var(--brand-forest)/0.15)] bg-[hsl(var(--brand-forest)/0.04)] p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+        <div className="app-panel flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
           <p className="text-sm text-foreground">{subscriptionSummary}</p>
           <Button asChild variant="outline" size="sm" className="shrink-0">
             <Link to="/plans">{t('payments.choosePlan')}</Link>
@@ -261,18 +261,21 @@ export function PaymentsPage() {
       ) : (
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         <section className="app-panel overflow-hidden">
-          <div className="brand-band flex items-start gap-3 border-b border-border px-5 py-4">
-            <CreditCard className="mt-0.5 h-6 w-6 shrink-0 opacity-90" weight="duotone" />
+          <div className="brand-band flex items-start gap-3 px-5 py-4">
+            <CreditCard
+              className="mt-0.5 h-6 w-6 shrink-0 text-[hsl(var(--brand-fresh))]"
+              weight="duotone"
+            />
             <div className="min-w-0">
-              <h2 className="font-display text-lg font-semibold">
+              <h2 className="font-display text-lg font-semibold text-[hsl(var(--brand-forest))] dark:text-foreground">
                 {t('payments.checkoutTitle')}
               </h2>
               {checkoutPlanId && checkoutAmount != null ? (
-                <p className="mt-1 text-sm text-primary-foreground/85">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {planLabel(checkoutPlanId)} · {formatPkr(checkoutAmount)}
                 </p>
               ) : (
-                <p className="mt-1 text-sm text-primary-foreground/85">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {t('payments.historyLede')}
                 </p>
               )}

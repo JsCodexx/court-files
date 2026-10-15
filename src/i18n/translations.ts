@@ -473,17 +473,28 @@ export const en = {
   'addCase.updated': 'Case updated successfully.',
 
   'search.title': 'Search Case',
-  'search.lede': 'Find matters by name, case ID, or ID card.',
+  'search.lede':
+    'Find matters by party or client name, court case ID, or a party’s CNIC/ID card (Party 1 or Party 2 — not the client).',
   'search.byName': 'By name',
   'search.byCaseId': 'By case ID',
-  'search.byIdCard': 'By ID card',
+  'search.byIdCard': 'By party CNIC',
   'search.label': 'Search',
-  'search.phName': 'Search by party, client, or judge name',
-  'search.phCaseId': 'Search by case ID',
-  'search.phIdCard': 'Search by ID card number',
+  'search.phName': 'Party, client, or judge name',
+  'search.phCaseId': 'Court case ID',
+  'search.phIdCard': 'Party 1 or Party 2 CNIC (13 digits)',
+  'search.idCardHint':
+    'Matches the CNIC/ID card stored for Party 1 or Party 2 on the case. Client ID is not searched here.',
+  'search.nameHint':
+    'Matches party, client, or judge names. If you enter 5–13 digits (a CNIC), search uses party CNIC automatically.',
+  'search.caseIdHint': 'Matches your court case number / reference ID.',
   'search.results': '{{count}} result(s)',
   'search.titlePrefix': 'Search: {{query}}',
-  'search.empty': 'Enter a search term to begin.',
+  'search.button': 'Search',
+  'search.empty': 'Choose a search type, enter your term, then tap Search.',
+  'search.emptyTitle': 'Search your register',
+  'search.modeAria': 'Search by',
+  'search.resultsFor': 'Results for “{{query}}”',
+  'search.noResults': 'No cases matched this search.',
 
   'calendar.title': 'Calendar',
   'calendar.lede':
@@ -1269,17 +1280,28 @@ export const ur: Record<TranslationKey, string> = {
   'addCase.updated': 'مقدمہ کامیابی سے اپ ڈیٹ ہو گیا۔',
 
   'search.title': 'مقدمہ تلاش کریں',
-  'search.lede': 'نام، کیس آئی ڈی یا شناختی کارڈ سے تلاش کریں۔',
+  'search.lede':
+    'فریق یا موکل کے نام، کیس آئی ڈی، یا فریق اول/دوم کے شناختی کارڈ (CNIC) سے تلاش کریں — موکل کا کارڈ نہیں۔',
   'search.byName': 'نام سے',
   'search.byCaseId': 'کیس آئی ڈی سے',
-  'search.byIdCard': 'شناختی کارڈ سے',
+  'search.byIdCard': 'فریق کا شناختی کارڈ',
   'search.label': 'تلاش',
-  'search.phName': 'فریق، موکل یا جج کے نام سے تلاش',
-  'search.phCaseId': 'کیس آئی ڈی سے تلاش',
-  'search.phIdCard': 'شناختی کارڈ نمبر سے تلاش',
+  'search.phName': 'فریق، موکل یا جج کا نام',
+  'search.phCaseId': 'عدالتی کیس نمبر',
+  'search.phIdCard': 'فریق اول یا فریق دوم کا CNIC',
+  'search.idCardHint':
+    'صرف فریق اول اور فریق دوم کے شناختی کارڈ سے ملتا ہے — موکل کا کارڈ تلاش میں شامل نہیں۔',
+  'search.nameHint':
+    'نام سے تلاش۔ اگر ۵–۱۳ ہندسے (CNIC) لکھیں تو خود بخود فریق کا شناختی کارڈ تلاش ہوگا۔',
+  'search.caseIdHint': 'آپ کے کیس کا عدالتی نمبر / ریفرنس آئی ڈی۔',
   'search.results': '{{count}} نتیجہ',
   'search.titlePrefix': 'تلاش: {{query}}',
-  'search.empty': 'شروع کرنے کے لیے تلاش کا لفظ درج کریں۔',
+  'search.button': 'تلاش کریں',
+  'search.empty': 'تلاش کی قسم منتخب کریں، لفظ لکھیں، پھر تلاش کریں دبائیں۔',
+  'search.emptyTitle': 'اپنا رجسٹر تلاش کریں',
+  'search.modeAria': 'تلاش کی قسم',
+  'search.resultsFor': 'نتائج: «{{query}}»',
+  'search.noResults': 'اس تلاش سے کوئی مقدمہ نہیں ملا۔',
 
   'calendar.title': 'کیلنڈر',
   'calendar.lede':

@@ -14,7 +14,7 @@ type PlanOfferCardProps = {
   className?: string;
 };
 
-/** Pricing card — forest header band matches landing & brand board. */
+/** Pricing card — soft brand gradient (matches search & app panels). */
 export function PlanOfferCard({
   plan,
   periodLabel,
@@ -24,21 +24,20 @@ export function PlanOfferCard({
   return (
     <article
       className={cn(
-        'flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md',
-        plan.id === 'yearly' && 'ring-2 ring-[hsl(var(--brand-fresh)/0.3)]',
+        'app-panel flex flex-col shadow-brand-hover transition-shadow',
+        plan.id === 'yearly' &&
+          'ring-1 ring-[hsl(var(--brand-fresh)/0.35)] ring-offset-2 ring-offset-background',
         className
       )}
     >
       <div className="brand-band px-5 py-4">
-        <p className="text-xs font-semibold uppercase tracking-wide opacity-90">
-          {plan.name}
-        </p>
+        <p className="page-eyebrow !text-[hsl(var(--brand-fresh))]">{plan.name}</p>
         <p
-          className="mt-1 font-display text-3xl font-semibold tracking-tight"
+          className="mt-1 font-display text-3xl font-semibold tracking-tight text-[hsl(var(--brand-forest))] dark:text-foreground"
           dir="ltr"
         >
           {formatPkr(plan.amountPkr)}
-          <span className="ms-1 text-sm font-normal opacity-80">
+          <span className="ms-1 text-sm font-normal text-muted-foreground">
             / {periodLabel}
           </span>
         </p>
