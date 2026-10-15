@@ -97,9 +97,11 @@ export function PlansPage() {
           </Button>
 
           <section className="app-panel overflow-hidden">
-            <div className="brand-band border-b border-border px-5 py-4">
-              <h2 className="font-display text-lg font-semibold">{t('plans.payTitle')}</h2>
-              <p className="mt-1 text-sm opacity-90">
+            <div className="brand-band px-5 py-4">
+              <h2 className="font-display text-lg font-semibold text-[hsl(var(--brand-forest))] dark:text-foreground">
+                {t('plans.payTitle')}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
                 {t('plans.payLede', {
                   plan: selected.name,
                   amount: String(selected.amountPkr),
@@ -110,10 +112,10 @@ export function PlansPage() {
               <button
                 type="button"
                 onClick={onPayRapidGateway}
-                className="flex w-full items-center gap-4 rounded-xl border border-border bg-background p-4 text-start transition-colors hover:border-[hsl(var(--brand-fresh)/0.5)] hover:bg-[hsl(var(--brand-fresh)/0.06)]"
+                className="surface-brand-gradient shadow-brand flex w-full items-center gap-4 rounded-xl border border-border/80 p-4 text-start transition-shadow hover:shadow-brand-hover"
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[hsl(var(--brand-forest))] text-primary-foreground dark:bg-[hsl(var(--brand-fresh))]">
-                  <Smartphone className="h-6 w-6" weight="fill" />
+                <span className="icon-tile-brand h-12 w-12">
+                  <Smartphone className="h-6 w-6" weight="duotone" />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold text-foreground">

@@ -10,11 +10,11 @@ export function ProfileOverviewSkeleton() {
     <div className="space-y-4">
       <div className="grid gap-2 sm:grid-cols-2">
         {Array.from({ length: 2 }).map((_, i) => (
-          <Skeleton key={i} className="h-12 w-full rounded-lg" />
+          <Skeleton key={i} className="h-12 w-full rounded-2xl" />
         ))}
       </div>
-      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-        <div className="border-b border-border px-4 py-3 sm:px-5">
+      <div className="app-panel overflow-hidden">
+        <div className="brand-band px-4 py-3 sm:px-5">
           <BrandLoader size="sm" label={t('common.loading')} />
         </div>
         <dl className="divide-y">

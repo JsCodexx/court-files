@@ -52,6 +52,10 @@ module.exports = {
           muted: 'hsl(var(--sidebar-muted))',
           accent: 'hsl(var(--sidebar-accent))',
         },
+        brand: {
+          fresh: 'hsl(var(--brand-fresh))',
+          forest: 'hsl(var(--brand-forest))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -74,5 +78,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
 };

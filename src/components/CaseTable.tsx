@@ -116,7 +116,7 @@ export function CaseTable({
 
       {mobileStack && (
         <ul className="divide-y divide-border font-body lg:hidden">
-          {cases.map((c, index) => {
+          {cases.map((c) => {
             const partiesFull = partiesFor(c, 'full');
             const partiesMobile = partiesFor(c, 'mobile');
             return (
@@ -126,12 +126,6 @@ export function CaseTable({
                 className="flex w-full items-stretch gap-3 px-3 py-3.5 text-start transition-colors active:bg-muted/50"
                 onClick={() => onSelect?.(c)}
               >
-                <span
-                  className="w-6 shrink-0 pt-0.5 text-center text-xs font-medium tabular-nums text-muted-foreground"
-                  aria-hidden
-                >
-                  {index + 1}
-                </span>
                 <span className="min-w-0 flex-1 space-y-1.5">
                   <span className="flex items-center gap-2">
                     <Link
@@ -201,7 +195,6 @@ export function CaseTable({
       <Table className={compact ? 'min-w-[560px]' : 'min-w-[720px]'}>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-12">{t('table.serial')}</TableHead>
             <TableHead>{t('table.caseId')}</TableHead>
             <TableHead>{t('table.parties')}</TableHead>
             {!compact && <TableHead>{t('table.courtNo')}</TableHead>}
@@ -213,15 +206,12 @@ export function CaseTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {cases.map((c, index) => (
+          {cases.map((c) => (
             <TableRow
               key={c.id}
               onClick={() => onSelect?.(c)}
               className={onSelect ? 'cursor-pointer' : undefined}
             >
-              <TableCell className="text-muted-foreground">
-                {index + 1}
-              </TableCell>
               <TableCell className="font-medium">
                 <div className="flex max-w-[9rem] items-center gap-2">
                   <CaseHoverCard courtCase={c}>
