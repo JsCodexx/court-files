@@ -1,40 +1,8 @@
 import { CourtCase } from '../types';
 import { trimText } from './text';
 
-function normalizeSnippet(value: string | null | undefined): string {
-  return (value ?? '').trim().replace(/\s+/g, ' ');
-}
-
-/** Skip long or placeholder proceeding text as a party connector. */
-function isUsefulConnector(text: string, maxLen: number): boolean {
-  if (!text || text.length > maxLen) return false;
-  const lower = text.toLowerCase();
-  if (lower === '—' || lower === '-' || lower === '...') return false;
-  if (/^new case\b/i.test(lower)) return false;
-  if (/^case will be/i.test(lower)) return false;
-  return true;
-}
-
-/**
- * Prefer a short court note (order, adjournment, proceeding) over plain "Vs"
- * when it fits on one cause-list line.
- */
-export function resolvePartyConnector(courtCase: CourtCase, vsLabel: string): string {
-  const latest = courtCase.hearings?.[0];
-  const candidates = [
-    latest?.shortOrder,
-    latest?.adjournmentReason,
-    courtCase.proceeding,
-    latest?.proceeding,
-  ];
-
-  for (const raw of candidates) {
-    const snippet = normalizeSnippet(raw);
-    if (isUsefulConnector(snippet, 22)) {
-      return snippet;
-    }
-  }
-
+/** Always use the localized VS label (e.g. VS / بنام) — never proceeding text like "Cross". */
+export function resolvePartyConnector(_courtCase: CourtCase, vsLabel: string): string {
   return vsLabel;
 }
 
@@ -44,7 +12,7 @@ export function formatPartiesLine(
   middle: string,
   maxTotal: number
 ): string {
-  const mid = normalizeSnippet(middle) || 'Vs';
+  const mid = middle.trim() || 'VS';
   const sep = ` ${mid} `;
   const budget = Math.max(10, maxTotal - sep.length);
   const each = Math.max(4, Math.floor(budget / 2));
