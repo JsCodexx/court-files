@@ -341,7 +341,7 @@ export const en = {
 
   'common.cancel': 'Cancel',
   'common.save': 'Save',
-  'common.vs': 'Vs',
+  'common.vs': 'VS',
   'common.dash': '—',
   'common.required': '*',
   'common.loading': 'Loading…',
