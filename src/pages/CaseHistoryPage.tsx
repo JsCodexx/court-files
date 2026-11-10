@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../components/ui/dialog';
+import { ProceedingPicker } from '../components/ProceedingPicker';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import {
@@ -37,9 +38,9 @@ import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { CourtCase, HearingRecord } from '../types';
 import { formatDisplayDate, isSunday } from '../utils/dates';
-import { isHearingEditable } from '../utils/hearings';
 import { CaseHistorySkeleton } from '../components/skeletons';
 import { ApiError } from '../utils/api';
+import { displayCourtCaseId } from '../utils/text';
 
 const PAGE_SIZES = [10, 25, 50];
 
@@ -124,12 +125,8 @@ export function CaseHistoryPage() {
   const from = hearings.length === 0 ? 0 : (safePage - 1) * pageSize + 1;
   const to = Math.min(safePage * pageSize, hearings.length);
 
-  const onDelete = async (hearingId: string, createdAt: string) => {
+  const onDelete = async (hearingId: string) => {
     if (!courtCase) return;
-    if (!isHearingEditable(createdAt)) {
-      setError(t('hearing.editLocked'));
-      return;
-    }
     if (!window.confirm(t('history.deleteConfirm'))) return;
     setError('');
     try {
@@ -145,10 +142,6 @@ export function CaseHistoryPage() {
   };
 
   const openEdit = (h: HearingRecord) => {
-    if (!isHearingEditable(h.createdAt)) {
-      setError(t('hearing.editLocked'));
-      return;
-    }
     setEdit({
       hearing: h,
       date: h.date,
@@ -243,12 +236,14 @@ export function CaseHistoryPage() {
           </div>
           <p className="urdu-text mt-1 break-words text-sm text-muted-foreground">
             <span dir="ltr" className="font-semibold">
-              {courtCase.caseId}
+              {displayCourtCaseId(courtCase.caseId, t('common.dash'))}
             </span>
             {' · '}
             {courtCase.party1.name} {t('common.vs')} {courtCase.party2.name}
             {' · '}
             {t(`category.${courtCase.category}` as TranslationKey)}
+            {' · '}
+            {t(`caseCategory.${courtCase.caseCategory}` as TranslationKey)}
           </p>
         </div>
         <div className="page-actions">
@@ -465,53 +460,28 @@ export function CaseHistoryPage() {
                     </TableCell>
                     <TableCell className="text-end">
                       <div className="inline-flex gap-1.5">
-                        {(() => {
-                          const editable = isHearingEditable(h.createdAt);
-                          return (
-                            <>
-                              <Button
-                                type="button"
-                                size="icon"
-                                variant="ghost"
-                                disabled={!editable}
-                                className="h-8 w-8 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-40"
-                                onClick={() => openEdit(h)}
-                                aria-label={
-                                  editable
-                                    ? t('history.edit')
-                                    : t('history.editLocked')
-                                }
-                                title={
-                                  editable
-                                    ? t('history.edit')
-                                    : t('history.editLocked')
-                                }
-                              >
-                                <Pencil className="h-3.5 w-3.5" />
-                              </Button>
-                              <Button
-                                type="button"
-                                size="icon"
-                                variant="ghost"
-                                disabled={!editable}
-                                className="h-8 w-8 rounded-full bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground disabled:opacity-40"
-                                onClick={() => onDelete(h.id, h.createdAt)}
-                                aria-label={
-                                  editable
-                                    ? t('history.deleteHearing')
-                                    : t('history.editLocked')
-                                }
-                                title={
-                                  editable
-                                    ? t('history.deleteHearing')
-                                    : t('history.editLocked')
-                                }
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </Button>
-                            </>
-                          );
-                        })()}
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground"
+                          onClick={() => openEdit(h)}
+                          aria-label={t('history.edit')}
+                          title={t('history.edit')}
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 rounded-full bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                          onClick={() => onDelete(h.id)}
+                          aria-label={t('history.deleteHearing')}
+                          title={t('history.deleteHearing')}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -602,22 +572,16 @@ export function CaseHistoryPage() {
                   />
                 </div>
                 <div>
-                  <Label>
-                    {t('history.stage')}{' '}
-                    <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    className="urdu-input"
+                  <ProceedingPicker
+                    label={t('history.stage')}
+                    required
                     value={edit.proceeding}
-                    onChange={(e) =>
+                    onChange={(v) =>
                       setEdit((prev) =>
-                        prev ? { ...prev, proceeding: e.target.value } : prev
+                        prev ? { ...prev, proceeding: v } : prev
                       )
                     }
-                    required
-                    maxLength={200}
-                    dir="auto"
-                    lang="ur"
+                    placeholder={t('hearing.proceedingPh')}
                   />
                 </div>
                 <div className="sm:col-span-2">

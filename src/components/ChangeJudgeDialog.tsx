@@ -5,6 +5,7 @@ import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { CourtCase } from '../types';
 import { ApiError } from '../utils/api';
+import { displayCourtCaseId } from '../utils/text';
 import { PersonPicker } from './PersonPicker';
 import { Alert } from './ui/alert';
 import { Button } from './ui/button';
@@ -102,7 +103,9 @@ export function ChangeJudgeDialog({
             {t('judge.changeTitle')}
           </DialogTitle>
           <p className="urdu-text text-sm text-muted-foreground">
-            <span dir="ltr">{courtCase.caseId}</span>
+            <span dir="ltr">
+              {displayCourtCaseId(courtCase.caseId, t('common.dash'))}
+            </span>
             {' · '}
             {courtCase.party1.name} {t('common.vs')} {courtCase.party2.name}
           </p>

@@ -12,7 +12,7 @@ import {
   UserRound,
   X,
 } from './icons';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from './motion';
 import { transitionFast } from '../motion/presets';
 import { useAuth } from '../context/AuthContext';
@@ -21,6 +21,7 @@ import { useSubscription } from '../hooks/useSubscription';
 import { useLocale } from '../i18n/LocaleContext';
 import { cn } from '../lib/utils';
 import { AppBottomNav } from './AppBottomNav';
+import { isBillingRoute } from '../utils/billingRoutes';
 import { PwaInstallPrompt } from './PwaInstallPrompt';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import ThemeToggle from './ThemeToggle';
@@ -30,9 +31,20 @@ import { Button } from './ui/button';
 
 const SIDEBAR_KEY = 'cf_sidebar_open';
 
+type SidebarLink = {
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  /** Match only this path, not child routes (e.g. /payments vs /payments/manual). */
+  end?: boolean;
+  /** Highlight when any billing route is active (/plans, /payments, /payments/manual). */
+  billingHub?: boolean;
+};
+
 export function AppLayout() {
   const { user, logout } = useAuth();
   const { t, dir } = useLocale();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const { showBottomNav, showSidebar } = useAppShell();
   const { status: subscription } = useSubscription();
@@ -70,17 +82,14 @@ export function AppLayout() {
     };
   }, [showBottomNav]);
 
-  const links = billingOnly
-    ? [
-        { to: '/plans', label: t('nav.plans'), icon: CreditCard },
-        { to: '/payments', label: t('profile.quickPayments'), icon: CreditCard },
-      ]
+  const links: SidebarLink[] = billingOnly
+    ? [{ to: '/plans', label: t('nav.billingHub'), icon: CreditCard, billingHub: true }]
     : [
         { to: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
         { to: '/cases/new', label: t('nav.addCase'), icon: PlusCircle },
         { to: '/calendar', label: t('nav.calendar'), icon: CalendarDays },
         { to: '/search', label: t('nav.search'), icon: Search },
-        { to: '/plans', label: t('nav.plans'), icon: CreditCard },
+        { to: '/plans', label: t('nav.billingHub'), icon: CreditCard, billingHub: true },
         { to: '/profile', label: t('nav.profile'), icon: UserRound },
       ];
 
@@ -160,26 +169,35 @@ export function AppLayout() {
                 <NavLink
                   key={link.to}
                   to={link.to}
+                  end={link.end}
                   title={link.label}
-                  className={({ isActive }) =>
-                    cn(
+                  className={({ isActive }) => {
+                    const active = link.billingHub
+                      ? isBillingRoute(pathname)
+                      : isActive;
+                    return cn(
                       'flex items-center rounded-xl text-sm font-medium transition-colors',
                       expanded ? 'gap-3 px-3 py-2.5' : 'justify-center px-2 py-2.5',
-                      isActive
+                      active
                         ? 'bg-sidebar-accent text-sidebar-foreground shadow-sm'
                         : 'text-sidebar-muted hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground'
-                    )
-                  }
+                    );
+                  }}
                 >
-                  {({ isActive }) => (
+                  {({ isActive }) => {
+                    const active = link.billingHub
+                      ? isBillingRoute(pathname)
+                      : isActive;
+                    return (
                     <>
                       <Icon
                         className="h-4 w-4 shrink-0"
-                        weight={isActive ? 'fill' : 'regular'}
+                        weight={active ? 'fill' : 'regular'}
                       />
                       {expanded && <span className="truncate">{link.label}</span>}
                     </>
-                  )}
+                    );
+                  }}
                 </NavLink>
               );
             })}
@@ -403,6 +421,17 @@ function AppAccountDrawer({
                 menuAbove
               />
             </div>
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-11 w-full justify-start gap-3 rounded-xl text-sidebar-foreground hover:bg-sidebar-foreground/10"
+              asChild
+            >
+              <Link to="/plans" onClick={close}>
+                <CreditCard className="h-5 w-5 shrink-0" weight="duotone" />
+                {t('nav.tabPlans')}
+              </Link>
+            </Button>
             <Button
               type="button"
               variant="ghost"

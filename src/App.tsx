@@ -15,6 +15,7 @@ import { LoaderProvider } from './context/LoaderContext';
 import { LocaleProvider } from './i18n/LocaleContext';
 import { ThemeProvider } from './theme/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
+import { PwaRootEffects } from './components/PwaRootEffects';
 import { PwaUpdatePrompt } from './components/PwaUpdatePrompt';
 import { AddCasePage } from './pages/AddCasePage';
 import { CalendarPage } from './pages/CalendarPage';
@@ -35,6 +36,8 @@ import {
 } from './pages/LegalPages';
 import { LoginPage } from './pages/LoginPage';
 import { PaymentsPage } from './pages/PaymentsPage';
+import { BillingLayout } from './components/BillingLayout';
+import { ManualPaymentPage } from './pages/ManualPaymentPage';
 import { PlansPage } from './pages/PlansPage';
 import { ProfilePage, ProfileOverview, ProfileSettings } from './pages/ProfilePage';
 import { PublicPricingPage } from './pages/PublicPricingPage';
@@ -50,6 +53,7 @@ function App() {
       <LocaleProvider>
         <LoaderProvider>
           <ToastProvider>
+            <PwaRootEffects />
             <PwaUpdatePrompt />
             <AuthProvider>
             <SubscriptionProvider>
@@ -72,8 +76,11 @@ function App() {
                   />
                   <Route element={<AppLayout />}>
                     <Route element={<SubscriptionBillingGuard />}>
-                    <Route path="/plans" element={<PlansPage />} />
-                    <Route path="/payments" element={<PaymentsPage />} />
+                    <Route element={<BillingLayout />}>
+                      <Route path="/plans" element={<PlansPage />} />
+                      <Route path="/payments/manual" element={<ManualPaymentPage />} />
+                      <Route path="/payments" element={<PaymentsPage />} />
+                    </Route>
                     <Route path="/profile" element={<ProfilePage />}>
                       <Route index element={<ProfileOverview />} />
                       <Route path="settings" element={<ProfileSettings />} />

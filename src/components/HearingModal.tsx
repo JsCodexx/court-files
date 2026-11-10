@@ -11,8 +11,12 @@ import {
   nextWorkingDayISO,
   todayISO,
 } from '../utils/dates';
-import { getLatestHearing, isHearingEditable } from '../utils/hearings';
+import {
+  getLatestHearing,
+  isAmendingLatestHearing,
+} from '../utils/hearings';
 import { ApiError } from '../utils/api';
+import { displayCourtCaseId } from '../utils/text';
 import { Alert } from './ui/alert';
 import { Button } from './ui/button';
 import {
@@ -65,7 +69,7 @@ export function HearingModal({ courtCase, onClose }: Props) {
         setStatus(fresh.status || 'pending');
         setStatusRemarks(fresh.statusRemarks || '');
         const latest = getLatestHearing(fresh.hearings);
-        if (latest && isHearingEditable(latest.createdAt)) {
+        if (latest) {
           setDate(latest.date || nextWorkingDayISO());
           setProceeding(latest.proceeding || '');
           setAdjournmentReason(latest.adjournmentReason || '');
@@ -85,19 +89,8 @@ export function HearingModal({ courtCase, onClose }: Props) {
     t((short ? `monthShort.${index}` : `month.${index}`) as TranslationKey);
 
   const latestHearing = getLatestHearing(current.hearings);
-  const latestEditable = latestHearing
-    ? isHearingEditable(latestHearing.createdAt)
-    : false;
+  const amendingLatest = isAmendingLatestHearing(latestHearing, date);
   const today = todayISO();
-  // When we're editing the latest hearing (i.e. latestEditable is true),
-  // allow selecting past dates (dates lower than today).
-  const dateMin = latestEditable ? undefined : todayISO();
-  const dateMax = latestEditable ? todayISO() : undefined;
-  const scheduleLocked =
-    Boolean(latestHearing) &&
-    !latestEditable &&
-    Boolean(current.nextDate) &&
-    today < current.nextDate;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,21 +130,20 @@ export function HearingModal({ courtCase, onClose }: Props) {
       return;
     }
 
-    if (scheduleLocked) {
-      setError(
-        t('hearing.lockedUntilDate', {
-          date: formatDisplayDate(current.nextDate, monthLabel),
-        })
-      );
-      return;
-    }
-
     if (!proceeding.trim()) {
       setError(t('hearing.proceedingRequired'));
       return;
     }
     if (isSunday(date)) {
       setError(t('validation.sunday'));
+      return;
+    }
+    if (!amendingLatest && date < today) {
+      setError(t('validation.datePast'));
+      return;
+    }
+    if (amendingLatest && date > today) {
+      setError(t('validation.dateFuture'));
       return;
     }
     setSaving(true);
@@ -200,7 +192,9 @@ export function HearingModal({ courtCase, onClose }: Props) {
         <DialogHeader>
           <DialogTitle>{t('hearing.title')}</DialogTitle>
           <p className="urdu-text text-sm text-muted-foreground">
-            <span dir="ltr">{current.caseId}</span>
+            <span dir="ltr">
+              {displayCourtCaseId(current.caseId, t('common.dash'))}
+            </span>
             {' · '}
             {current.party1.name} {t('common.vs')} {current.party2.name}
           </p>
@@ -256,17 +250,9 @@ export function HearingModal({ courtCase, onClose }: Props) {
 
         <form onSubmit={submit} className="space-y-4">
           {error && <Alert variant="destructive">{error}</Alert>}
-          {status === 'pending' && latestEditable ? (
+          {status === 'pending' && amendingLatest ? (
             <Alert>{t('hearing.correctionWindow')}</Alert>
           ) : null}
-          {status === 'pending' && scheduleLocked ? (
-            <Alert variant="destructive">
-              {t('hearing.lockedUntilDate', {
-                date: formatDisplayDate(current.nextDate, monthLabel),
-              })}
-            </Alert>
-          ) : null}
-
           <div>
             <Label>{t('hearing.status')}</Label>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
@@ -337,7 +323,7 @@ export function HearingModal({ courtCase, onClose }: Props) {
             </div>
           )}
 
-          {status === 'pending' && !scheduleLocked && (
+          {status === 'pending' && (
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <Label>
@@ -347,8 +333,6 @@ export function HearingModal({ courtCase, onClose }: Props) {
                 <Input
                   type="date"
                   value={date}
-                  min={dateMin}
-                  max={dateMax}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value && isSunday(value)) {
@@ -424,7 +408,7 @@ export function HearingModal({ courtCase, onClose }: Props) {
             </Button>
             <Button
               type="submit"
-              disabled={saving || (status === 'pending' && scheduleLocked)}
+              disabled={saving}
             >
               {submitLabel}
             </Button>

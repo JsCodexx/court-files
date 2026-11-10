@@ -7,7 +7,7 @@ export function SubscriptionGate() {
   const { status, loading } = useSubscription();
 
   if (loading && !status) {
-    return <Outlet />;
+    return null;
   }
 
   if (status && !status.canAccessApp) {

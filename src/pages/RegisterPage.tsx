@@ -15,6 +15,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { AuthPageShell } from '../components/AuthPageShell';
 import { PageEnter } from '../components/motion';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
@@ -73,7 +74,7 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="page-shell">
+    <AuthPageShell>
       <PageEnter className="mx-auto w-full max-w-md sm:max-w-2xl">
       <Card className="auth-card w-full">
         <CardHeader>
@@ -197,6 +198,6 @@ export function RegisterPage() {
         </CardContent>
       </Card>
       </PageEnter>
-    </div>
+    </AuthPageShell>
   );
 }

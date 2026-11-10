@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Scale } from '../components/icons';
 import { AddCaseFormSkeleton } from '../components/skeletons';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -18,13 +18,22 @@ import {
   SelectValue,
 } from '../components/ui/select';
 import { Textarea } from '../components/ui/textarea';
-import { ADVOCATE_FOR_OPTIONS, COURT_CATEGORIES } from '../constants';
+import {
+  ADVOCATE_FOR_OPTIONS,
+  CASE_MATTER_CATEGORIES,
+  COURT_CATEGORIES,
+} from '../constants';
 import { useCases } from '../context/CasesContext';
 import { useSubscription } from '../hooks/useSubscription';
 import { useLocale } from '../i18n/LocaleContext';
 import { translateApiError } from '../utils/api';
 import { TranslationKey } from '../i18n/translations';
-import { AdvocateFor, CourtCase, CourtCategory } from '../types';
+import {
+  AdvocateFor,
+  CaseMatterCategory,
+  CourtCase,
+  CourtCategory,
+} from '../types';
 import { isSunday, nextWorkingDayISO, todayISO } from '../utils/dates';
 import {
   formatCnic,
@@ -35,10 +44,16 @@ import {
   maskPhone,
   normalizePhone,
 } from '../utils/validation';
+import {
+  clearAddCaseDraft,
+  readAddCaseDraft,
+  writeAddCaseDraft,
+} from '../utils/addCaseDraft';
 
 interface CaseFormState {
   caseId: string;
   category: CourtCategory;
+  caseCategory: CaseMatterCategory;
   party1Name: string;
   party1IdCard: string;
   party1Phone: string;
@@ -67,6 +82,7 @@ type FieldErrors = Partial<Record<keyof CaseFormState, string>>;
 const empty: CaseFormState = {
   caseId: '',
   category: 'Civil Courts',
+  caseCategory: 'Civil',
   party1Name: '',
   party1IdCard: '',
   party1Phone: '',
@@ -94,6 +110,7 @@ function fromCase(c: CourtCase): CaseFormState {
   return {
     caseId: c.caseId,
     category: c.category,
+    caseCategory: c.caseCategory || 'Civil',
     party1Name: c.party1.name,
     party1IdCard: c.party1.idCard,
     party1Phone: c.party1.phone,
@@ -140,16 +157,26 @@ export function AddCasePage() {
   const [notFound, setNotFound] = useState(false);
   const [editingCase, setEditingCase] = useState<CourtCase | null>(null);
   const [changeJudgeOpen, setChangeJudgeOpen] = useState(false);
+  const newCaseBootstrapped = useRef(false);
 
   useEffect(() => {
     if (!id) {
-      setForm({ ...empty, nextDate: nextWorkingDayISO() });
+      if (newCaseBootstrapped.current) return;
+      newCaseBootstrapped.current = true;
+      const draft = readAddCaseDraft();
+      if (draft) {
+        const { savedAt: _savedAt, ...rest } = draft;
+        setForm(rest);
+      } else {
+        setForm({ ...empty, nextDate: nextWorkingDayISO() });
+      }
       setOriginalNextDate(null);
       setEditingCase(null);
       setLoading(false);
       setNotFound(false);
       return;
     }
+    newCaseBootstrapped.current = false;
     const cached = peekCase(id);
     if (cached) {
       setForm(fromCase(cached));
@@ -179,6 +206,14 @@ export function AddCasePage() {
       alive = false;
     };
   }, [id, peekCase, getCase, version]);
+
+  useEffect(() => {
+    if (isEdit) return;
+    const timer = window.setTimeout(() => {
+      writeAddCaseDraft(form);
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [form, isEdit]);
 
   const setValue = (key: keyof CaseFormState, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -211,8 +246,9 @@ export function AddCasePage() {
     const errs: FieldErrors = {};
     const required = t('validation.required');
 
-    if (!f.caseId.trim()) errs.caseId = required;
-    else if (!isValidCaseId(f.caseId)) errs.caseId = t('validation.caseId');
+    if (f.caseId.trim() && !isValidCaseId(f.caseId)) {
+      errs.caseId = t('validation.caseId');
+    }
 
     if (!f.city.trim()) errs.city = required;
     if (!f.judgeName.trim()) errs.judgeName = required;
@@ -251,6 +287,7 @@ export function AddCasePage() {
   const buildPayload = (f: CaseFormState) => ({
     caseId: f.caseId.trim(),
     category: f.category,
+    caseCategory: f.caseCategory,
     party1: {
       name: f.party1Name.trim(),
       idCard: f.party1IdCard.trim() ? formatCnic(f.party1IdCard) : '',
@@ -301,8 +338,10 @@ export function AddCasePage() {
         setTimeout(() => navigate(`/cases/${id}/detail`), 700);
       } else {
         await addCase(payload);
+        clearAddCaseDraft();
         void reloadSubscription({ silent: true });
         setSuccess(t('addCase.saved'));
+        newCaseBootstrapped.current = false;
         setForm({ ...empty, nextDate: nextWorkingDayISO() });
         setFieldErrors({});
         setTimeout(() => navigate('/dashboard'), 700);
@@ -336,7 +375,7 @@ export function AddCasePage() {
     );
   }
 
-  if (loading || (!isEdit && subLoading)) {
+  if (loading || (!isEdit && subLoading && !subscription)) {
     return <AddCaseFormSkeleton />;
   }
 
@@ -428,9 +467,7 @@ export function AddCasePage() {
             {sectionTitle(t('addCase.caseDetails'))}
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <Label>
-                  {t('addCase.caseId')} {req}
-                </Label>
+                <Label>{t('addCase.caseId')}</Label>
                 <Input
                   invalid={!!fieldErrors.caseId}
                   value={form.caseId}
@@ -439,11 +476,14 @@ export function AddCasePage() {
                   dir="ltr"
                   aria-invalid={!!fieldErrors.caseId}
                 />
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  {t('addCase.caseIdHint')}
+                </p>
                 {fieldError('caseId')}
               </div>
               <div>
                 <Label>
-                  {t('addCase.category')} {req}
+                  {t('addCase.courtCategory')} {req}
                 </Label>
                 <Select
                   value={form.category}
@@ -456,6 +496,28 @@ export function AddCasePage() {
                     {COURT_CATEGORIES.map((c) => (
                       <SelectItem key={c} value={c}>
                         {t(`category.${c}` as TranslationKey)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>
+                  {t('addCase.caseCategory')} {req}
+                </Label>
+                <Select
+                  value={form.caseCategory}
+                  onValueChange={(v) =>
+                    setValue('caseCategory', v as CaseMatterCategory)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CASE_MATTER_CATEGORIES.map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {t(`caseCategory.${c}` as TranslationKey)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -565,11 +627,6 @@ export function AddCasePage() {
                   type="date"
                   invalid={!!fieldErrors.nextDate}
                   value={form.nextDate}
-                  min={
-                    isEdit && originalNextDate && originalNextDate < todayISO()
-                      ? originalNextDate
-                      : todayISO()
-                  }
                   onChange={(e) => {
                     const value = e.target.value;
                     if (value && isSunday(value)) {

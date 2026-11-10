@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CreditCard, Receipt, Smartphone } from '../components/icons';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { AppPage, AppPageHeader } from '../components/AppPage';
 import { Alert } from '../components/ui/alert';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { useToast } from '../context/ToastContext';
+import { ManualPaymentRequestsPanel } from '../components/ManualPaymentRequestsPanel';
+import { useManualPaymentRequests } from '../hooks/useManualPaymentRequests';
 import { useSubscription } from '../hooks/useSubscription';
 import { useLocale } from '../i18n/LocaleContext';
 import { apiFetch, translateApiError } from '../utils/api';
@@ -13,6 +14,10 @@ import {
   InlinePanelSkeleton,
   PaymentsPageSkeleton,
 } from '../components/skeletons';
+import {
+  DEFAULT_CHECKOUT,
+  type CheckoutAvailability,
+} from '../types/checkout';
 import type { Plan } from './PlansPage';
 
 interface Payment {
@@ -46,6 +51,23 @@ function planLabel(planId: string) {
   return planId.charAt(0).toUpperCase() + planId.slice(1);
 }
 
+function planDurationDays(planId: string, plan?: Plan | null) {
+  if (plan?.durationDays) return plan.durationDays;
+  return planId === 'yearly' ? 365 : 30;
+}
+
+function paidSuccessText(
+  payment: Payment,
+  plan: Plan | null | undefined,
+  t: (key: 'payments.paidSuccess', vars: Record<string, string>) => string
+) {
+  return t('payments.paidSuccess', {
+    plan: plan?.name ?? planLabel(payment.planId),
+    amount: String(payment.amountPkr),
+    days: String(planDurationDays(payment.planId, plan)),
+  });
+}
+
 function PaymentStatusBadge({ status }: { status: string }) {
   const normalized = status.toLowerCase();
   const variant =
@@ -65,7 +87,12 @@ function PaymentStatusBadge({ status }: { status: string }) {
 export function PaymentsPage() {
   const { t } = useLocale();
   const toast = useToast();
-  const { status: subscription, reload: reloadSubscription } = useSubscription();
+  const {
+    status: subscription,
+    loading: subLoading,
+    reload: reloadSubscription,
+  } = useSubscription();
+  const checkoutAutoStarted = useRef(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -78,6 +105,37 @@ export function PaymentsPage() {
   const [info, setInfo] = useState('');
   const [busy, setBusy] = useState(false);
   const [historyReady, setHistoryReady] = useState(false);
+  const {
+    requests: manualRequests,
+    loading: manualLoading,
+    error: manualError,
+  } = useManualPaymentRequests();
+  const [checkout, setCheckout] =
+    useState<CheckoutAvailability>(DEFAULT_CHECKOUT);
+  const [checkoutReady, setCheckoutReady] = useState(false);
+
+  const manualOnly =
+    !checkout.rapidGateway && checkout.manual !== false;
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await apiFetch<{
+          ok: true;
+          checkout?: CheckoutAvailability;
+        }>('/payments/plans');
+        if (alive && res.checkout) setCheckout(res.checkout);
+      } catch {
+        /* keep defaults — gateway off */
+      } finally {
+        if (alive) setCheckoutReady(true);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const loadHistory = useCallback(async () => {
     const res = await apiFetch<{ ok: true; payments: Payment[] }>('/payments');
@@ -128,7 +186,8 @@ export function PaymentsPage() {
         setActive(res.payment);
         setDemoMode(demo === '1' && res.payment.status !== 'paid');
         if (res.payment.status === 'paid') {
-          setInfo(t('payments.paidSuccess'));
+          const locPlan = (location.state as LocState)?.plan;
+          setInfo(paidSuccessText(res.payment, locPlan, t));
           const sub = await reloadSubscription();
           if (sub?.canAccessApp) {
             navigate('/dashboard', { replace: true });
@@ -149,7 +208,7 @@ export function PaymentsPage() {
     return () => {
       alive = false;
     };
-  }, [searchParams, t, reloadSubscription, navigate, toast]);
+  }, [searchParams, t, reloadSubscription, navigate, toast, location.state]);
 
   const startCheckout = async (planId: string) => {
     setBusy(true);
@@ -182,11 +241,35 @@ export function PaymentsPage() {
 
   useEffect(() => {
     const planId = state?.planId;
-    if (!planId) return;
-    if (searchParams.get('paymentId')) return;
+    if (!planId || searchParams.get('paymentId')) return;
+    if (subLoading || !checkoutReady) return;
+    if (checkoutAutoStarted.current) return;
+    checkoutAutoStarted.current = true;
+    if (subscription?.hasActiveSubscription) {
+      setError(t('payments.alreadyActive'));
+      return;
+    }
+    if (!checkout.rapidGateway) {
+      if (checkout.manual) {
+        navigate(`/payments/manual?plan=${planId}`, { replace: true });
+      } else {
+        setError(t('errors.gatewayCheckoutPaused'));
+      }
+      return;
+    }
     startCheckout(planId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    subLoading,
+    checkoutReady,
+    checkout.rapidGateway,
+    checkout.manual,
+    subscription?.hasActiveSubscription,
+    state?.planId,
+    searchParams,
+    navigate,
+    t,
+  ]);
 
   const confirmDemo = async () => {
     if (!active) return;
@@ -199,7 +282,7 @@ export function PaymentsPage() {
       );
       setActive(res.payment);
       setDemoMode(false);
-      setInfo(t('payments.paidSuccess'));
+      setInfo(paidSuccessText(res.payment, plan, t));
       await loadHistory();
       const sub = await reloadSubscription();
       if (sub?.canAccessApp) {
@@ -217,7 +300,8 @@ export function PaymentsPage() {
   const plan = state?.plan;
   const checkoutPlanId = active?.planId ?? plan?.id;
   const checkoutAmount = active?.amountPkr ?? plan?.amountPkr;
-  const showCheckout = Boolean(active || plan || busy);
+  const showCheckout =
+    checkout.rapidGateway && Boolean(active || plan || busy);
 
   const subscriptionSummary = useMemo(() => {
     if (!subscription) return null;
@@ -241,20 +325,38 @@ export function PaymentsPage() {
   }, [subscription, t]);
 
   return (
-    <AppPage>
-      <AppPageHeader title={t('payments.title')} lede={t('payments.lede')} />
+    <div className="space-y-4">
+      {manualOnly && (
+        <Alert>
+          {t('errors.gatewayCheckoutPaused')}{' '}
+          <Link to="/payments/manual" className="font-medium underline">
+            {t('plans.manualPay')}
+          </Link>
+        </Alert>
+      )}
 
       {subscriptionSummary && (
         <div className="app-panel flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
           <p className="text-sm text-foreground">{subscriptionSummary}</p>
-          <Button asChild variant="outline" size="sm" className="shrink-0">
-            <Link to="/plans">{t('payments.choosePlan')}</Link>
-          </Button>
+          {!subscription?.hasActiveSubscription ? (
+            <Button asChild variant="outline" size="sm" className="shrink-0">
+              <Link to="/plans">{t('payments.choosePlan')}</Link>
+            </Button>
+          ) : null}
         </div>
       )}
 
+      {subscription?.hasActiveSubscription && !searchParams.get('paymentId') && (
+        <Alert>{t('payments.alreadyActive')}</Alert>
+      )}
+
       {error && <Alert variant="destructive">{error}</Alert>}
+      {manualError && <Alert variant="destructive">{manualError}</Alert>}
       {info && <Alert variant="success">{info}</Alert>}
+
+      {!manualLoading && manualRequests.length > 0 && (
+        <ManualPaymentRequestsPanel requests={manualRequests} />
+      )}
 
       {!historyReady ? (
         <PaymentsPageSkeleton />
@@ -285,10 +387,28 @@ export function PaymentsPage() {
           <div className="space-y-4 p-5 sm:p-6">
             {!showCheckout && (
               <div className="space-y-4 text-center sm:text-start">
-                <p className="text-sm text-muted-foreground">{t('plans.lede')}</p>
-                <Button asChild>
-                  <Link to="/plans">{t('payments.choosePlan')}</Link>
-                </Button>
+                <p className="text-sm text-muted-foreground">
+                  {manualOnly ? t('plans.ledeManualOnly') : t('plans.lede')}
+                </p>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <Button asChild variant={manualOnly ? 'default' : 'default'}>
+                    <Link to={manualOnly ? '/payments/manual' : '/plans'}>
+                      {manualOnly
+                        ? t('plans.manualPay')
+                        : t('payments.choosePlan')}
+                    </Link>
+                  </Button>
+                  {!manualOnly && (
+                    <Button asChild variant="outline">
+                      <Link to="/payments/manual">{t('plans.manualPay')}</Link>
+                    </Button>
+                  )}
+                  {manualOnly && (
+                    <Button asChild variant="outline">
+                      <Link to="/plans">{t('payments.choosePlan')}</Link>
+                    </Button>
+                  )}
+                </div>
               </div>
             )}
 
@@ -387,6 +507,6 @@ export function PaymentsPage() {
       )}
 
       <p className="text-xs text-muted-foreground">{t('pricing.paymentNote')}</p>
-    </AppPage>
+    </div>
   );
 }

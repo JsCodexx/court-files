@@ -1,42 +1,62 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CreditCard, Smartphone } from '../components/icons';
-import { useNavigate } from 'react-router-dom';
-import { AppPage, AppPageHeader } from '../components/AppPage';
+import { Link, useNavigate } from 'react-router-dom';
 import { PlanOfferCard } from '../components/pricing/PlanOfferCard';
+import { PlansStatusActions } from '../components/pricing/PlansStatusActions';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
-import { PlanCardsSkeleton } from '../components/skeletons';
+import { DEFAULT_PLANS, type Plan } from '../constants/plansCatalog';
+import { useManualPaymentRequests } from '../hooks/useManualPaymentRequests';
+import { useSubscription } from '../hooks/useSubscription';
+import {
+  DEFAULT_CHECKOUT,
+  type CheckoutAvailability,
+} from '../types/checkout';
 import { ApiError, apiFetch } from '../utils/api';
 
-export interface Plan {
-  id: string;
-  name: string;
-  description: string;
-  amountPkr: number;
-  currency: string;
-  durationDays: number;
-  features: string[];
-}
+export type { Plan };
 
 type Step = 'plans' | 'method';
 
 export function PlansPage() {
   const { t } = useLocale();
   const navigate = useNavigate();
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const { status: subscription } = useSubscription();
+  const { pending: manualPending, requests: manualRequests } =
+    useManualPaymentRequests();
+
+  const hasActiveSubscription = Boolean(subscription?.hasActiveSubscription);
+  const canPurchase = !hasActiveSubscription && !manualPending;
+
+  const [plans, setPlans] = useState<Plan[]>(DEFAULT_PLANS);
+  const [checkout, setCheckout] =
+    useState<CheckoutAvailability>(DEFAULT_CHECKOUT);
   const [step, setStep] = useState<Step>('plans');
   const [selected, setSelected] = useState<Plan | null>(null);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+
+  const manualOnly =
+    !checkout.rapidGateway && checkout.manual !== false;
+
+  const activeUntilLabel = useMemo(() => {
+    if (!subscription?.subscriptionExpiresAt) return null;
+    return new Date(subscription.subscriptionExpiresAt).toLocaleDateString();
+  }, [subscription?.subscriptionExpiresAt]);
 
   useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const res = await apiFetch<{ ok: true; plans: Plan[] }>('/payments/plans');
-        if (alive) setPlans(res.plans);
+        const res = await apiFetch<{
+          ok: true;
+          plans: Plan[];
+          checkout?: CheckoutAvailability;
+        }>('/payments/plans');
+        if (!alive) return;
+        if (res.plans?.length) setPlans(res.plans);
+        if (res.checkout) setCheckout(res.checkout);
       } catch (err) {
         if (alive) {
           setError(
@@ -45,8 +65,6 @@ export function PlansPage() {
               : t('errors.network')
           );
         }
-      } finally {
-        if (alive) setLoading(false);
       }
     })();
     return () => {
@@ -55,34 +73,58 @@ export function PlansPage() {
   }, [t]);
 
   const onChoosePlan = (plan: Plan) => {
-    setSelected(plan);
-    setStep('method');
+    if (manualPending) {
+      setError(t('manualPayment.pendingReview'));
+      return;
+    }
+    if (hasActiveSubscription) {
+      setError(t('payments.alreadyActive'));
+      return;
+    }
     setError('');
+    if (manualOnly) {
+      navigate(`/payments/manual?plan=${plan.id}`);
+      return;
+    }
+    if (checkout.rapidGateway) {
+      setSelected(plan);
+      setStep('method');
+      return;
+    }
+    if (checkout.manual) {
+      navigate(`/payments/manual?plan=${plan.id}`);
+    }
   };
 
   const onPayRapidGateway = () => {
-    if (!selected) return;
+    if (!selected || !canPurchase || !checkout.rapidGateway) return;
     navigate('/payments', { state: { planId: selected.id, plan: selected } });
   };
 
   return (
-    <AppPage>
-      <AppPageHeader title={t('plans.title')} lede={t('plans.lede')} />
-
+    <div className="space-y-4">
       {error && <Alert variant="destructive">{error}</Alert>}
 
-      {loading && <PlanCardsSkeleton />}
+      <PlansStatusActions
+        activeUntil={hasActiveSubscription ? activeUntilLabel : null}
+        manualPending={manualPending}
+        hasManualRequests={manualRequests.length > 0}
+      />
 
-      {!loading && step === 'plans' && (
-        <div className="grid gap-5 sm:grid-cols-2">
+      {step === 'plans' && (
+        <div className="mt-5 grid gap-5 sm:grid-cols-2">
           {plans.map((plan) => (
             <PlanOfferCard
               key={plan.id}
               plan={plan}
               periodLabel={`${plan.durationDays}d`}
               footer={
-                <Button className="w-full" onClick={() => onChoosePlan(plan)}>
-                  {t('plans.purchase')}
+                <Button
+                  className="w-full"
+                  onClick={() => onChoosePlan(plan)}
+                  disabled={!canPurchase}
+                >
+                  {manualOnly ? t('plans.purchaseManual') : t('plans.purchase')}
                 </Button>
               }
             />
@@ -90,7 +132,7 @@ export function PlansPage() {
         </div>
       )}
 
-      {!loading && step === 'method' && selected && (
+      {step === 'method' && selected && checkout.rapidGateway && (
         <div className="mx-auto max-w-lg space-y-4 lg:max-w-xl">
           <Button type="button" variant="ghost" size="sm" onClick={() => setStep('plans')}>
             ← {t('plans.back')}
@@ -101,40 +143,34 @@ export function PlansPage() {
               <h2 className="font-display text-lg font-semibold text-[hsl(var(--brand-forest))] dark:text-foreground">
                 {t('plans.payTitle')}
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {t('plans.payLede', {
-                  plan: selected.name,
-                  amount: String(selected.amountPkr),
-                })}
-              </p>
             </div>
-            <div className="p-5 sm:p-6">
-              <button
+            <div className="flex flex-col gap-3 p-5 sm:p-6">
+              <Button
                 type="button"
                 onClick={onPayRapidGateway}
-                className="surface-brand-gradient shadow-brand flex w-full items-center gap-4 rounded-xl border border-border/80 p-4 text-start transition-shadow hover:shadow-brand-hover"
+                disabled={!canPurchase}
+                className="h-auto w-full justify-start gap-4 py-4"
               >
-                <span className="icon-tile-brand h-12 w-12">
+                <span className="icon-tile-brand flex h-12 w-12 shrink-0 items-center justify-center">
                   <Smartphone className="h-6 w-6" weight="duotone" />
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block font-semibold text-foreground">
-                    {t('plans.rapidgateway')}
-                  </span>
-                  <span className="block text-sm text-muted-foreground">
-                    {t('plans.rapidgatewayHint')}
-                  </span>
+                <span className="min-w-0 flex-1 text-start font-semibold">
+                  {t('plans.rapidgateway')}
                 </span>
-                <CreditCard className="h-5 w-5 shrink-0 text-muted-foreground" />
-              </button>
+                <CreditCard className="h-5 w-5 shrink-0 opacity-80" />
+              </Button>
+
+              {checkout.manual && canPurchase && (
+                <Button asChild variant="outline" className="w-full">
+                  <Link to={`/payments/manual?plan=${selected.id}`}>
+                    {t('plans.manualPayShort')}
+                  </Link>
+                </Button>
+              )}
             </div>
           </section>
         </div>
       )}
-
-      {!loading && step === 'plans' && (
-        <p className="text-xs text-muted-foreground">{t('pricing.paymentNote')}</p>
-      )}
-    </AppPage>
+    </div>
   );
 }

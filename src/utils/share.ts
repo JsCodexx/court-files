@@ -1,5 +1,6 @@
 import { CourtCase } from '../types';
 import { formatDisplayDate } from './dates';
+import { displayCourtCaseId } from './text';
 
 export interface ShareLabels {
   vs: string;
@@ -31,7 +32,7 @@ export function buildCaseListText(
 ): string {
   const lines = cases.map((c, i) => {
     const parts = [
-      `${i + 1}. ${c.caseId}`,
+      `${i + 1}. ${displayCourtCaseId(c.caseId, labels.dash)}`,
       `${c.party1.name} ${labels.vs} ${c.party2.name}`,
       c.courtNumber ? `${labels.court}: ${c.courtNumber}` : null,
       `${labels.judge}: ${c.judgeName}`,

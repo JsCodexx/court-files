@@ -12,6 +12,7 @@ import {
 import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { AuthPageShell } from '../components/AuthPageShell';
 import ThemeToggle from '../components/ThemeToggle';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { PageEnter } from '../components/motion';
@@ -65,7 +66,7 @@ export function ForceChangePasswordPage() {
   };
 
   return (
-    <div className="page-shell">
+    <AuthPageShell signedIn>
       <PageEnter className="w-full max-w-md">
       <Card className="auth-card max-w-md">
         <CardHeader>
@@ -119,6 +120,6 @@ export function ForceChangePasswordPage() {
         </CardContent>
       </Card>
       </PageEnter>
-    </div>
+    </AuthPageShell>
   );
 }

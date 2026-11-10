@@ -96,7 +96,7 @@ export function SubscriptionProvider({
       }
       return res.subscription;
     } catch {
-      setStatus(null);
+      if (!silent) setStatus(null);
       return null;
     } finally {
       if (!silent) setLoading(false);

@@ -1,10 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronDown, Plus } from './icons';
+import { ChevronDown } from './icons';
+import { PickerAddOption } from './pickers/PickerAddOption';
+import { PickerOptionButton } from './pickers/PickerOptionButton';
+import {
+  bindPickerOutsideClose,
+  PICKER_MENU_CLASS,
+} from './pickers/pickerShared';
 import { useLocale } from '../i18n/LocaleContext';
 import { apiFetch } from '../utils/api';
 import { computePopoverPlacement } from '../lib/popoverPlacement';
-import { cn } from '../lib/utils';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 
@@ -84,18 +89,10 @@ export function CityPicker({
     };
   }, [open]);
 
-  useEffect(() => {
-    if (!open) return;
-    const onDoc = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (wrapRef.current?.contains(target)) return;
-      const pop = document.getElementById(listId);
-      if (pop?.contains(target)) return;
-      setOpen(false);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [open, listId]);
+  useEffect(
+    () => bindPickerOutsideClose(open, listId, wrapRef, () => setOpen(false)),
+    [open, listId]
+  );
 
   const q = query.trim().toLowerCase();
   const filtered = useMemo(() => {
@@ -117,8 +114,12 @@ export function CityPicker({
   const saveNew = async () => {
     const n = query.trim();
     if (!n || saving) return;
-    if (exact) { pick(exact); return; }
+    if (exact) {
+      pick(exact);
+      return;
+    }
     setSaving(true);
+    setOpen(true);
     try {
       const res = await apiFetch<{ ok: true; city: CityItem }>(
         '/cities',
@@ -158,9 +159,11 @@ export function CityPicker({
           ref={inputRef}
           className="urdu-input pe-9"
           invalid={invalid}
+          disabled={saving}
           value={query}
           onChange={(e) => onInput(e.target.value)}
           onFocus={() => setOpen(true)}
+          aria-busy={saving}
           onKeyDown={(e) => {
             if (e.key === 'Escape') { setOpen(false); return; }
             if (e.key === 'Enter') {
@@ -195,7 +198,7 @@ export function CityPicker({
           <ul
             id={listId}
             role="listbox"
-            className="fixed z-[80] overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
+            className={PICKER_MENU_CLASS}
             style={{
               top: pos.top,
               left: pos.left,
@@ -206,17 +209,13 @@ export function CityPicker({
           >
             {filtered.map((item) => (
               <li key={item.id} role="option" aria-selected={item.label === value}>
-                <button
-                  type="button"
-                  className={cn(
-                    'flex w-full rounded-sm px-2 py-1.5 text-start text-sm hover:bg-accent hover:text-accent-foreground',
-                    item.label === value && 'bg-accent'
-                  )}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => pick(item)}
+                <PickerOptionButton
+                  selected={item.label === value}
+                  disabled={saving}
+                  onPick={() => pick(item)}
                 >
                   <span className="urdu-text">{item.label}</span>
-                </button>
+                </PickerOptionButton>
               </li>
             ))}
             {filtered.length === 0 && !showAdd ? (
@@ -225,18 +224,11 @@ export function CityPicker({
               </li>
             ) : null}
             {showAdd ? (
-              <li role="option" aria-selected={false}>
-                <button
-                  type="button"
-                  className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-start text-sm text-primary hover:bg-accent"
-                  disabled={saving}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => void saveNew()}
-                >
-                  <Plus className="h-3.5 w-3.5 shrink-0" />
-                  {t('city.saveNew', { name: query.trim() })}
-                </button>
-              </li>
+              <PickerAddOption
+                saving={saving}
+                saveLabel={t('city.saveNew', { name: query.trim() })}
+                onSave={() => void saveNew()}
+              />
             ) : null}
           </ul>,
           document.body

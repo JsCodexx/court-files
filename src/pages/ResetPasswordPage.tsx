@@ -16,6 +16,7 @@ import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
 import { useAuth } from '../context/AuthContext';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { AuthPageShell } from '../components/AuthPageShell';
 import { PageEnter } from '../components/motion';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -72,7 +73,7 @@ export function ResetPasswordPage() {
   };
 
   return (
-    <div className="page-shell">
+    <AuthPageShell>
       <PageEnter className="w-full max-w-md">
       <Card className="auth-card max-w-md">
         <CardHeader>
@@ -140,6 +141,6 @@ export function ResetPasswordPage() {
         </CardContent>
       </Card>
       </PageEnter>
-    </div>
+    </AuthPageShell>
   );
 }

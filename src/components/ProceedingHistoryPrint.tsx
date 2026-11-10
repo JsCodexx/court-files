@@ -3,6 +3,7 @@ import { useLocale } from '../i18n/LocaleContext';
 import { CourtCase } from '../types';
 import { formatDMYDate } from '../utils/dates';
 import { groupHearingsByJudge } from '../utils/hearings';
+import { displayCourtCaseId } from '../utils/text';
 
 type Props = {
   cases: CourtCase[];
@@ -82,7 +83,9 @@ export function ProceedingHistoryPrint({ cases, subtitle }: Props) {
           >
             <div className="space-y-0.5">
               <p className="text-sm font-semibold">
-                <span dir="ltr">{courtCase.caseId}</span>
+                <span dir="ltr">
+                  {displayCourtCaseId(courtCase.caseId, dash)}
+                </span>
                 {' — '}
                 <span className="urdu-text">{courtCase.party1.name}</span>
                 {' vs '}

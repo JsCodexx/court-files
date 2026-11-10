@@ -87,9 +87,9 @@ export function readStoredThemePreference(): ThemePreference {
   if (legacy === 'light') return { palette: 'forest', mode: 'light' };
 
   if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
-    return { palette: 'forest', mode: 'dark' };
+    return { palette: 'ocean', mode: 'dark' };
   }
-  return { palette: 'forest', mode: 'light' };
+  return { palette: 'ocean', mode: 'light' };
 }
 
 const META_COLORS: Record<string, string> = {

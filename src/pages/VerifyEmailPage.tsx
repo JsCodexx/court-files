@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from '../components/ui/card';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { AuthPageShell } from '../components/AuthPageShell';
 import { InlinePanelSkeleton } from '../components/skeletons';
 import { PageEnter } from '../components/motion';
 import { useLocale } from '../i18n/LocaleContext';
@@ -51,7 +52,7 @@ export function VerifyEmailPage() {
   }, [token, tokenOk, t]);
 
   return (
-    <div className="page-shell">
+    <AuthPageShell>
       <PageEnter className="w-full max-w-md">
       <Card className="auth-card max-w-md">
         <CardHeader>
@@ -86,6 +87,6 @@ export function VerifyEmailPage() {
         </CardContent>
       </Card>
       </PageEnter>
-    </div>
+    </AuthPageShell>
   );
 }

@@ -14,6 +14,7 @@ import {
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { AuthPageShell } from '../components/AuthPageShell';
 import { PageEnter } from '../components/motion';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
@@ -38,7 +39,7 @@ export function VerifyOtpPage() {
 
   if (!pendingPhone && !demoOtp) {
     return (
-      <div className="page-shell">
+      <AuthPageShell>
         <PageEnter className="w-full max-w-md">
         <Card className="auth-card max-w-md">
           <CardHeader>
@@ -57,7 +58,7 @@ export function VerifyOtpPage() {
           </CardContent>
         </Card>
         </PageEnter>
-      </div>
+      </AuthPageShell>
     );
   }
 
@@ -93,7 +94,7 @@ export function VerifyOtpPage() {
   };
 
   return (
-    <div className="page-shell">
+    <AuthPageShell>
       <PageEnter className="w-full max-w-md">
       <Card className="auth-card max-w-md">
         <CardHeader>
@@ -150,6 +151,6 @@ export function VerifyOtpPage() {
         </CardContent>
       </Card>
       </PageEnter>
-    </div>
+    </AuthPageShell>
   );
 }

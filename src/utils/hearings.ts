@@ -1,12 +1,16 @@
 import { HearingRecord } from '../types';
 
-/** Hearings may be corrected only within 48 hours of creation. */
-export const HEARING_EDIT_WINDOW_MS = 48 * 60 * 60 * 1000;
+/** Hearings may be edited or deleted without a time limit. */
+export function isHearingEditable(_createdAt: string): boolean {
+  return true;
+}
 
-export function isHearingEditable(createdAt: string): boolean {
-  const created = Date.parse(createdAt);
-  if (Number.isNaN(created)) return false;
-  return Date.now() - created <= HEARING_EDIT_WINDOW_MS;
+/** Save from the hearing modal updates the latest row when the date is unchanged. */
+export function isAmendingLatestHearing(
+  latest: { date: string } | null | undefined,
+  formDate: string
+): boolean {
+  return Boolean(latest && formDate === latest.date);
 }
 
 /** Latest hearing by creation time (API returns newest first). */

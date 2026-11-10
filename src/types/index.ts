@@ -7,6 +7,17 @@ export type CourtCategory =
   | 'Magisterial Courts'
   | 'Others';
 
+/** Category of case — matter type (not court tier). */
+export type CaseMatterCategory =
+  | 'Civil'
+  | 'Criminal'
+  | 'Family'
+  | 'Rent & Property'
+  | 'Commercial'
+  | 'Constitutional'
+  | 'Bail & Misc Criminal'
+  | 'Others';
+
 export type AdvocateFor = 'Party 1' | 'Party 2';
 
 export type CaseStatus = 'pending' | 'decided' | 'party_left';
@@ -70,6 +81,7 @@ export interface CourtCase {
   id: string;
   caseId: string;
   category: CourtCategory;
+  caseCategory: CaseMatterCategory;
   party1: {
     name: string;
     idCard: string;
