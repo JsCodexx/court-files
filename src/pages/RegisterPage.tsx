@@ -68,9 +68,7 @@ export function RegisterPage() {
       setError(t(result.error as TranslationKey));
       return;
     }
-    navigate('/verify-otp', {
-      state: result.otp ? { demoOtp: result.otp } : undefined,
-    });
+    navigate('/verify-otp');
   };
 
   return (

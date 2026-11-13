@@ -915,6 +915,8 @@ export const en = {
   'validation.dateFuture': 'This hearing date cannot be in the future.',
   'validation.sunday': 'Hearings cannot be scheduled on Sunday.',
   'validation.caseId': 'Only letters, numbers, dashes, dots and slashes are allowed.',
+  'errors.caseIdDuplicate':
+    'This case ID is already used on another of your cases.',
   'validation.formErrors': 'Please fix the highlighted fields.',
 } as const;
 
@@ -1833,6 +1835,8 @@ export const ur: Record<TranslationKey, string> = {
   'validation.dateFuture': 'یہ تاریخ پیشی مستقبل میں نہیں ہو سکتی۔',
   'validation.sunday': 'اتوار کو سماعت مقرر نہیں کی جا سکتی۔',
   'validation.caseId': 'صرف حروف، ہندسے، ڈیش، نقطے اور سلیش کی اجازت ہے۔',
+  'errors.caseIdDuplicate':
+    'یہ کیس آئی ڈی آپ کے کسی دوسرے مقدمے میں پہلے سے موجود ہے۔',
   'validation.formErrors': 'براہ کرم نشان زد خانے درست کریں۔',
 };
 

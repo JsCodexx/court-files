@@ -26,18 +26,14 @@ export function VerifyOtpPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const locState = location.state as {
-    demoOtp?: string;
     checkoutResume?: { planId: string; email: string };
   } | null;
-  const demoOtp = locState?.demoOtp;
   const checkoutResume = locState?.checkoutResume;
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
-  const [info, setInfo] = useState(
-    demoOtp ? t('otp.demoInfo', { otp: demoOtp }) : t('otp.enterInfo')
-  );
+  const [info, setInfo] = useState(t('otp.enterInfo'));
 
-  if (!pendingPhone && !demoOtp) {
+  if (!pendingPhone) {
     return (
       <AuthPageShell>
         <PageEnter className="w-full max-w-md">
@@ -86,11 +82,7 @@ export function VerifyOtpPage() {
       return;
     }
     setError('');
-    if (result.otp) {
-      setInfo(t('otp.newDemo', { otp: result.otp }));
-    } else {
-      setInfo(t('otp.resent'));
-    }
+    setInfo(t('otp.resent'));
   };
 
   return (

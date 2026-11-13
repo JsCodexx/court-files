@@ -70,7 +70,9 @@ export function HearingModal({ courtCase, onClose }: Props) {
         setStatusRemarks(fresh.statusRemarks || '');
         const latest = getLatestHearing(fresh.hearings);
         if (latest) {
-          setDate(latest.date || nextWorkingDayISO());
+          const latestDate = latest.date || nextWorkingDayISO();
+          const today = todayISO();
+          setDate(latestDate < today ? nextWorkingDayISO() : latestDate);
           setProceeding(latest.proceeding || '');
           setAdjournmentReason(latest.adjournmentReason || '');
           setShortOrder(latest.shortOrder || '');
@@ -138,12 +140,9 @@ export function HearingModal({ courtCase, onClose }: Props) {
       setError(t('validation.sunday'));
       return;
     }
+  /** New hearing rows cannot be backdated; correcting an existing row may keep any scheduled date. */
     if (!amendingLatest && date < today) {
       setError(t('validation.datePast'));
-      return;
-    }
-    if (amendingLatest && date > today) {
-      setError(t('validation.dateFuture'));
       return;
     }
     setSaving(true);
@@ -248,7 +247,7 @@ export function HearingModal({ courtCase, onClose }: Props) {
           </ul>
         </div>
 
-        <form onSubmit={submit} className="space-y-4">
+        <form onSubmit={submit} className="space-y-4" noValidate>
           {error && <Alert variant="destructive">{error}</Alert>}
           {status === 'pending' && amendingLatest ? (
             <Alert>{t('hearing.correctionWindow')}</Alert>

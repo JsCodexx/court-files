@@ -212,7 +212,6 @@ export function GuestCheckoutPage() {
       sessionStorage.setItem(CHECKOUT_PHONE_KEY, phone.trim());
       navigate('/verify-otp', {
         state: {
-          demoOtp: result.otp,
           checkoutResume: { planId: selected.id, email: email.trim() },
         },
       });

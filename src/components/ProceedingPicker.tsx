@@ -103,7 +103,7 @@ export function ProceedingPicker({
     for (const item of items) {
       byKey.set(item.label.trim().toLowerCase(), item);
     }
-    return [...byKey.values()].sort((a, b) =>
+    return Array.from(byKey.values()).sort((a, b) =>
       a.label.localeCompare(b.label, undefined, { sensitivity: 'base' })
     );
   }, [items]);

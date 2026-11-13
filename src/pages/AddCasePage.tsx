@@ -26,7 +26,7 @@ import {
 import { useCases } from '../context/CasesContext';
 import { useSubscription } from '../hooks/useSubscription';
 import { useLocale } from '../i18n/LocaleContext';
-import { translateApiError } from '../utils/api';
+import { ApiError, translateApiError } from '../utils/api';
 import { TranslationKey } from '../i18n/translations';
 import {
   AdvocateFor,
@@ -347,6 +347,15 @@ export function AddCasePage() {
         setTimeout(() => navigate('/dashboard'), 700);
       }
     } catch (err) {
+      if (
+        err instanceof ApiError &&
+        err.errorKey === 'errors.caseIdDuplicate'
+      ) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          caseId: t('errors.caseIdDuplicate'),
+        }));
+      }
       setError(translateApiError(err, t));
     } finally {
       setSubmitting(false);

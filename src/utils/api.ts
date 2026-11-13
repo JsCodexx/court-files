@@ -79,6 +79,8 @@ const ERROR_KEY_MAP: Record<string, string> = {
     'checkout.verifyFirst',
   'Phone number does not match your registered account.':
     'validation.phone',
+  'This case ID is already used on another of your cases.':
+    'errors.caseIdDuplicate',
   'Case limit reached. Purchase a plan to add more cases.':
     'errors.caseLimitReached',
   'Your subscription has expired. Renew your plan to continue using Court Files.':

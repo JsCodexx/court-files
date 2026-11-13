@@ -546,7 +546,7 @@ export function CaseHistoryPage() {
             <DialogHeader>
               <DialogTitle>{t('history.edit')}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={onSaveEdit} className="space-y-4">
+            <form onSubmit={onSaveEdit} className="space-y-4" noValidate>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <Label>
