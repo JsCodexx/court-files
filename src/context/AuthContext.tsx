@@ -48,9 +48,9 @@ interface AuthContextValue {
   refreshUser: (options?: { force?: boolean }) => Promise<void>;
   registerDraft: (
     data: Omit<User, 'id' | 'createdAt'>
-  ) => Promise<Result<{ otp?: string }>>;
+  ) => Promise<Result>;
   verifyOtp: (otp: string) => Promise<Result>;
-  resendOtp: () => Promise<Result<{ otp?: string }>>;
+  resendOtp: () => Promise<Result>;
   login: (
     emailOrPhone: string,
     password: string
@@ -216,7 +216,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return await withLoader(async () => {
           const res = await apiFetch<{
             ok: true;
-            otp?: string;
             phone: string;
             email: string;
           }>('/auth/register', {
@@ -233,7 +232,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setPendingPhone(res.phone);
           writePendingEmail(res.email);
           setPendingEmail(res.email);
-          return { ok: true as const, otp: res.otp };
+          return { ok: true as const };
         });
       } catch (err) {
         return toError(err);
@@ -274,14 +273,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     try {
       return await withLoader(async () => {
-        const res = await apiFetch<{ ok: true; otp?: string }>(
-          '/auth/resend-otp',
-          {
-            method: 'POST',
-            body: { phone },
-          }
-        );
-        return { ok: true as const, otp: res.otp };
+        await apiFetch<{ ok: true }>('/auth/resend-otp', {
+          method: 'POST',
+          body: { phone },
+        });
+        return { ok: true as const };
       });
     } catch (err) {
       return toError(err);

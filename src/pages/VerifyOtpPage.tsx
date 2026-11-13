@@ -14,6 +14,7 @@ import {
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { AuthPageShell } from '../components/AuthPageShell';
 import { PageEnter } from '../components/motion';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
@@ -25,20 +26,16 @@ export function VerifyOtpPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const locState = location.state as {
-    demoOtp?: string;
     checkoutResume?: { planId: string; email: string };
   } | null;
-  const demoOtp = locState?.demoOtp;
   const checkoutResume = locState?.checkoutResume;
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
-  const [info, setInfo] = useState(
-    demoOtp ? t('otp.demoInfo', { otp: demoOtp }) : t('otp.enterInfo')
-  );
+  const [info, setInfo] = useState(t('otp.enterInfo'));
 
-  if (!pendingPhone && !demoOtp) {
+  if (!pendingPhone) {
     return (
-      <div className="page-shell">
+      <AuthPageShell>
         <PageEnter className="w-full max-w-md">
         <Card className="auth-card max-w-md">
           <CardHeader>
@@ -57,7 +54,7 @@ export function VerifyOtpPage() {
           </CardContent>
         </Card>
         </PageEnter>
-      </div>
+      </AuthPageShell>
     );
   }
 
@@ -85,15 +82,11 @@ export function VerifyOtpPage() {
       return;
     }
     setError('');
-    if (result.otp) {
-      setInfo(t('otp.newDemo', { otp: result.otp }));
-    } else {
-      setInfo(t('otp.resent'));
-    }
+    setInfo(t('otp.resent'));
   };
 
   return (
-    <div className="page-shell">
+    <AuthPageShell>
       <PageEnter className="w-full max-w-md">
       <Card className="auth-card max-w-md">
         <CardHeader>
@@ -150,6 +143,6 @@ export function VerifyOtpPage() {
         </CardContent>
       </Card>
       </PageEnter>
-    </div>
+    </AuthPageShell>
   );
 }

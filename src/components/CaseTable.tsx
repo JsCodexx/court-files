@@ -12,7 +12,7 @@ import {
   shareWhatsApp,
 } from '../utils/share';
 import { getCasePartiesDisplay } from '../utils/casePartiesDisplay';
-import { trimText } from '../utils/text';
+import { displayCourtCaseId, trimText } from '../utils/text';
 import { CaseHoverCard } from './CaseHoverCard';
 import { CaseStatusBadge } from './CaseStatusBadge';
 import { Button } from './ui/button';
@@ -72,6 +72,7 @@ export function CaseTable({
   }
 
   const vsLabel = t('common.vs');
+  const dash = t('common.dash');
 
   const partiesFor = (c: CourtCase, variant: 'mobile' | 'compact' | 'full') =>
     getCasePartiesDisplay(c, vsLabel, variant);
@@ -134,7 +135,7 @@ export function CaseTable({
                       className="min-w-0 flex-1 truncate text-sm font-semibold text-primary"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      {c.caseId}
+                      {displayCourtCaseId(c.caseId, dash)}
                     </Link>
                     <CaseStatusBadge status={c.status} />
                   </span>
@@ -220,9 +221,9 @@ export function CaseTable({
                       dir="ltr"
                       className="block truncate font-semibold text-primary hover:underline"
                       onClick={(e) => e.stopPropagation()}
-                      title={c.caseId}
+                      title={displayCourtCaseId(c.caseId, dash)}
                     >
-                      {trimText(c.caseId, 14)}
+                      {trimText(displayCourtCaseId(c.caseId, dash), 14)}
                     </Link>
                   </CaseHoverCard>
                   <CaseStatusBadge status={c.status} />

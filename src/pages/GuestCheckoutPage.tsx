@@ -18,6 +18,7 @@ import { PasswordInput } from '../components/ui/password-input';
 import { BrandWordmark } from '../components/BrandWordmark';
 import { COMPANY } from '../constants/company';
 import { useAuth } from '../context/AuthContext';
+import { useSubscription } from '../hooks/useSubscription';
 import { useToast } from '../context/ToastContext';
 import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
@@ -25,6 +26,10 @@ import { cn } from '../lib/utils';
 import { apiFetch, translateApiError } from '../utils/api';
 import { isValidPakPhone } from '../utils/validation';
 import { PlanCardsSkeleton } from '../components/skeletons';
+import {
+  DEFAULT_CHECKOUT,
+  type CheckoutAvailability,
+} from '../types/checkout';
 import type { Plan } from './PlansPage';
 
 const CHECKOUT_PHONE_KEY = 'cf_checkout_phone';
@@ -69,11 +74,16 @@ export function GuestCheckoutPage() {
   const { t } = useLocale();
   const toast = useToast();
   const navigate = useNavigate();
-  const { registerDraft } = useAuth();
+  const { registerDraft, user } = useAuth();
+  const { status: subscription } = useSubscription();
+  const purchaseBlocked = Boolean(user && subscription?.hasActiveSubscription);
   const [searchParams, setSearchParams] = useSearchParams();
   const verified = searchParams.get('verified') === '1';
   const [plans, setPlans] = useState<Plan[]>(FALLBACK_PLANS);
   const [plansLoading, setPlansLoading] = useState(true);
+  const [checkout, setCheckout] =
+    useState<CheckoutAvailability>(DEFAULT_CHECKOUT);
+  const gatewayCheckout = checkout.rapidGateway;
   const [planId, setPlanId] = useState(
     () => searchParams.get('plan') || 'monthly'
   );
@@ -108,8 +118,13 @@ export function GuestCheckoutPage() {
     let alive = true;
     (async () => {
       try {
-        const res = await apiFetch<{ ok: true; plans: Plan[] }>('/payments/plans');
+        const res = await apiFetch<{
+          ok: true;
+          plans: Plan[];
+          checkout?: CheckoutAvailability;
+        }>('/payments/plans');
         if (alive && res.plans?.length) setPlans(res.plans);
+        if (alive && res.checkout) setCheckout(res.checkout);
       } catch {
         /* fallback plans */
       } finally {
@@ -197,7 +212,6 @@ export function GuestCheckoutPage() {
       sessionStorage.setItem(CHECKOUT_PHONE_KEY, phone.trim());
       navigate('/verify-otp', {
         state: {
-          demoOtp: result.otp,
           checkoutResume: { planId: selected.id, email: email.trim() },
         },
       });
@@ -212,6 +226,10 @@ export function GuestCheckoutPage() {
     setInfo('');
     if (!verified) {
       setError(t('checkout.verifyFirst'));
+      return;
+    }
+    if (purchaseBlocked) {
+      setError(t('payments.alreadyActive'));
       return;
     }
     if (!isValidPakPhone(phone.trim()) && !/^\+923\d{9}$/.test(phone.trim())) {
@@ -304,8 +322,23 @@ export function GuestCheckoutPage() {
           <p className="page-lede mt-2">{t('checkout.lede')}</p>
         </header>
 
-        {error && <Alert variant="destructive">{error}</Alert>}
-        {info && <Alert variant="success">{info}</Alert>}
+          {error && <Alert variant="destructive">{error}</Alert>}
+          {info && <Alert variant="success">{info}</Alert>}
+          {purchaseBlocked && (
+            <Alert>{t('payments.alreadyActive')}</Alert>
+          )}
+          {!gatewayCheckout && (
+            <Alert>
+              {t('checkout.manualOnlyGuest')}{' '}
+              <Link to="/register" className="font-medium underline">
+                {t('register.title')}
+              </Link>
+              {' · '}
+              <Link to="/login" className="font-medium underline">
+                {t('login.title')}
+              </Link>
+            </Alert>
+          )}
 
         <div className="grid min-w-0 gap-6 lg:grid-cols-[1fr_1.1fr]">
           <Card>
@@ -467,6 +500,18 @@ export function GuestCheckoutPage() {
                     </Link>
                   </p>
                 </form>
+              ) : !gatewayCheckout ? (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    {t('checkout.manualOnlyGuest')}
+                  </p>
+                  <Button asChild className="w-full">
+                    <Link to="/login">{t('login.title')}</Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link to="/register">{t('register.title')}</Link>
+                  </Button>
+                </div>
               ) : (
                 <form onSubmit={onPay} className="space-y-4">
                   <div>
@@ -510,7 +555,11 @@ export function GuestCheckoutPage() {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={busy || !selected}>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={busy || !selected || purchaseBlocked}
+                  >
                     {busy
                       ? t('common.loading')
                       : t('checkout.payCta', {

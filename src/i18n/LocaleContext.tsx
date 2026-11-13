@@ -32,7 +32,7 @@ function readStoredLocale(): Locale {
   } catch {
     /* ignore */
   }
-  return 'ur';
+  return 'en';
 }
 
 function interpolate(template: string, vars?: Vars): string {

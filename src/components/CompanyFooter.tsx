@@ -23,7 +23,7 @@ export function CompanyFooter() {
   const { t } = useLocale();
 
   return (
-    <footer className="mt-auto border-t border-border bg-sidebar text-sidebar-foreground">
+    <footer className="site-footer mt-auto shrink-0 border-t border-border bg-sidebar text-sidebar-foreground">
       <LayoutContainer className="py-8 pb-[max(2rem,env(safe-area-inset-bottom))]">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr]">
           <div>

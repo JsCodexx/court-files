@@ -71,11 +71,13 @@ export function PublicSiteFrame({
 
   return (
     <div
-      className="flex min-h-[100dvh] flex-col bg-background pb-[env(safe-area-inset-bottom)]"
+      className="public-site-frame flex h-[100dvh] max-h-[100dvh] min-h-0 flex-col overflow-hidden bg-background"
       dir={dir}
     >
       <PublicHeader className={headerClassName} />
-      <main className="site-main-surface min-w-0 flex-1">{children}</main>
+      <main className="site-main-surface min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain">
+        {children}
+      </main>
       <PwaInstallPrompt guest />
       <CompanyFooter />
     </div>

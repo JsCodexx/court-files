@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { readSubscriptionAccessCache } from '../context/SubscriptionContext';
@@ -23,6 +23,8 @@ export function SubscriptionBillingGuard() {
   const { status, loading } = useSubscription();
   const location = useLocation();
   const billing = isBillingPath(location.pathname);
+  const hadStatusRef = useRef(false);
+  if (status) hadStatusRef.current = true;
 
   const cachedAccess = readSubscriptionAccessCache(user?.userId);
   const lockedOut =
@@ -42,7 +44,10 @@ export function SubscriptionBillingGuard() {
     );
   }
 
-  if (!billing && (loading || !status) && user) {
+  const awaitingFirstStatus =
+    !billing && user && !status && !hadStatusRef.current;
+
+  if (awaitingFirstStatus && (loading || cachedAccess === false)) {
     if (cachedAccess === false) {
       return (
         <Navigate

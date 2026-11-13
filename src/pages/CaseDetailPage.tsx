@@ -11,6 +11,7 @@ import { TranslationKey } from '../i18n/translations';
 import { CourtCase } from '../types';
 import { CaseDetailSkeleton } from '../components/skeletons';
 import { formatDisplayDate } from '../utils/dates';
+import { displayCourtCaseId } from '../utils/text';
 
 /**
  * Full-page case view styled like the official printed cause list:
@@ -192,8 +193,12 @@ export function CaseDetailPage() {
             {detailRow(
               t('hover.caseNo'),
               <span dir="ltr" className="font-bold">
-                {courtCase.caseId}
+                {displayCourtCaseId(courtCase.caseId, t('common.dash'))}
               </span>
+            )}
+            {detailRow(
+              t('hover.caseCategory'),
+              t(`caseCategory.${courtCase.caseCategory}` as TranslationKey)
             )}
             {detailRow(
               t('hover.status'),

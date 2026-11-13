@@ -4,7 +4,6 @@ import {
   CreditCard,
   LayoutDashboard,
   PlusCircle,
-  Receipt,
   Search,
   UserRound,
 } from './icons';
@@ -12,13 +11,20 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useLocale } from '../i18n/LocaleContext';
 import { useSubscription } from '../hooks/useSubscription';
 import { cn } from '../lib/utils';
+import { isBillingRoute } from '../utils/billingRoutes';
 
-type TabKey = 'dashboard' | 'calendar' | 'add' | 'search' | 'profile';
+type TabKey = 'dashboard' | 'calendar' | 'add' | 'search' | 'billing' | 'profile';
 
 const tabs: {
   key: TabKey;
   to: string;
-  labelKey: 'nav.tabHome' | 'nav.tabCalendar' | 'nav.tabAdd' | 'nav.tabSearch' | 'nav.tabProfile';
+  labelKey:
+    | 'nav.tabHome'
+    | 'nav.tabCalendar'
+    | 'nav.tabAdd'
+    | 'nav.tabSearch'
+    | 'nav.tabPlans'
+    | 'nav.tabProfile';
   icon: typeof LayoutDashboard;
   center?: boolean;
 }[] = [
@@ -26,21 +32,22 @@ const tabs: {
   { key: 'calendar', to: '/calendar', labelKey: 'nav.tabCalendar', icon: CalendarDays },
   { key: 'add', to: '/cases/new', labelKey: 'nav.tabAdd', icon: PlusCircle, center: true },
   { key: 'search', to: '/search', labelKey: 'nav.tabSearch', icon: Search },
+  { key: 'billing', to: '/plans', labelKey: 'nav.tabPlans', icon: CreditCard },
   { key: 'profile', to: '/profile', labelKey: 'nav.tabProfile', icon: UserRound },
 ];
 
 const billingTabs = [
   {
-    key: 'plans' as const,
+    key: 'billing' as const,
     to: '/plans',
-    labelKey: 'nav.plans' as const,
+    labelKey: 'nav.tabPlans' as const,
     icon: CreditCard,
   },
   {
-    key: 'payments' as const,
-    to: '/payments',
-    labelKey: 'nav.tabPayments' as const,
-    icon: Receipt,
+    key: 'profile' as const,
+    to: '/profile',
+    labelKey: 'nav.tabProfile' as const,
+    icon: UserRound,
   },
 ];
 
@@ -57,12 +64,10 @@ function isTabActive(pathname: string, key: TabKey): boolean {
       return pathname === '/cases/new' || /^\/cases\/[^/]+\/edit$/.test(pathname);
     case 'search':
       return pathname === '/search';
+    case 'billing':
+      return isBillingRoute(pathname);
     case 'profile':
-      return (
-        pathname.startsWith('/profile') ||
-        pathname === '/plans' ||
-        pathname === '/payments'
-      );
+      return pathname.startsWith('/profile');
     default:
       return false;
   }
@@ -88,11 +93,15 @@ export function AppBottomNav({ onOpenAccountMenu }: AppBottomNavProps) {
         <div className="app-bottom-nav__inner app-bottom-nav__inner--billing">
           {billingTabs.map((tab) => {
             const Icon = tab.icon;
-            const active = pathname === tab.to || pathname.startsWith(`${tab.to}/`);
+            const active =
+              tab.key === 'billing'
+                ? isBillingRoute(pathname)
+                : pathname.startsWith('/profile');
             return (
               <NavLink
                 key={tab.key}
                 to={tab.to}
+                end={tab.key === 'profile'}
                 className={cn(
                   'app-bottom-nav__item',
                   active && 'app-bottom-nav__item--active'

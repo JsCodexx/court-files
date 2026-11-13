@@ -15,6 +15,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { PasswordInput } from '../components/ui/password-input';
 import { AuthBrandHeader } from '../components/AuthBrandHeader';
+import { AuthPageShell } from '../components/AuthPageShell';
 import { PageEnter } from '../components/motion';
 import { useAuth } from '../context/AuthContext';
 import { useLocale } from '../i18n/LocaleContext';
@@ -67,7 +68,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="page-shell">
+    <AuthPageShell>
       <PageEnter className="w-full max-w-md">
       <Card className="auth-card max-w-md">
         <CardHeader>
@@ -141,6 +142,6 @@ export function LoginPage() {
         </CardContent>
       </Card>
       </PageEnter>
-    </div>
+    </AuthPageShell>
   );
 }

@@ -1,3 +1,12 @@
+/** Court-assigned case number; empty until allotted. */
+export function displayCourtCaseId(
+  value: string | null | undefined,
+  dash = '—'
+): string {
+  const s = (value ?? '').trim();
+  return s || dash;
+}
+
 /**
  * Shorten a string and append "..." when over the limit.
  */

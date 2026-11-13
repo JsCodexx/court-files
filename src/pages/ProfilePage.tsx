@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
-import { ChevronRight, CreditCard, Receipt } from '../components/icons';
+import { ChevronRight, CreditCard } from '../components/icons';
 import { Alert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import {
@@ -120,8 +120,7 @@ export function ProfileOverview() {
   ];
 
   const quickLinks = [
-    { to: '/plans', label: t('profile.quickPlans'), icon: CreditCard },
-    { to: '/payments', label: t('profile.quickPayments'), icon: Receipt },
+    { to: '/plans', label: t('nav.billingHub'), icon: CreditCard },
   ];
 
   return (

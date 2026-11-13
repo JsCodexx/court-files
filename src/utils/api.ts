@@ -79,10 +79,28 @@ const ERROR_KEY_MAP: Record<string, string> = {
     'checkout.verifyFirst',
   'Phone number does not match your registered account.':
     'validation.phone',
+  'This case ID is already used on another of your cases.':
+    'errors.caseIdDuplicate',
   'Case limit reached. Purchase a plan to add more cases.':
     'errors.caseLimitReached',
   'Your subscription has expired. Renew your plan to continue using Court Files.':
     'errors.subscriptionExpired',
+  'You already have an active subscription. Renew after your current period ends.':
+    'errors.subscriptionAlreadyActive',
+  'A payment is already in progress. Complete that checkout before starting another.':
+    'errors.paymentInProgress',
+  'You already have a manual payment request under review. Wait for admin approval.':
+    'manualPayment.pendingReview',
+  'A RapidGateway checkout is already in progress. Complete or cancel it first.':
+    'errors.paymentInProgress',
+  'Online checkout is temporarily unavailable. Please pay manually via bank or wallet.':
+    'errors.gatewayCheckoutPaused',
+  'Transaction / payment ID is required.': 'manualPayment.validationTxn',
+  'Sender name is required.': 'manualPayment.validationName',
+  'Sender account title is too long.': 'manualPayment.validationName',
+  'Notes are too long.': 'manualPayment.validationNotes',
+  'Invalid manual payment details.': 'manualPayment.validationDetails',
+  'Manual payment requests are not available.': 'manualPayment.disabled',
 };
 
 export function isTranslationKey(key: string): key is TranslationKey {
@@ -111,6 +129,15 @@ export function translateApiError(
   }
   if (blob.includes('subscription has expired')) {
     return t('errors.subscriptionExpired');
+  }
+  if (blob.includes('active subscription')) {
+    return t('errors.subscriptionAlreadyActive');
+  }
+  if (blob.includes('payment is already in progress')) {
+    return t('errors.paymentInProgress');
+  }
+  if (blob.includes('online checkout is temporarily')) {
+    return t('errors.gatewayCheckoutPaused');
   }
   if (err.status >= 500 || blob.includes('internal server')) {
     return t('checkout.startFailed');

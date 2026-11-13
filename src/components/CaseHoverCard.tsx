@@ -4,6 +4,7 @@ import { useLocale } from '../i18n/LocaleContext';
 import { TranslationKey } from '../i18n/translations';
 import { CourtCase } from '../types';
 import { formatDisplayDate } from '../utils/dates';
+import { displayCourtCaseId } from '../utils/text';
 import { CaseStatusBadge } from './CaseStatusBadge';
 
 interface Props {
@@ -113,8 +114,12 @@ export function CaseHoverCard({ courtCase, children }: Props) {
                 {detailRow(
                   t('hover.caseNo'),
                   <span dir="ltr" className="font-semibold">
-                    {courtCase.caseId}
+                    {displayCourtCaseId(courtCase.caseId, t('common.dash'))}
                   </span>
+                )}
+                {detailRow(
+                  t('hover.caseCategory'),
+                  t(`caseCategory.${courtCase.caseCategory}` as TranslationKey)
                 )}
                 {detailRow(
                   t('hover.status'),

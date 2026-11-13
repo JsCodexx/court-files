@@ -154,6 +154,8 @@ export const en = {
     'Showing published plan prices. Live amounts match our catalog even if the API is temporarily unavailable.',
   'pricing.paymentNote':
     'Payments are processed in Pakistani Rupees (PKR) via RapidGateway for smooth payment across all digital wallet connectivity. Prices shown are the full prepaid amount for the plan period.',
+  'pricing.paymentNoteManual':
+    'Pay the full plan amount in PKR by bank transfer, Easypaisa, or JazzCash. After you submit proof, we verify and activate your plan.',
   'pricing.refundLink': 'See our',
 
   'contact.title': 'Contact',
@@ -231,6 +233,8 @@ export const en = {
   'checkout.title': 'Checkout',
   'checkout.lede':
     'Choose a plan, create your account, verify your email, then pay with RapidGateway. After payment, sign in with the password you chose during registration.',
+  'checkout.manualOnlyGuest':
+    'Online card and wallet checkout is paused. Create an account, sign in, and use manual pay (bank / Easypaisa / JazzCash) from Plans.',
   'checkout.accountTitle': 'Create your account',
   'checkout.accountLede':
     'We need your advocate details and a password. You will verify your email before payment.',
@@ -325,7 +329,13 @@ export const en = {
   'nav.tabAdd': 'Add',
   'nav.tabSearch': 'Search',
   'nav.tabProfile': 'Profile',
+  'nav.tabPlans': 'Plans',
   'nav.tabPayments': 'Payments',
+  'nav.billingSection': 'Plans and payments',
+  'nav.billingHub': 'Billing',
+  'nav.billingManual': 'Manual pay',
+  'billing.hubLede':
+    'Choose a plan, pay manually, or review payment history — all in one place.',
 
   'profile.quickPlans': 'Plans & billing',
   'profile.quickPayments': 'Payment history',
@@ -345,6 +355,7 @@ export const en = {
   'common.dash': '—',
   'common.required': '*',
   'common.loading': 'Loading…',
+  'common.saving': 'Saving…',
 
   'pwa.updateAvailable': 'A new version of Court Files is ready.',
   'pwa.reload': 'Update now',
@@ -369,6 +380,15 @@ export const en = {
   'category.Family Courts': 'Family Courts',
   'category.Magisterial Courts': 'Magisterial Courts',
   'category.Others': 'Others',
+
+  'caseCategory.Civil': 'Civil',
+  'caseCategory.Criminal': 'Criminal',
+  'caseCategory.Family': 'Family',
+  'caseCategory.Rent & Property': 'Rent & Property',
+  'caseCategory.Commercial': 'Commercial',
+  'caseCategory.Constitutional': 'Constitutional',
+  'caseCategory.Bail & Misc Criminal': 'Bail & Misc Criminal',
+  'caseCategory.Others': 'Others',
   'advocateFor.Party 1': 'Party 1',
   'advocateFor.Party 2': 'Party 2',
 
@@ -445,7 +465,11 @@ export const en = {
   'addCase.edit': 'Edit case',
   'addCase.caseDetails': 'Case details',
   'addCase.caseId': 'Case ID',
+  'addCase.caseIdHint':
+    'Optional. Add the court case number when allotted; you can update it later from Edit case.',
   'addCase.category': 'Category',
+  'addCase.courtCategory': 'Court category',
+  'addCase.caseCategory': 'Category of case',
   'addCase.courtNumber': 'Court number',
   'addCase.city': 'City',
   'addCase.cityPh': 'e.g. Lahore, Karachi',
@@ -599,7 +623,7 @@ export const en = {
   'history.next': 'Next',
   'history.edit': 'Edit hearing',
   'history.editSave': 'Save changes',
-  'history.editLocked': 'Locked after 48 hours',
+  'history.editLocked': 'This hearing cannot be edited',
   'history.deleteHearing': 'Delete hearing',
   'history.deleteConfirm': 'Delete this hearing?',
   'history.back': 'Back to dashboard',
@@ -626,6 +650,12 @@ export const en = {
   'errors.saveFailed': 'Failed to save. Please try again.',
   'errors.caseLimitReached':
     'You have used all 10 free cases. Purchase a plan to add more cases.',
+  'errors.subscriptionAlreadyActive':
+    'You already have an active subscription. You can renew after your current period ends.',
+  'errors.paymentInProgress':
+    'A payment is already in progress. Complete that checkout before starting another.',
+  'errors.gatewayCheckoutPaused':
+    'Online checkout is paused. Pay manually via bank, Easypaisa, or JazzCash.',
 
   'subscription.freeTier': 'Free plan: up to 10 cases',
   'subscription.casesUsed': '{{count}} of {{limit}} free cases used',
@@ -675,10 +705,9 @@ export const en = {
   'hearing.partyLeftRemarksHint': 'Remarks are optional for party left.',
   'hearing.markDecided': 'Mark as decided',
   'hearing.markPartyLeft': 'Mark as party left',
-  'hearing.editLocked':
-    'This hearing can only be changed within 48 hours of being saved.',
+  'hearing.editLocked': 'This hearing could not be saved.',
   'hearing.correctionWindow':
-    'You can still correct the last hearing (within 48 hours). Saving will update it, not add a new one.',
+    'You are updating the hearing for this date. Saving will update it, not add a new one. Change the date to schedule the next hearing.',
   'hearing.lockedUntilDate':
     'The last hearing is locked. You can schedule the next one on or after {{date}}.',
 
@@ -722,6 +751,22 @@ export const en = {
 
   'plans.title': 'Purchase plan',
   'plans.lede': 'Choose Monthly or Yearly, then pay with RapidGateway.',
+  'plans.ledeManualOnly':
+    'Choose Monthly or Yearly, then pay by bank transfer, Easypaisa, or JazzCash.',
+  'plans.ledeManualOnlyShort': 'Pick a plan, then complete manual payment.',
+  'plans.ledeActive': 'Your subscription is active. Renew when your current period ends.',
+  'plans.ledePending': 'We are reviewing your manual payment request.',
+  'plans.statusActive': 'Active until {{date}}',
+  'plans.btnActiveUntil': 'Active until {{date}}',
+  'plans.btnPendingReview': 'Payment under review',
+  'plans.statusPending': 'Manual payment under review',
+  'plans.statusManualOnly': 'Pay by bank, Easypaisa, or JazzCash',
+  'plans.manualPayShort': 'Manual pay',
+  'plans.choosePlanManual': 'Continue to manual pay',
+  'plans.choosePlanContinue': 'Continue',
+  'plans.waitingManualReview':
+    'You already submitted a payment for review. We will notify you when it is processed.',
+  'plans.purchaseManual': 'Pay manually',
   'plans.loading': 'Loading plans…',
   'plans.purchase': 'Purchase plan',
   'plans.back': 'Back to plans',
@@ -730,6 +775,66 @@ export const en = {
   'plans.rapidgateway': 'RapidGateway',
   'plans.rapidgatewayHint':
     'Smooth payment across all digital wallet connectivity via RapidGateway',
+
+  'manualPayment.title': 'Pay by bank or wallet',
+  'manualPayment.lede':
+    'If online checkout is unavailable, transfer the plan amount to an account below, then submit your payment details for verification.',
+  'manualPayment.disabled': 'Manual payment is not available right now.',
+  'manualPayment.bank': 'Bank transfer',
+  'manualPayment.easypaisa': 'Easypaisa',
+  'manualPayment.jazzcash': 'JazzCash',
+  'manualPayment.formTitle': 'Submit payment proof',
+  'manualPayment.plan': 'Plan',
+  'manualPayment.paidTo': 'You paid to',
+  'manualPayment.amountHint': 'Send exactly Rs {{amount}} before submitting.',
+  'manualPayment.transactionId': 'Transaction / payment ID',
+  'manualPayment.transactionIdPh': 'TID from Easypaisa, JazzCash, or bank reference',
+  'manualPayment.senderName': 'Your name (as on sending account)',
+  'manualPayment.senderTitle': 'Account title (if shown on receipt)',
+  'manualPayment.senderTitlePh': 'e.g. wallet account title',
+  'manualPayment.senderPhone': 'Your mobile (optional)',
+  'manualPayment.notes': 'Notes (optional)',
+  'manualPayment.submit': 'Submit for verification',
+  'manualPayment.submitted':
+    'Request submitted. We will verify your payment and activate your plan. If you have not already, send your payment screenshot on WhatsApp.',
+  'manualPayment.pendingReview':
+    'You have a request under review. We will email you when it is processed.',
+  'manualPayment.myRequests': 'Your manual payment requests',
+  'manualPayment.requestsHistoryLede':
+    'Track verification status for bank and wallet transfers you submitted.',
+  'manualPayment.statusPending': 'Under review',
+  'manualPayment.statusApproved': 'Approved',
+  'manualPayment.statusRejected': 'Rejected',
+  'manualPayment.statusApprovedDetail':
+    'Your payment was verified and your plan is active (or will show after you refresh).',
+  'manualPayment.statusRejectedDetail':
+    'This request was not approved. You may submit a new request with correct details if manual pay is still open.',
+  'manualPayment.submittedAt': 'Submitted {{date}}',
+  'manualPayment.reviewedAt': 'Reviewed {{date}}',
+  'manualPayment.adminNote': 'Admin note',
+  'manualPayment.viewRequests': 'View payment request status',
+  'manualPayment.resubmitHint':
+    'If a request was rejected, fix your details and submit a new payment proof below.',
+  'manualPayment.resubmitCta': 'Submit a new request',
+  'manualPayment.resubmitTitle': 'Submit payment proof again',
+  'manualPayment.validationTxn':
+    'Enter a valid transaction or payment ID (at least 3 characters).',
+  'manualPayment.validationName':
+    'Enter your name as shown on the sending account (at least 2 characters).',
+  'manualPayment.validationPhone':
+    'Enter a valid Pakistani mobile number (03XXXXXXXXX) or leave blank.',
+  'manualPayment.validationNotes': 'Notes must be 500 characters or fewer.',
+  'manualPayment.validationDetails': 'Check your plan and payment details and try again.',
+  'manualPayment.whatsappTitle': 'Send payment screenshot on WhatsApp',
+  'manualPayment.whatsappHint':
+    'After you transfer, send a clear screenshot of the payment to this number. Then complete the form below with your transaction ID.',
+  'manualPayment.whatsappOpen': 'Open WhatsApp',
+  'plans.manualPay': 'Pay manually (bank / Easypaisa / JazzCash)',
+  'plans.manualPayHint': 'Use when RapidGateway checkout is not working.',
+  'plans.manualRequestPending':
+    'You have a manual payment request under review.',
+  'plans.manualRequestHistory':
+    'You have submitted manual payment request(s).',
 
   'payments.title': 'Payments',
   'payments.lede': 'Complete checkout and review your payment history.',
@@ -743,7 +848,10 @@ export const en = {
   'payments.demoHint':
     'No RapidGateway credentials configured. This button marks the payment as paid for testing only.',
   'payments.demoConfirm': 'Simulate successful payment',
-  'payments.paidSuccess': 'Payment successful. Thank you!',
+  'payments.paidSuccess':
+    'Payment successful — {{plan}} for Rs {{amount}} ({{days}} days of access). Thank you!',
+  'payments.alreadyActive':
+    'Your subscription is already active. You cannot pay again until the current period ends.',
   'payments.callbackError': 'Payment could not be verified. Please try again or contact support.',
   'payments.choosePlan': 'Choose a plan',
   'payments.historyTitle': 'Payment history',
@@ -752,6 +860,7 @@ export const en = {
 
   'hover.title': 'Case Detail',
   'hover.judgeLine': 'Honorable {{name}}',
+  'hover.caseCategory': 'Category of case',
   'hover.caseNo': 'Case No.',
   'hover.titleLabel': 'Title',
   'hover.judge': 'Judge',
@@ -803,8 +912,11 @@ export const en = {
   'validation.phone': 'Phone must be exactly 11 digits, e.g. 03001234567.',
   'validation.cnic': 'Enter a valid 13-digit ID card number, e.g. 31209-8736287-1.',
   'validation.datePast': 'Next date cannot be in the past.',
+  'validation.dateFuture': 'This hearing date cannot be in the future.',
   'validation.sunday': 'Hearings cannot be scheduled on Sunday.',
   'validation.caseId': 'Only letters, numbers, dashes, dots and slashes are allowed.',
+  'errors.caseIdDuplicate':
+    'This case ID is already used on another of your cases.',
   'validation.formErrors': 'Please fix the highlighted fields.',
 } as const;
 
@@ -957,6 +1069,8 @@ export const ur: Record<TranslationKey, string> = {
     'شائع شدہ پلان قیمتیں دکھائی جا رہی ہیں۔ اگر API عارضی طور پر دستیاب نہ ہو تب بھی یہی کیٹلاگ لاگو رہتی ہے۔',
   'pricing.paymentNote':
     'ادائیگیاں PKR میں RapidGateway کے ذریعے ہوتی ہیں تاکہ تمام ڈیجیٹل والیٹ کنیکٹیویٹی پر آسان ادائیگی ہو۔ دکھائی گئی رقم پلان کی مدت کی مکمل پیشگی قیمت ہے۔',
+  'pricing.paymentNoteManual':
+    'پلان کی مکمل PKR رقم بینک، ایزی پیسہ یا جاز کیش سے بھیجیں۔ ثبوت جمع کرانے کے بعد تصدیق کر کے پلان فعال کیا جاتا ہے۔',
   'pricing.refundLink': 'دیکھیں ہماری',
 
   'contact.title': 'رابطہ',
@@ -1034,6 +1148,8 @@ export const ur: Record<TranslationKey, string> = {
   'checkout.title': 'چیک آؤٹ',
   'checkout.lede':
     'پلان منتخب کریں، اکاؤنٹ بنائیں، ای میل تصدیق کریں، پھر RapidGateway سے ادا کریں۔ ادائیگی کے بعد رجسٹریشن کے پاس ورڈ سے سائن اِن کریں۔',
+  'checkout.manualOnlyGuest':
+    'آن لائن چیک آؤٹ بند ہے۔ اکاؤنٹ بنائیں، سائن اِن کریں، اور پلانز سے دستی ادائیگی استعمال کریں۔',
   'checkout.accountTitle': 'اپنا اکاؤنٹ بنائیں',
   'checkout.accountLede':
     'وکیل کی تفصیلات اور پاس ورڈ درکار ہیں۔ ادائیگی سے پہلے ای میل کی تصدیق ہوگی۔',
@@ -1132,7 +1248,13 @@ export const ur: Record<TranslationKey, string> = {
   'nav.tabAdd': 'شامل',
   'nav.tabSearch': 'تلاش',
   'nav.tabProfile': 'پروفائل',
+  'nav.tabPlans': 'پلان',
   'nav.tabPayments': 'ادائیگیاں',
+  'nav.billingSection': 'پلان اور ادائیگیاں',
+  'nav.billingHub': 'بلنگ',
+  'nav.billingManual': 'دستی ادائیگی',
+  'billing.hubLede':
+    'پلان منتخب کریں، دستی ادائیگی کریں، یا ادائیگی کی تاریخ دیکھیں — سب ایک جگہ۔',
 
   'profile.quickPlans': 'پلان اور بلنگ',
   'profile.quickPayments': 'ادائیگی کی تاریخ',
@@ -1152,6 +1274,7 @@ export const ur: Record<TranslationKey, string> = {
   'common.dash': '—',
   'common.required': '*',
   'common.loading': 'لوڈ ہو رہا ہے…',
+  'common.saving': 'محفوظ ہو رہا ہے…',
 
   'pwa.updateAvailable': 'Court Files کا نیا ورژن تیار ہے۔',
   'pwa.reload': 'ابھی اپ ڈیٹ کریں',
@@ -1176,6 +1299,15 @@ export const ur: Record<TranslationKey, string> = {
   'category.Family Courts': 'خاندانی عدالتیں',
   'category.Magisterial Courts': 'مجسٹریٹ عدالتیں',
   'category.Others': 'دیگر',
+
+  'caseCategory.Civil': 'دیوانی',
+  'caseCategory.Criminal': 'فوجداری',
+  'caseCategory.Family': 'خاندانی',
+  'caseCategory.Rent & Property': 'کرایہ / جائیداد',
+  'caseCategory.Commercial': 'تجارتی',
+  'caseCategory.Constitutional': 'آئینی',
+  'caseCategory.Bail & Misc Criminal': 'ضمانت و متفرق فوجداری',
+  'caseCategory.Others': 'دیگر',
   'advocateFor.Party 1': 'فریق اول',
   'advocateFor.Party 2': 'فریق دوم',
 
@@ -1252,7 +1384,11 @@ export const ur: Record<TranslationKey, string> = {
   'addCase.edit': 'مقدمہ ترمیم کریں',
   'addCase.caseDetails': 'مقدمے کی تفصیلات',
   'addCase.caseId': 'کیس آئی ڈی',
+  'addCase.caseIdHint':
+    'اختیاری۔ عدالتی کیس نمبر ملنے پر شامل کریں؛ بعد میں «مقدمہ ترمیم» سے اپ ڈیٹ کر سکتے ہیں۔',
   'addCase.category': 'قسم',
+  'addCase.courtCategory': 'عدالت کی قسم',
+  'addCase.caseCategory': 'مقدمے کی قسم',
   'addCase.courtNumber': 'عدالت نمبر',
   'addCase.city': 'شہر',
   'addCase.cityPh': 'مثلاً لاہور، کراچی',
@@ -1406,7 +1542,7 @@ export const ur: Record<TranslationKey, string> = {
   'history.next': 'اگلا',
   'history.edit': 'سماعت میں ترمیم',
   'history.editSave': 'تبدیلیاں محفوظ کریں',
-  'history.editLocked': '۴۸ گھنٹے کے بعد مقفل',
+  'history.editLocked': 'اس سماعت میں ترمیم نہیں ہو سکتی',
   'history.deleteHearing': 'سماعت حذف کریں',
   'history.deleteConfirm': 'کیا یہ سماعت حذف کر دی جائے؟',
   'history.back': 'ڈیش بورڈ پر واپس',
@@ -1433,6 +1569,12 @@ export const ur: Record<TranslationKey, string> = {
   'errors.saveFailed': 'محفوظ نہیں ہو سکا۔ دوبارہ کوشش کریں۔',
   'errors.caseLimitReached':
     'آپ نے 10 مفت مقدمے استعمال کر لیے ہیں۔ مزید مقدموں کے لیے پلان خریدیں۔',
+  'errors.subscriptionAlreadyActive':
+    'آپ کی سبسکرپشن پہلے سے فعال ہے۔ موجودہ مدت ختم ہونے کے بعد ہی تجدید کر سکتے ہیں۔',
+  'errors.paymentInProgress':
+    'ایک ادائیگی پہلے سے جاری ہے۔ نئی شروع کرنے سے پہلے وہ چیک آؤٹ مکمل کریں۔',
+  'errors.gatewayCheckoutPaused':
+    'آن لائن چیک آؤٹ بند ہے۔ بینک، ایزی پیسہ یا جاز کیش سے دستی ادائیگی کریں۔',
 
   'subscription.freeTier': 'مفت: زیادہ سے زیادہ 10 مقدمے',
   'subscription.casesUsed': '{{limit}} میں سے {{count}} مفت مقدمے استعمال',
@@ -1481,10 +1623,9 @@ export const ur: Record<TranslationKey, string> = {
   'hearing.partyLeftRemarksHint': 'فریق چلا گیا کے لیے ریمارکس اختیاری ہیں۔',
   'hearing.markDecided': 'فیصلہ شدہ قرار دیں',
   'hearing.markPartyLeft': 'فریق چلا گیا قرار دیں',
-  'hearing.editLocked':
-    'سماعت صرف محفوظ کرنے کے ۴۸ گھنٹوں کے اندر تبدیل کی جا سکتی ہے۔',
+  'hearing.editLocked': 'سماعت محفوظ نہیں ہو سکی۔',
   'hearing.correctionWindow':
-    'آپ اب بھی آخری سماعت درست کر سکتے ہیں (۴۸ گھنٹوں کے اندر)۔ محفوظ کرنے سے نئی سماعت نہیں بنے گی۔',
+    'آپ اس تاریخ کی سماعت اپ ڈیٹ کر رہے ہیں۔ محفوظ کرنے سے نئی سماعت نہیں بنے گی۔ اگلی سماعت کے لیے تاریخ تبدیل کریں۔',
   'hearing.lockedUntilDate':
     'آخری سماعت مقفل ہے۔ اگلی سماعت {{date}} یا اس کے بعد مقرر کی جا سکتی ہے۔',
 
@@ -1528,6 +1669,22 @@ export const ur: Record<TranslationKey, string> = {
 
   'plans.title': 'پلان خریدیں',
   'plans.lede': 'ماہانہ یا سالانہ منتخب کریں، پھر RapidGateway سے ادا کریں۔',
+  'plans.ledeManualOnly':
+    'ماہانہ یا سالانہ منتخب کریں، پھر بینک، ایزی پیسہ یا جاز کیش سے ادائیگی کریں۔',
+  'plans.ledeManualOnlyShort': 'پلان منتخب کریں، پھر دستی ادائیگی مکمل کریں۔',
+  'plans.ledeActive': 'آپ کی سبسکرپشن فعال ہے۔ مدت ختم ہونے پر تجدید کریں۔',
+  'plans.ledePending': 'آپ کی دستی ادائیگی درخواست زیرِ جائزہ ہے۔',
+  'plans.statusActive': '{{date}} تک فعال',
+  'plans.btnActiveUntil': '{{date}} تک فعال',
+  'plans.btnPendingReview': 'ادائیگی زیرِ جائزہ',
+  'plans.statusPending': 'دستی ادائیگی زیرِ جائزہ',
+  'plans.statusManualOnly': 'بینک، ایزی پیسہ یا جاز کیش سے ادائیگی',
+  'plans.manualPayShort': 'دستی ادائیگی',
+  'plans.choosePlanManual': 'دستی ادائیگی پر جائیں',
+  'plans.choosePlanContinue': 'جاری رکھیں',
+  'plans.waitingManualReview':
+    'آپ پہلے ہی ادائیگی جمع کرا چکے ہیں۔ تصدیق کے بعد آپ کو مطلع کیا جائے گا۔',
+  'plans.purchaseManual': 'دستی ادائیگی',
   'plans.loading': 'پلانز لوڈ ہو رہے ہیں…',
   'plans.purchase': 'پلان خریدیں',
   'plans.back': 'پلانز پر واپس',
@@ -1536,6 +1693,67 @@ export const ur: Record<TranslationKey, string> = {
   'plans.rapidgateway': 'RapidGateway',
   'plans.rapidgatewayHint':
     'RapidGateway کے ذریعے تمام ڈیجیٹل والیٹ کنیکٹیویٹی پر آسان ادائیگی',
+
+  'manualPayment.title': 'بینک یا والیٹ سے ادائیگی',
+  'manualPayment.lede':
+    'اگر آن لائن چیک آؤٹ نہیں چل رہا، نیچے دیے اکاؤنٹ پر رقم بھیجیں، پھر تصدیق کے لیے تفصیلات جمع کرائیں۔',
+  'manualPayment.disabled': 'اب دستی ادائیگی دستیاب نہیں۔',
+  'manualPayment.bank': 'بینک ٹرانسفر',
+  'manualPayment.easypaisa': 'ایزی پیسہ',
+  'manualPayment.jazzcash': 'جاز کیش',
+  'manualPayment.formTitle': 'ادائیگی کی تفصیلات بھیجیں',
+  'manualPayment.plan': 'پلان',
+  'manualPayment.paidTo': 'آپ نے ادائیگی بھیجی',
+  'manualPayment.amountHint': 'جمع کرانے سے پہلے بالکل Rs {{amount}} بھیجیں۔',
+  'manualPayment.transactionId': 'لین دین / ادائیگی آئی ڈی',
+  'manualPayment.transactionIdPh': 'TID یا بینک ریفرنس',
+  'manualPayment.senderName': 'آپ کا نام (بھیجنے والے اکاؤنٹ کے مطابق)',
+  'manualPayment.senderTitle': 'اکاؤنٹ عنوان (رسید پر ہو تو)',
+  'manualPayment.senderTitlePh': 'مثلاً والیٹ عنوان',
+  'manualPayment.senderPhone': 'موبائل (اختیاری)',
+  'manualPayment.notes': 'نوٹ (اختیاری)',
+  'manualPayment.submit': 'تصدیق کے لیے جمع کرائیں',
+  'manualPayment.submitted':
+    'درخواست جمع ہو گئی۔ تصدیق کے بعد پلان فعال ہوگا۔ اگر ابھی نہیں بھیجا تو WhatsApp پر ادائیگی کا اسکرین شاٹ بھیج دیں۔',
+  'manualPayment.pendingReview':
+    'آپ کی درخواست زیرِ جائزہ ہے۔ نتیجہ ای میل سے بتایا جائے گا۔',
+  'manualPayment.myRequests': 'آپ کی دستی ادائیگی درخواستیں',
+  'manualPayment.requestsHistoryLede':
+    'بینک یا والیٹ کی جمع کرائی گئی درخواستوں کی تصدیق کی صورت حال دیکھیں۔',
+  'manualPayment.statusPending': 'زیرِ جائزہ',
+  'manualPayment.statusApproved': 'منظور',
+  'manualPayment.statusRejected': 'مسترد',
+  'manualPayment.statusApprovedDetail':
+    'آپ کی ادائیگی تصدیق ہو گئی — پلان فعال ہے (صفحہ تازہ کریں اگر فوراً نہ دکھے)۔',
+  'manualPayment.statusRejectedDetail':
+    'یہ درخواست منظور نہیں ہوئی۔ درست تفصیلات کے ساتھ نئی درخواست جمع کرا سکتے ہیں۔',
+  'manualPayment.submittedAt': 'جمع {{date}}',
+  'manualPayment.reviewedAt': 'جائزہ {{date}}',
+  'manualPayment.adminNote': 'منتظم کا نوٹ',
+  'manualPayment.viewRequests': 'ادائیگی درخواست کی صورت حال',
+  'manualPayment.resubmitHint':
+    'اگر درخواست مسترد ہوئی تو درست تفصیلات کے ساتھ نیچے نیا ثبوت جمع کرائیں۔',
+  'manualPayment.resubmitCta': 'نئی درخواست جمع کرائیں',
+  'manualPayment.resubmitTitle': 'ادائیگی کا ثبوت دوبارہ جمع کرائیں',
+  'manualPayment.validationTxn':
+    'درست لین دین / ادائیگی آئی ڈی درج کریں (کم از کم 3 حروف)۔',
+  'manualPayment.validationName':
+    'بھیجنے والے اکاؤنٹ کے مطابق نام درج کریں (کم از کم 2 حروف)۔',
+  'manualPayment.validationPhone':
+    'درست پاکستانی موبائل (03XXXXXXXXX) درج کریں یا خالی چھوڑ دیں۔',
+  'manualPayment.validationNotes': 'نوٹ 500 حروف یا اس سے کم ہونے چاہئیں۔',
+  'manualPayment.validationDetails':
+    'پلان اور ادائیگی کی تفصیلات چیک کر کے دوبارہ کوشش کریں۔',
+  'manualPayment.whatsappTitle': 'ادائیگی کا اسکرین شاٹ WhatsApp پر بھیجیں',
+  'manualPayment.whatsappHint':
+    'رقم بھیجنے کے بعد اس نمبر پر ادائیگی کا واضح اسکرین شاٹ بھیجیں، پھر نیچے فارم میں لین دین آئی ڈی درج کریں۔',
+  'manualPayment.whatsappOpen': 'WhatsApp کھولیں',
+  'plans.manualPay': 'دستی ادائیگی (بینک / ایزی پیسہ / جاز کیش)',
+  'plans.manualPayHint': 'جب RapidGateway چیک آؤٹ نہ چلے۔',
+  'plans.manualRequestPending':
+    'آپ کی دستی ادائیگی درخواست زیرِ جائزہ ہے۔',
+  'plans.manualRequestHistory':
+    'آپ نے دستی ادائیگی درخواست(یں) جمع کرائی ہیں۔',
 
   'payments.title': 'ادائیگیاں',
   'payments.lede': 'چیک آؤٹ مکمل کریں اور اپنی ادائیگی کی تاریخ دیکھیں۔',
@@ -1549,7 +1767,10 @@ export const ur: Record<TranslationKey, string> = {
   'payments.demoHint':
     'RapidGateway کریڈنشلز کنفیگر نہیں۔ یہ بٹن صرف ٹیسٹنگ کے لیے ادائیگی کو کامیاب نشان زد کرتا ہے۔',
   'payments.demoConfirm': 'کامیاب ادائیگی کی نقل کریں',
-  'payments.paidSuccess': 'ادائیگی کامیاب۔ شکریہ!',
+  'payments.paidSuccess':
+    'ادائیگی کامیاب — {{plan}}، Rs {{amount}} ({{days}} دن کی رسائی)۔ شکریہ!',
+  'payments.alreadyActive':
+    'آپ کی سبسکرپشن پہلے سے فعال ہے۔ موجودہ مدت ختم ہونے تک دوبارہ ادائیگی نہیں کر سکتے۔',
   'payments.callbackError':
     'ادائیگی تصدیق نہیں ہو سکی۔ دوبارہ کوشش کریں یا سپورٹ سے رابطہ کریں۔',
   'payments.choosePlan': 'پلان منتخب کریں',
@@ -1559,6 +1780,7 @@ export const ur: Record<TranslationKey, string> = {
 
   'hover.title': 'تفصیلِ مقدمہ',
   'hover.judgeLine': 'جناب {{name}} صاحب',
+  'hover.caseCategory': 'مقدمے کی قسم',
   'hover.caseNo': 'کیس نمبر',
   'hover.titleLabel': 'عنوان',
   'hover.judge': 'جج',
@@ -1610,8 +1832,11 @@ export const ur: Record<TranslationKey, string> = {
   'validation.phone': 'فون نمبر بالکل ۱۱ ہندسوں کا ہونا چاہیے، مثلاً 03001234567۔',
   'validation.cnic': 'درست ۱۳ ہندسوں کا شناختی کارڈ نمبر درج کریں، مثلاً 31209-8736287-1۔',
   'validation.datePast': 'اگلی تاریخ گزری ہوئی نہیں ہو سکتی۔',
+  'validation.dateFuture': 'یہ تاریخ پیشی مستقبل میں نہیں ہو سکتی۔',
   'validation.sunday': 'اتوار کو سماعت مقرر نہیں کی جا سکتی۔',
   'validation.caseId': 'صرف حروف، ہندسے، ڈیش، نقطے اور سلیش کی اجازت ہے۔',
+  'errors.caseIdDuplicate':
+    'یہ کیس آئی ڈی آپ کے کسی دوسرے مقدمے میں پہلے سے موجود ہے۔',
   'validation.formErrors': 'براہ کرم نشان زد خانے درست کریں۔',
 };
 
